@@ -16,7 +16,7 @@ def render_sidebar_filters(df: pd.DataFrame) -> pd.DataFrame:
     Returns:
         Filtered DataFrame.
     """
-    st.sidebar.header("🔍 Filters")
+    st.sidebar.header("Data Filters")
     st.sidebar.write("Refine the customer lists below:")
     
     # 1. Lead Category Filter

@@ -1,7 +1,7 @@
 """Premium Main Streamlit Dashboard App for SAF SHIKAN Lead Portal.
 
-Provides a corporate-grade, interactive dashboard for lead scoring, K-means segments,
-and dynamic grouped aggregations.
+Provides a corporate-grade, executive dashboard for lead scoring, K-means segments,
+and dynamic grouped aggregations with realistic executive UI styling.
 """
 
 import os
@@ -12,7 +12,7 @@ import streamlit as st
 # Configure page layout and visual metadata
 st.set_page_config(
     page_title="SAF SHIKAN | Sales Intelligence Portal",
-    page_icon="🛸",
+    page_icon="SAF",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -73,15 +73,17 @@ st.markdown(
         margin-bottom: 25px;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         color: #FFFFFF;
+        border-left: 6px solid #81C784;
     }
     .banner-title {
         margin: 0;
-        font-size: 2.3rem;
+        font-size: 2.2rem;
         font-weight: 800;
         letter-spacing: -0.5px;
+        text-transform: uppercase;
     }
     .banner-subtitle {
-        margin: 5px 0 0 0;
+        margin: 6px 0 0 0;
         font-size: 1.05rem;
         font-family: 'Inter', sans-serif;
         color: #DCEDC8;
@@ -131,15 +133,15 @@ st.markdown(
         border-left-color: #0288D1;
         background: linear-gradient(135deg, #E1F5FE 0%, #FFFFFF 100%);
     }
-    .metric-card .icon {
-        font-size: 2.1rem;
-        background: rgba(0,0,0,0.03);
-        width: 50px;
-        height: 50px;
+    .metric-card .icon-box {
+        width: 52px;
+        height: 52px;
         display: flex;
         align-items: center;
         justify-content: center;
-        border-radius: 50%;
+        border-radius: 12px;
+        background: #FFFFFF;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     }
     .metric-card .label {
         font-size: 0.78rem;
@@ -157,7 +159,7 @@ st.markdown(
         margin-top: 2px;
     }
     .metric-card .desc {
-        font-size: 0.72rem;
+        font-size: 0.75rem;
         color: #78909C;
         margin-top: 3px;
         font-family: 'Inter', sans-serif;
@@ -212,6 +214,12 @@ st.markdown(
         margin-top: 15px;
         font-family: 'Inter', sans-serif;
     }
+    .stat-tag {
+        background: #F8F9FA;
+        padding: 4px 10px;
+        border-radius: 6px;
+        border: 1px solid #E9ECEF;
+    }
     </style>
     """,
     unsafe_allow_html=True
@@ -242,27 +250,27 @@ st.sidebar.image(
     use_container_width=True
 )
 
-st.sidebar.title("🛸 SAF SHIKAN")
+st.sidebar.title("SAF SHIKAN")
 st.sidebar.caption("Lead Scoring & Segmentation System")
 
 page = st.sidebar.radio(
     "Select Interface Page",
-    ["📊 Overview Dashboard", "🎯 Customer Segments", "📋 Interactive Lead List", "🔥 Top Hot Leads"]
+    ["Overview Dashboard", "Customer Segments", "Interactive Lead List", "Priority Sales Pipeline"]
 )
 
 # Render Styled Header Banner
 st.markdown(
     """
     <div class='banner-container'>
-        <h1 class='banner-title'>SAF SHIKAN 🛸</h1>
-        <p class='banner-subtitle'>Agro-Drone Spray Services & Lead Intelligence Hub — Islamabad Pakistan</p>
+        <h1 class='banner-title'>SAF SHIKAN AGRO-DRONE INTELLIGENCE</h1>
+        <p class='banner-subtitle'>Precision Spray Services & Customer Analytics Hub — Islamabad Pakistan</p>
     </div>
     """,
     unsafe_allow_html=True
 )
 
 # ----------------- PAGE 1: OVERVIEW -----------------
-if page == "📊 Overview Dashboard":
+if page == "Overview Dashboard":
     st.subheader("Enterprise Operations Overview")
     
     # Calculate metrics
@@ -271,40 +279,46 @@ if page == "📊 Overview Dashboard":
     warm_count = len(df[df["Lead_Category"] == "WARM"])
     avg_score = df["Lead_Score"].mean()
     
+    # SVG Vector Icons for Executive Styling
+    svg_users = """<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>"""
+    svg_hot = """<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#D32F2F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>"""
+    svg_warm = """<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E65100" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>"""
+    svg_score = """<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0288D1" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>"""
+    
     # Render customized HTML metrics grid
     st.markdown(
         f"""
         <div class='metric-container'>
             <div class='metric-card total'>
-                <div class='icon'>🛸</div>
+                <div class='icon-box'>{svg_users}</div>
                 <div class='content'>
-                    <div class='label'>FARMER LEADS</div>
+                    <div class='label'>Farmer Leads</div>
                     <div class='value'>{total_cust}</div>
-                    <div class='desc'>Registered profiles</div>
+                    <div class='desc'>Registered customer profiles</div>
                 </div>
             </div>
             <div class='metric-card hot'>
-                <div class='icon'>🔥</div>
+                <div class='icon-box'>{svg_hot}</div>
                 <div class='content'>
-                    <div class='label'>HOT PIPELINE</div>
+                    <div class='label'>Hot Pipeline</div>
                     <div class='value'>{hot_count}</div>
-                    <div class='desc'>Action within 48h</div>
+                    <div class='desc'>High priority targets</div>
                 </div>
             </div>
             <div class='metric-card warm'>
-                <div class='icon'>✅</div>
+                <div class='icon-box'>{svg_warm}</div>
                 <div class='content'>
-                    <div class='label'>WARM OPPORTUNITIES</div>
+                    <div class='label'>Warm Opportunities</div>
                     <div class='value'>{warm_count}</div>
-                    <div class='desc'>Action this month</div>
+                    <div class='desc'>Near-term conversion potential</div>
                 </div>
             </div>
             <div class='metric-card avg'>
-                <div class='icon'>📈</div>
+                <div class='icon-box'>{svg_score}</div>
                 <div class='content'>
-                    <div class='label'>AVG LEAD SCORE</div>
+                    <div class='label'>Avg Lead Score</div>
                     <div class='value'>{avg_score:.1f}</div>
-                    <div class='desc'>Score out of 100 max</div>
+                    <div class='desc'>Normalized score out of 100</div>
                 </div>
             </div>
         </div>
@@ -323,7 +337,7 @@ if page == "📊 Overview Dashboard":
 
 
 # ----------------- PAGE 2: CUSTOMER SEGMENTS -----------------
-elif page == "🎯 Customer Segments":
+elif page == "Customer Segments":
     st.subheader("Dynamic Customer Clustering Segments")
     st.write("Target segments generated from K-Means Clustering on operational scores.")
     
@@ -331,7 +345,7 @@ elif page == "🎯 Customer Segments":
     st.plotly_chart(plot_cluster_scatter_2d(df), use_container_width=True)
     st.plotly_chart(plot_crops_per_cluster(df), use_container_width=True)
     
-    st.write("### 🎯 Segment Profiles & Characteristics")
+    st.write("### Segment Profiles & Characteristics")
     
     # Pre-calculate profiling metrics from dataset
     profile_rows = []
@@ -377,9 +391,9 @@ elif page == "🎯 Customer Segments":
                         Target farmer grouping focused on <strong>{card["crop"].title()}</strong> cultivations in <strong>{card["region"]}</strong> region during <strong>{card["season"]}</strong> season.
                     </p>
                     <div class='segment-stats'>
-                        <span>📁 <strong>Segment Size:</strong> {card["size"]}</span>
-                        <span>📏 <strong>Avg Crop Scale:</strong> {card["area"]} Acres</span>
-                        <span>💰 <strong>Avg Revenue:</strong> PKR {int(card["income"]):,}</span>
+                        <span class='stat-tag'><strong>Segment Size:</strong> {card["size"]} profiles</span>
+                        <span class='stat-tag'><strong>Avg Scale:</strong> {card["area"]} Acres</span>
+                        <span class='stat-tag'><strong>Avg Revenue:</strong> PKR {int(card["income"]):,}</span>
                     </div>
                 </div>
                 """,
@@ -388,7 +402,7 @@ elif page == "🎯 Customer Segments":
 
 
 # ----------------- PAGE 3: LEAD LIST -----------------
-elif page == "📋 Interactive Lead List":
+elif page == "Interactive Lead List":
     st.subheader("Dynamic Sales Pipeline Finder")
     st.write("Configure filters in the left sidebar to slice, group, or export sales targets.")
     
@@ -396,7 +410,7 @@ elif page == "📋 Interactive Lead List":
     filtered_df = render_sidebar_filters(df)
     
     # Tabbed layouts: 1 for data list, 1 for data aggregations (Groupings)
-    tab_list, tab_group = st.tabs(["📋 Filtered Lead Records", "📊 Interactive Data Groupings"])
+    tab_list, tab_group = st.tabs(["Filtered Lead Records", "Interactive Data Groupings"])
     
     with tab_list:
         st.write(f"Showing **{len(filtered_df)}** of **{len(df)}** matching records:")
@@ -411,7 +425,7 @@ elif page == "📋 Interactive Lead List":
         csv_data = filtered_df.to_csv(index=False).encode('utf-8')
         with col_dl1:
             st.download_button(
-                label="📥 Export Pipeline as CSV",
+                label="Export Pipeline as CSV",
                 data=csv_data,
                 file_name="saf_shikan_leads_export.csv",
                 mime="text/csv",
@@ -421,7 +435,7 @@ elif page == "📋 Interactive Lead List":
         excel_bytes = generate_excel_bytes(filtered_df)
         with col_dl2:
             st.download_button(
-                label="📥 Export Pipeline as Styled Excel",
+                label="Export Pipeline as Styled Excel",
                 data=excel_bytes,
                 file_name="saf_shikan_leads_export.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -460,8 +474,8 @@ elif page == "📋 Interactive Lead List":
         st.plotly_chart(plot_grouped_analytics(filtered_df, group_by, metric, operation), use_container_width=True)
 
 
-# ----------------- PAGE 4: TOP LEADS -----------------
-elif page == "🔥 Top Hot Leads":
+# ----------------- PAGE 4: PRIORITY SALES PIPELINE -----------------
+elif page == "Priority Sales Pipeline":
     st.subheader("Top 20 Priority Sales Call List")
     st.write("Highest priority targets representing active crop areas requiring urgent spray scheduling.")
     
@@ -477,7 +491,7 @@ elif page == "🔥 Top Hot Leads":
     # Export call list
     excel_bytes = generate_excel_bytes(top_20_hot)
     st.download_button(
-        label="📥 Export Calling List to Styled Excel",
+        label="Export Calling List to Styled Excel",
         data=excel_bytes,
         file_name="saf_shikan_hot_call_list.xlsx",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
