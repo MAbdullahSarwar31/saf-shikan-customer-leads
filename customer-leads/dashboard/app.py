@@ -14,7 +14,7 @@ st.set_page_config(
     page_title="SAF SHIKAN | Sales Intelligence Portal",
     page_icon="SAF",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="auto"
 )
 
 # Resolve project root relative to app.py
@@ -219,6 +219,73 @@ st.markdown(
         padding: 4px 10px;
         border-radius: 6px;
         border: 1px solid #E9ECEF;
+    }
+    
+    /* Mobile & Tablet Responsive Rules for Executive UI */
+    @media screen and (max-width: 768px) {
+        .block-container {
+            padding-top: 1.5rem !important;
+            padding-left: 0.8rem !important;
+            padding-right: 0.8rem !important;
+            padding-bottom: 2rem !important;
+        }
+        .banner-container {
+            padding: 18px 14px;
+            margin-bottom: 15px;
+            border-left-width: 4px;
+        }
+        .banner-title {
+            font-size: 1.35rem;
+            line-height: 1.25;
+        }
+        .banner-subtitle {
+            font-size: 0.82rem;
+            margin-top: 6px;
+        }
+        .metric-container {
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .metric-card {
+            min-width: 100%;
+            width: 100%;
+            padding: 16px 14px;
+            gap: 14px;
+        }
+        .metric-card .icon-box {
+            width: 44px;
+            height: 44px;
+            min-width: 44px;
+        }
+        .metric-card .value {
+            font-size: 1.6rem;
+        }
+        .segment-card {
+            padding: 16px;
+            margin-bottom: 14px;
+        }
+        .segment-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+        }
+        .segment-stats {
+            flex-direction: column;
+            gap: 8px;
+            align-items: stretch;
+        }
+        .stat-tag {
+            width: 100%;
+            display: block;
+            text-align: left;
+            box-sizing: border-box;
+        }
+        /* Ensure tables scroll smoothly on mobile screens */
+        [data-testid="stDataFrame"] {
+            width: 100%;
+            overflow-x: auto;
+        }
     }
     </style>
     """,
