@@ -1,6 +1,7 @@
-"""Main Streamlit Dashboard App for SAF SHIKAN Lead Scoring & Segmentation.
+"""Premium Main Streamlit Dashboard App for SAF SHIKAN Lead Portal.
 
-Provides an interactive portal for the sales team to filter, visualize, and export leads.
+Provides a corporate-grade, interactive dashboard for lead scoring, K-means segments,
+and dynamic grouped aggregations.
 """
 
 import os
@@ -8,9 +9,9 @@ import sys
 import pandas as pd
 import streamlit as st
 
-# Configure page layout and style
+# Configure page layout and visual metadata
 st.set_page_config(
-    page_title="SAF SHIKAN | Sales Lead Portal",
+    page_title="SAF SHIKAN | Sales Intelligence Portal",
     page_icon="🛸",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -30,61 +31,186 @@ try:
         plot_lead_category_distribution,
         plot_customers_by_region,
         plot_cluster_scatter_2d,
-        plot_crops_per_cluster
+        plot_crops_per_cluster,
+        plot_grouped_analytics
     )
     from components.filters import render_sidebar_filters
-    from components.tables import display_leads_table, generate_excel_bytes
+    from components.tables import (
+        display_leads_table, 
+        generate_excel_bytes,
+        display_grouped_table
+    )
 except ImportError:
-    # Fallback if imported directly from python command
     from dashboard.components.charts import (
         plot_lead_category_distribution,
         plot_customers_by_region,
         plot_cluster_scatter_2d,
-        plot_crops_per_cluster
+        plot_crops_per_cluster,
+        plot_grouped_analytics
     )
     from dashboard.components.filters import render_sidebar_filters
-    from dashboard.components.tables import display_leads_table, generate_excel_bytes
+    from dashboard.components.tables import (
+        display_leads_table, 
+        generate_excel_bytes,
+        display_grouped_table
+    )
 
-# Inject custom brand styling (SAF SHIKAN green `#1B5E20`)
+# Inject custom brand styling (SAF SHIKAN green theme)
 st.markdown(
     """
     <style>
-    .main-title {
-        color: #1B5E20;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        font-weight: 800;
-        margin-bottom: 2px;
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Inter:wght@300;400;500;600&display=swap');
+    
+    html, body, [class*="css"] {
+        font-family: 'Outfit', sans-serif;
     }
-    .sub-title {
-        color: #558B2F;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        margin-top: -10px;
+    
+    /* Premium Title Banner */
+    .banner-container {
+        background: linear-gradient(135deg, #1B5E20 0%, #33691E 100%);
+        padding: 30px;
+        border-radius: 12px;
         margin-bottom: 25px;
-        font-size: 1.15rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        color: #FFFFFF;
+    }
+    .banner-title {
+        margin: 0;
+        font-size: 2.3rem;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+    }
+    .banner-subtitle {
+        margin: 5px 0 0 0;
+        font-size: 1.05rem;
+        font-family: 'Inter', sans-serif;
+        color: #DCEDC8;
+        font-weight: 400;
+        opacity: 0.95;
+    }
+    
+    /* Metrics Grid */
+    .metric-container {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+        width: 100%;
     }
     .metric-card {
-        background-color: #F1F8E9;
-        border-left: 5px solid #2E7D32;
-        padding: 15px;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        flex: 1;
+        min-width: 220px;
+        background: #FFFFFF;
+        border-radius: 12px;
+        padding: 22px 20px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        border: 1px solid #ECEFF1;
+        border-left: 6px solid #2E7D32;
+        transition: all 0.3s cubic-bezier(.25,.8,.25,1);
     }
-    .metric-title {
-        font-size: 0.9rem;
-        color: #558B2F;
-        font-weight: 600;
+    .metric-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
     }
-    .metric-value {
-        font-size: 2.2rem;
-        color: #1B5E20;
+    .metric-card.total {
+        border-left-color: #2E7D32;
+        background: linear-gradient(135deg, #F1F8E9 0%, #FFFFFF 100%);
+    }
+    .metric-card.hot {
+        border-left-color: #D32F2F;
+        background: linear-gradient(135deg, #FFEBEE 0%, #FFFFFF 100%);
+    }
+    .metric-card.warm {
+        border-left-color: #E65100;
+        background: linear-gradient(135deg, #FFF3E0 0%, #FFFFFF 100%);
+    }
+    .metric-card.avg {
+        border-left-color: #0288D1;
+        background: linear-gradient(135deg, #E1F5FE 0%, #FFFFFF 100%);
+    }
+    .metric-card .icon {
+        font-size: 2.1rem;
+        background: rgba(0,0,0,0.03);
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+    }
+    .metric-card .label {
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: #546E7A;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        font-family: 'Inter', sans-serif;
+    }
+    .metric-card .value {
+        font-size: 2.1rem;
         font-weight: 800;
+        line-height: 1.1;
+        color: #263238;
+        margin-top: 2px;
     }
+    .metric-card .desc {
+        font-size: 0.72rem;
+        color: #78909C;
+        margin-top: 3px;
+        font-family: 'Inter', sans-serif;
+    }
+    
+    /* Segment Cards */
     .segment-card {
-        background-color: #FAFAFA;
-        border-radius: 8px;
-        border: 1px solid #E0E0E0;
-        padding: 15px;
-        margin-bottom: 10px;
+        background: #FFFFFF;
+        border-radius: 12px;
+        padding: 22px;
+        border: 1px solid #ECEFF1;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+        margin-bottom: 20px;
+        transition: all 0.25s ease;
+    }
+    .segment-card:hover {
+        border-color: #C8E6C9;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+    }
+    .segment-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    .segment-badge {
+        font-size: 0.72rem;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 20px;
+        text-transform: uppercase;
+        font-family: 'Inter', sans-serif;
+        letter-spacing: 0.3px;
+    }
+    .segment-badge.high-need {
+        background-color: #FFEBEE;
+        color: #C62828;
+    }
+    .segment-badge.mod-need {
+        background-color: #E8F5E9;
+        color: #2E7D32;
+    }
+    .segment-stats {
+        display: flex;
+        gap: 20px;
+        font-size: 0.82rem;
+        color: #455A64;
+        border-top: 1px solid #F1F4F5;
+        padding-top: 12px;
+        margin-top: 15px;
+        font-family: 'Inter', sans-serif;
     }
     </style>
     """,
@@ -120,76 +246,73 @@ st.sidebar.title("🛸 SAF SHIKAN")
 st.sidebar.caption("Lead Scoring & Segmentation System")
 
 page = st.sidebar.radio(
-    "Go to Page",
+    "Select Interface Page",
     ["📊 Overview Dashboard", "🎯 Customer Segments", "📋 Interactive Lead List", "🔥 Top Hot Leads"]
 )
 
-# Header Section
-st.markdown("<h1 class='main-title'>SAF SHIKAN 🛸</h1>", unsafe_allow_html=True)
-st.markdown("<p class='sub-title'>Agro-Drone Spray Services — Islamabad Pakistan</p>", unsafe_allow_html=True)
-st.markdown("---")
+# Render Styled Header Banner
+st.markdown(
+    """
+    <div class='banner-container'>
+        <h1 class='banner-title'>SAF SHIKAN 🛸</h1>
+        <p class='banner-subtitle'>Agro-Drone Spray Services & Lead Intelligence Hub — Islamabad Pakistan</p>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
 # ----------------- PAGE 1: OVERVIEW -----------------
 if page == "📊 Overview Dashboard":
-    st.subheader("Business Metrics Overview")
+    st.subheader("Enterprise Operations Overview")
     
-    # Calculate high-level metrics
+    # Calculate metrics
     total_cust = len(df)
     hot_count = len(df[df["Lead_Category"] == "HOT"])
     warm_count = len(df[df["Lead_Category"] == "WARM"])
     avg_score = df["Lead_Score"].mean()
     
-    # Metrics columns
-    m_col1, m_col2, m_col3, m_col4 = st.columns(4)
+    # Render customized HTML metrics grid
+    st.markdown(
+        f"""
+        <div class='metric-container'>
+            <div class='metric-card total'>
+                <div class='icon'>🛸</div>
+                <div class='content'>
+                    <div class='label'>FARMER LEADS</div>
+                    <div class='value'>{total_cust}</div>
+                    <div class='desc'>Registered profiles</div>
+                </div>
+            </div>
+            <div class='metric-card hot'>
+                <div class='icon'>🔥</div>
+                <div class='content'>
+                    <div class='label'>HOT PIPELINE</div>
+                    <div class='value'>{hot_count}</div>
+                    <div class='desc'>Action within 48h</div>
+                </div>
+            </div>
+            <div class='metric-card warm'>
+                <div class='icon'>✅</div>
+                <div class='content'>
+                    <div class='label'>WARM OPPORTUNITIES</div>
+                    <div class='value'>{warm_count}</div>
+                    <div class='desc'>Action this month</div>
+                </div>
+            </div>
+            <div class='metric-card avg'>
+                <div class='icon'>📈</div>
+                <div class='content'>
+                    <div class='label'>AVG LEAD SCORE</div>
+                    <div class='value'>{avg_score:.1f}</div>
+                    <div class='desc'>Score out of 100 max</div>
+                </div>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
     
-    with m_col1:
-        st.markdown(
-            f"""
-            <div class='metric-card'>
-                <div class='metric-title'>TOTAL FARM CUSTOMERS</div>
-                <div class='metric-value'>{total_cust}</div>
-            </div>
-            """, 
-            unsafe_allow_html=True
-        )
-        
-    with m_col2:
-        st.markdown(
-            f"""
-            <div class='metric-card' style='border-left-color: #B71C1C; background-color: #FFEBEE;'>
-                <div class='metric-title' style='color: #C62828;'>HOT LEADS 🔥</div>
-                <div class='metric-value' style='color: #B71C1C;'>{hot_count}</div>
-            </div>
-            """, 
-            unsafe_allow_html=True
-        )
-        
-    with m_col3:
-        st.markdown(
-            f"""
-            <div class='metric-card' style='border-left-color: #E65100; background-color: #FFF3E0;'>
-                <div class='metric-title' style='color: #EF6C00;'>WARM LEADS ✅</div>
-                <div class='metric-value' style='color: #E65100;'>{warm_count}</div>
-            </div>
-            """, 
-            unsafe_allow_html=True
-        )
-        
-    with m_col4:
-        st.markdown(
-            f"""
-            <div class='metric-card' style='border-left-color: #0D47A1; background-color: #E3F2FD;'>
-                <div class='metric-title' style='color: #1565C0;'>AVG LEAD SCORE</div>
-                <div class='metric-value' style='color: #0D47A1;'>{avg_score:.2f}</div>
-            </div>
-            """, 
-            unsafe_allow_html=True
-        )
-        
-    st.write("")
-    st.write("")
-    
-    # Chart Row
+    # Chart visual layouts
     c_col1, c_col2 = st.columns(2)
     
     with c_col1:
@@ -201,100 +324,161 @@ if page == "📊 Overview Dashboard":
 
 # ----------------- PAGE 2: CUSTOMER SEGMENTS -----------------
 elif page == "🎯 Customer Segments":
-    st.subheader("Customer Clustering Profiles")
-    st.write("Segments generated from unsupervised Machine Learning (K-Means Clustering).")
+    st.subheader("Dynamic Customer Clustering Segments")
+    st.write("Target segments generated from K-Means Clustering on operational scores.")
     
-    # PCA Plot
+    # Split scatter plot and crop distributions
     st.plotly_chart(plot_cluster_scatter_2d(df), use_container_width=True)
-    
-    # Crop Distribution
     st.plotly_chart(plot_crops_per_cluster(df), use_container_width=True)
     
-    # Segment Characteristics and Summaries
-    st.write("### Segment Profiling Table")
+    st.write("### 🎯 Segment Profiles & Characteristics")
     
-    # Build profiling table dynamically from dataset
+    # Pre-calculate profiling metrics from dataset
+    profile_rows = []
     scores_cols = ["Drone_Service_Potential", "Area_Score", "Season_Score", "Region_Score"]
     
-    profiles = []
     for cluster_name in sorted(df["Cluster_Name"].unique()):
         c_df = df[df["Cluster_Name"] == cluster_name]
-        profiles.append({
-            "Customer Segment": cluster_name,
-            "Size": len(c_df),
-            "Avg Area (Acres)": round(c_df["Crop_Area"].mean(), 1),
-            "Avg Income (PKR)": f"{int(c_df['Estimated_Income'].mean()):,}",
-            "Dominant Crop": c_df["Crop_Type"].mode()[0].title(),
-            "Dominant Region": c_df["Region"].mode()[0],
-            "Dominant Season": c_df["Season"].mode()[0],
-            "Drone Need Level": "High" if c_df["Drone_Service_Potential"].mean() >= 8.0 else "Moderate"
+        mean_area = c_df["Crop_Area"].mean()
+        mean_income = c_df["Estimated_Income"].mean()
+        
+        # Segment description templates
+        dominant_crop = c_df["Crop_Type"].mode()[0]
+        dominant_region = c_df["Region"].mode()[0]
+        dominant_season = c_df["Season"].mode()[0]
+        drone_need = "High" if c_df["Drone_Service_Potential"].mean() >= 8.0 else "Moderate"
+        
+        profile_rows.append({
+            "name": cluster_name,
+            "size": len(c_df),
+            "area": round(mean_area, 1),
+            "income": mean_income,
+            "crop": dominant_crop,
+            "region": dominant_region,
+            "season": dominant_season,
+            "need": drone_need
         })
         
-    st.table(pd.DataFrame(profiles))
+    # Render segment profiles in modern styled cards (2 columns grid)
+    card_cols = st.columns(2)
+    for idx, card in enumerate(profile_rows):
+        col = card_cols[idx % 2]
+        badge_class = "high-need" if card["need"] == "High" else "mod-need"
+        
+        with col:
+            st.markdown(
+                f"""
+                <div class='segment-card'>
+                    <div class='segment-header'>
+                        <h3 style='margin:0; font-size:1.15rem; color:#1B5E20; font-weight:700;'>{card["name"]}</h3>
+                        <span class='segment-badge {badge_class}'>{card["need"]} Drone Need</span>
+                    </div>
+                    <p style='font-size:0.88rem; color:#546E7A; margin: 10px 0;'>
+                        Target farmer grouping focused on <strong>{card["crop"].title()}</strong> cultivations in <strong>{card["region"]}</strong> region during <strong>{card["season"]}</strong> season.
+                    </p>
+                    <div class='segment-stats'>
+                        <span>📁 <strong>Segment Size:</strong> {card["size"]}</span>
+                        <span>📏 <strong>Avg Crop Scale:</strong> {card["area"]} Acres</span>
+                        <span>💰 <strong>Avg Revenue:</strong> PKR {int(card["income"]):,}</span>
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
 
 
 # ----------------- PAGE 3: LEAD LIST -----------------
 elif page == "📋 Interactive Lead List":
-    st.subheader("Sales Pipeline & Lead Search")
-    st.write("Configure filters in the left sidebar to target specific crop sectors, farm sizes, or regions.")
+    st.subheader("Dynamic Sales Pipeline Finder")
+    st.write("Configure filters in the left sidebar to slice, group, or export sales targets.")
     
-    # Render filters and get filtered df
+    # Filter dataset using the sidebar component
     filtered_df = render_sidebar_filters(df)
     
-    st.write(f"Showing **{len(filtered_df)}** of **{len(df)}** matching customers:")
+    # Tabbed layouts: 1 for data list, 1 for data aggregations (Groupings)
+    tab_list, tab_group = st.tabs(["📋 Filtered Lead Records", "📊 Interactive Data Groupings"])
     
-    # Render table
-    display_leads_table(filtered_df)
-    
-    st.write("")
-    
-    # Download actions
-    col_dl1, col_dl2, _ = st.columns([1.5, 1.5, 5])
-    
-    # CSV Download
-    csv_data = filtered_df.to_csv(index=False).encode('utf-8')
-    with col_dl1:
-        st.download_button(
-            label="📥 Download CSV Pipeline",
-            data=csv_data,
-            file_name="saf_shikan_filtered_leads.csv",
-            mime="text/csv",
-            use_container_width=True
+    with tab_list:
+        st.write(f"Showing **{len(filtered_df)}** of **{len(df)}** matching records:")
+        
+        # Display the formatted data table
+        display_leads_table(filtered_df)
+        
+        st.write("")
+        # Download actions
+        col_dl1, col_dl2, _ = st.columns([1.8, 1.8, 5])
+        
+        csv_data = filtered_df.to_csv(index=False).encode('utf-8')
+        with col_dl1:
+            st.download_button(
+                label="📥 Export Pipeline as CSV",
+                data=csv_data,
+                file_name="saf_shikan_leads_export.csv",
+                mime="text/csv",
+                use_container_width=True
+            )
+            
+        excel_bytes = generate_excel_bytes(filtered_df)
+        with col_dl2:
+            st.download_button(
+                label="📥 Export Pipeline as Styled Excel",
+                data=excel_bytes,
+                file_name="saf_shikan_leads_export.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                use_container_width=True
+            )
+            
+    with tab_group:
+        st.write("### Group & Aggregate Analytics")
+        st.write("Select a category to group lead counts and aggregate scores or sizes dynamically.")
+        
+        g_col1, g_col2, g_col3 = st.columns(3)
+        group_by = g_col1.selectbox(
+            "Group Columns By", 
+            ["Region", "Crop_Type", "Season", "Farm_Scale", "Lead_Category"],
+            help="Categorical column to aggregate records on."
+        )
+        metric = g_col2.selectbox(
+            "Aggregate Field Value", 
+            ["Lead_Score", "Crop_Area", "Estimated_Income"],
+            help="Numerical column to summarize."
+        )
+        operation = g_col3.selectbox(
+            "Mathematical Operation", 
+            ["mean", "sum", "count"],
+            help="Summarization function to calculate."
         )
         
-    # Excel Download
-    excel_bytes = generate_excel_bytes(filtered_df)
-    with col_dl2:
-        st.download_button(
-            label="📥 Download Styled Excel Workbook",
-            data=excel_bytes,
-            file_name="saf_shikan_filtered_leads.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            use_container_width=True
-        )
+        st.write("---")
+        
+        # Display grouped statistics table (styled)
+        display_grouped_table(filtered_df, group_by)
+        
+        st.write("")
+        
+        # Display dynamic grouped visualization
+        st.plotly_chart(plot_grouped_analytics(filtered_df, group_by, metric, operation), use_container_width=True)
 
 
 # ----------------- PAGE 4: TOP LEADS -----------------
 elif page == "🔥 Top Hot Leads":
-    st.subheader("Top 20 Hot Leads Calling List")
-    st.write("These farmers are the highest potential leads for drone spraying based on their massive crop scales, pesticide intensive crops (e.g. Cotton, Rice), and double-cropping seasons.")
+    st.subheader("Top 20 Priority Sales Call List")
+    st.write("Highest priority targets representing active crop areas requiring urgent spray scheduling.")
     
     # Filter HOT leads only
     hot_df = df[df["Lead_Category"] == "HOT"].copy()
-    
-    # Take top 20
     top_20_hot = hot_df.head(20)
     
-    # Render table
+    # Display table (phone numbers visible)
     display_leads_table(top_20_hot)
     
     st.write("")
     
-    # Excel Download button
+    # Export call list
     excel_bytes = generate_excel_bytes(top_20_hot)
     st.download_button(
-        label="📥 Export Call List to Styled Excel",
+        label="📥 Export Calling List to Styled Excel",
         data=excel_bytes,
-        file_name="saf_shikan_top_20_hot_leads.xlsx",
+        file_name="saf_shikan_hot_call_list.xlsx",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )

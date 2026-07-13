@@ -179,3 +179,51 @@ def generate_excel_bytes(df: pd.DataFrame) -> bytes:
     excel_buffer.close()
     
     return excel_bytes
+
+
+def display_grouped_table(df: pd.DataFrame, group_col: str) -> None:
+    """Group lead data and display styled aggregate statistics.
+    
+    Args:
+        df: Customer Leads DataFrame.
+        group_col: Column to group by.
+    """
+    import streamlit as st
+    
+    # Calculate grouped statistics
+    agg_df = df.groupby(group_col).agg(
+        Farmer_Count=('Name', 'count'),
+        Avg_Lead_Score=('Lead_Score', 'mean'),
+        Total_Crop_Area=('Crop_Area', 'sum'),
+        Avg_Crop_Area=('Crop_Area', 'mean'),
+        Avg_Income_PKR=('Estimated_Income', 'mean')
+    ).reset_index()
+    
+    # Standardize crop naming capitalization
+    group_col_title = group_col.replace("_", " ").title()
+    if group_col == "Crop_Type":
+        agg_df[group_col] = agg_df[group_col].str.title()
+        
+    # Rename columns for table display
+    agg_df.columns = [
+        group_col_title,
+        "Farmers",
+        "Average Lead Score",
+        "Total Area (Acres)",
+        "Average Area (Acres)",
+        "Average Income (PKR)"
+    ]
+    
+    # Format currency and score heatmap styling
+    styled_df = agg_df.style.background_gradient(
+        subset=["Average Lead Score"], 
+        cmap="YlGn"
+    ).format({
+        "Average Lead Score": "{:.2f}",
+        "Total Area (Acres)": "{:,.0f}",
+        "Average Area (Acres)": "{:.1f}",
+        "Average Income (PKR)": "PKR {:,.0f}"
+    })
+    
+    st.dataframe(styled_df, use_container_width=True, hide_index=True)
+
