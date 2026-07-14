@@ -520,19 +520,13 @@ input:focus, textarea:focus, select:focus {
     font-size: 0.88rem;
 }
 
-/* ── Comprehensive Mobile & Tablet Responsiveness ─────────────── */
+/* ── Responsive ──────────────────────────────────────────────── */
 @media screen and (max-width: 768px) {
     .block-container { padding: 1rem 0.8rem !important; }
-    .portal-header-row { flex-direction: column !important; align-items: flex-start !important; gap: 10px !important; }
-    .page-title { font-size: 1.45rem !important; line-height: 1.2 !important; }
-    .stats-row { flex-direction: column !important; gap: 12px !important; }
-    .stat-card { min-width: 100% !important; }
-    .security-badge-row { flex-direction: column !important; gap: 10px !important; }
-    .security-badge { min-width: 100% !important; }
-    .enterprise-panel { padding: 14px 14px !important; }
-    .stTabs [data-baseweb="tab-list"] { overflow-x: auto !important; flex-wrap: nowrap !important; padding: 6px !important; }
-    .stTabs [data-baseweb="tab"] { flex-shrink: 0 !important; padding: 0 16px !important; font-size: 0.82rem !important; }
-    div[data-testid="stExpander"] details > div { padding: 16px 14px !important; }
+    .stats-row { flex-direction: column; gap: 12px; }
+    .stat-card { min-width: 100%; }
+    .security-badge-row { flex-direction: column; }
+    .security-badge { min-width: 100%; }
 }
 </style>
 """, unsafe_allow_html=True)
@@ -556,7 +550,7 @@ def load_data() -> pd.DataFrame:
 
 def generate_excel(df: pd.DataFrame) -> bytes:
     """Export filtered DataFrame to a styled Excel file."""
-    cols = ["Name", "Phone", "Crop_Type", "Crop_Area", "Season", "Region"]
+    cols = ["Name", "Phone", "Crop_Type", "Crop_Area", "Season", "Location"]
     available = [c for c in cols if c in df.columns]
     export = df[available].copy()
     export.columns = [c.replace("_", " ") for c in available]
@@ -583,7 +577,7 @@ def generate_excel(df: pd.DataFrame) -> bytes:
         for c_idx, cell in enumerate(ws[r], 1):
             cell.border = thin
             cell.font = Font(name="Calibri", size=10)
-            cell.alignment = center if available[c_idx - 1] in ["Crop_Area", "Season", "Region", "Farm_Scale"] else left
+            cell.alignment = center if available[c_idx - 1] in ["Crop_Area", "Season", "Location", "Farm_Scale"] else left
 
     for col in ws.columns:
         letter = get_column_letter(col[0].column)
@@ -597,12 +591,11 @@ def generate_excel(df: pd.DataFrame) -> bytes:
 
 # ─── Load & Pre-compute ───────────────────────────────────────────────────────
 df = load_data()
-CORE_COLS = ["Name", "Phone", "Crop_Type", "Crop_Area", "Season", "Region"]
+CORE_COLS = ["Name", "Phone", "Crop_Type", "Crop_Area", "Season", "Location"]
 
 total_farmers  = len(df)
 unique_crops   = df["Crop_Type"].nunique()
-unique_regions = df["Region"].nunique()
-avg_area_acres = df["Crop_Area"].mean()
+unique_cities  = df["Location"].nunique()
 total_area     = df["Crop_Area"].sum()
 
 # Startup audit event (once per session)
@@ -640,14 +633,9 @@ st.markdown(f"""
         <div class='stat-footer'><span class='dot dot-amber'></span>Unique crop types</div>
     </div>
     <div class='stat-card'>
-        <div class='stat-header'><span class='stat-label'>Coverage Zones</span><span class='stat-badge'>Provinces</span></div>
-        <div class='stat-value'>{unique_regions}</div>
-        <div class='stat-footer'><span class='dot dot-blue'></span>Punjab · Sindh · KPK</div>
-    </div>
-    <div class='stat-card'>
-        <div class='stat-header'><span class='stat-label'>Avg Farm Scale</span><span class='stat-badge'>Per Profile</span></div>
-        <div class='stat-value'>{avg_area_acres:.0f} <span style='font-size:1rem;font-weight:600;'>ac</span></div>
-        <div class='stat-footer'><span class='dot dot-purple'></span>Acres per farmer</div>
+        <div class='stat-header'><span class='stat-label'>Cities Covered</span><span class='stat-badge'>Locations</span></div>
+        <div class='stat-value'>{unique_cities}</div>
+        <div class='stat-footer'><span class='dot dot-blue'></span>Districts & cities</div>
     </div>
     <div class='stat-card'>
         <div class='stat-header'><span class='stat-label'>Total Land Area</span><span class='stat-badge'>Cultivated</span></div>
@@ -678,20 +666,35 @@ with tab_dir:
             <div style='font-size:0.82rem;color:#475569;line-height:1.5;'>Input the core 6 categories and location attributes below. Upon committing, the record is appended directly to the directory master file and instantly synchronized across all live analytical tabs. Mandatory parameters are marked with an asterisk (*).</div>
         </div>
         """, unsafe_allow_html=True)
+
+        # Pre-form: crop selection outside form so "Other" can reveal text input
+        crop_choice = st.selectbox(
+            "Primary Crop Category *",
+            ["Wheat", "Cotton", "Rice", "Sugarcane", "Maize", "Orchard", "Vegetables", "Other"],
+            key="reg_crop_choice"
+        )
+        if crop_choice == "Other":
+            custom_crop = st.text_input(
+                "Specify Crop Name *",
+                placeholder="e.g. Sunflower, Canola...",
+                key="reg_custom_crop"
+            )
+        else:
+            custom_crop = ""
+
         with st.form("add_farmer_form", clear_on_submit=True):
             c1, c2, c3 = st.columns(3)
             with c1:
                 new_name = st.text_input("Farmer Full Name *", placeholder="e.g. Tariq Mahmood")
-                new_phone = st.text_input("Contact Phone Number *", placeholder="e.g. 0300-1234567")
-                new_region = st.selectbox("Geographic Region *", ["Punjab", "Sindh", "KPK", "Balochistan", "Gilgit-Baltistan", "AJK"])
+                new_phone = st.text_input("Contact Phone Number *", placeholder="e.g. 0300-1234567",
+                                          help="Format: 0300-1234567 (4 digits dash 7 digits)")
+                new_location = st.text_input("District / City *", placeholder="e.g. Multan")
             with c2:
-                new_crop = st.selectbox("Primary Crop Category *", ["Wheat", "Cotton", "Rice", "Sugarcane", "Maize", "Orchard", "Vegetables", "Other"])
                 new_area = st.number_input("Cultivated Area (Acres) *", min_value=1.0, max_value=5000.0, value=15.0, step=1.0)
                 new_season = st.selectbox("Growing Season *", ["Rabi", "Kharif", "Both", "Perennial"])
+                new_scale = st.selectbox("Farm Scale *", ["Small", "Medium", "Large"])
             with c3:
-                new_location = st.text_input("District / Location *", placeholder="e.g. Multan")
-                new_scale = st.selectbox("Farm Scale (Auto-computed if 'Auto')", ["Auto (Compute by Acreage)", "Small (<12 ac)", "Medium (12-50 ac)", "Large (>50 ac)"])
-                new_income = st.number_input("Estimated Annual Income (PKR, 0 = Auto)", min_value=0, value=0, step=50000)
+                new_region = st.selectbox("Geographic Region *", ["Punjab", "Sindh", "KPK", "Balochistan", "Gilgit-Baltistan", "AJK"])
 
             st.write("")
             fc1, fc2, fc3 = st.columns([2.5, 2.5, 2.2])
@@ -699,37 +702,34 @@ with tab_dir:
                 submitted = st.form_submit_button("Commit & Register Profile", use_container_width=True)
 
             if submitted:
-                import re
-                phone_clean = re.sub(r"[^\d+]", "", new_phone.strip())
-                if not new_name.strip() or not new_phone.strip() or not new_location.strip():
-                    st.error("Validation Error: Mandatory fields (Farmer Full Name, Contact Phone Number, and District / Location) must be completed before record ingestion.")
-                elif len(phone_clean) < 10:
-                    st.error("Validation Error: Contact Phone Number must contain at least 10 valid digits (e.g. 0300-1234567).")
+                import re as _re
+                phone_valid = bool(_re.fullmatch(r"0\d{3}-\d{7}", new_phone.strip()))
+                final_crop = custom_crop.strip() if crop_choice == "Other" else crop_choice
+                if not new_name.strip():
+                    st.error("Validation Error: Farmer Full Name is required.")
+                elif not phone_valid:
+                    st.error("Validation Error: Phone Number must follow the format 0XXX-XXXXXXX (e.g. 0300-1234567).")
+                elif not new_location.strip():
+                    st.error("Validation Error: District / City is required.")
+                elif crop_choice == "Other" and not final_crop:
+                    st.error("Validation Error: Please specify the crop name when selecting 'Other'.")
                 else:
-                    computed_scale = (
-                        "Small" if float(new_area) < 12.0 else
-                        "Medium" if float(new_area) <= 50.0 else
-                        "Large"
-                    ) if "Auto" in new_scale else new_scale.split(" ")[0]
-                    computed_income = float(new_income) if float(new_income) > 0 else float(new_area) * 120000.0
-
                     new_row = pd.DataFrame([{
                         "Name": new_name.strip(),
                         "Phone": new_phone.strip(),
-                        "Crop_Type": new_crop.lower() if new_crop in ["Wheat", "Cotton", "Rice", "Sugarcane", "Maize"] else new_crop,
+                        "Crop_Type": final_crop.title(),
                         "Crop_Area": float(new_area),
                         "Season": new_season,
                         "Location": new_location.strip(),
-                        "Estimated_Income": computed_income,
-                        "Farm_Scale": computed_scale,
+                        "Farm_Scale": new_scale,
                         "Region": new_region
                     }])
-                    csv_cols = ["Name", "Phone", "Crop_Type", "Crop_Area", "Season", "Location", "Estimated_Income", "Farm_Scale", "Region"]
+                    csv_cols = ["Name", "Phone", "Crop_Type", "Crop_Area", "Season", "Location", "Farm_Scale", "Region"]
                     new_row = new_row[csv_cols]
                     new_row.to_csv(RAW_DATA_PATH, mode="a", header=False, index=False)
                     load_data.clear()
-                    log_event("DATA_ENTRY", f"Registered new farmer profile: {new_name.strip()} ({new_region}, {new_crop}, {new_area} ac)", {"name": new_name.strip(), "region": new_region, "crop": new_crop, "area": new_area, "scale": computed_scale})
-                    st.success(f"Record successfully ingested: {new_name.strip()} ({computed_scale} Farm Scale) has been committed to the master directory.")
+                    log_event("DATA_ENTRY", f"Registered new farmer profile: {new_name.strip()} ({new_location.strip()}, {final_crop}, {new_area} ac)", {"name": new_name.strip(), "location": new_location.strip(), "crop": final_crop, "area": new_area})
+                    st.toast(f"Farmer profile committed: {new_name.strip()} has been added to the master directory.", icon=None)
                     st.rerun()
 
     st.markdown("""
@@ -741,11 +741,11 @@ with tab_dir:
 
     f1, f2, f3, f4 = st.columns([2.6, 1.4, 1.4, 1.4])
     with f1:
-        search = st.text_input("Keyword Search", placeholder="Search Name, Phone or District...",
-                               help="Filter across farmer name, phone number, or location")
+        search = st.text_input("Keyword Search", placeholder="Search Name, Phone or City...",
+                               help="Filter across farmer name, phone number, or city")
     with f2:
-        region_opts = ["All Regions"] + sorted(df["Region"].unique())
-        sel_region = st.selectbox("Geographic Region", region_opts)
+        city_opts = ["All Cities"] + sorted(df["Location"].dropna().unique())
+        sel_city = st.selectbox("City / District", city_opts)
     with f3:
         crop_opts = ["All Crops"] + sorted(df["Crop_Type"].unique())
         sel_crop = st.selectbox("Crop Category", crop_opts)
@@ -764,8 +764,8 @@ with tab_dir:
             filtered["Phone"].str.lower().str.contains(q, na=False) |
             filtered["Location"].str.lower().str.contains(q, na=False)
         ]
-    if sel_region != "All Regions":
-        filtered = filtered[filtered["Region"] == sel_region]
+    if sel_city != "All Cities":
+        filtered = filtered[filtered["Location"] == sel_city]
     if sel_crop != "All Crops":
         filtered = filtered[filtered["Crop_Type"] == sel_crop]
     if sel_season != "All Seasons":
@@ -773,7 +773,7 @@ with tab_dir:
 
     log_event("FILTER_APPLY", "Farmer directory filtered", {
         "keyword": search.strip() or "(none)",
-        "region": sel_region,
+        "city": sel_city,
         "crop": sel_crop,
         "season": sel_season,
         "results": len(filtered)
@@ -794,7 +794,7 @@ with tab_dir:
             "Crop_Type": st.column_config.TextColumn("Crop Category",     width="small"),
             "Crop_Area": st.column_config.NumberColumn("Farm Area (Acres)", format="%d acres", width="small"),
             "Season":    st.column_config.TextColumn("Growing Season",    width="small"),
-            "Region":    st.column_config.TextColumn("Region",            width="small"),
+            "Location":  st.column_config.TextColumn("City / District",   width="medium"),
         },
         use_container_width=True,
         hide_index=True,
@@ -834,47 +834,26 @@ with tab_group:
             <div class='panel-count-badge'>BI GROUPING CONSOLE</div>
         </div>""", unsafe_allow_html=True)
 
-    g1, g2, g3 = st.columns(3)
-    group_by   = g1.selectbox("Group By Dimension", ["Region", "Crop_Type", "Season", "Farm_Scale"],
-                               format_func=lambda x: x.replace("_", " "))
-    agg_metric = g2.selectbox("Aggregate Metric", ["Crop_Area", "Estimated_Income"],
-                               format_func=lambda x: x.replace("_", " "))
-    agg_func   = g3.selectbox("Mathematical Operation", ["count", "mean", "sum"])
+    g1, g2 = st.columns([2, 2])
+    group_by = g1.selectbox("Group By Dimension", ["Location", "Crop_Type", "Season", "Farm_Scale"],
+                             format_func=lambda x: x.replace("_", " "))
 
     st.markdown("</div>", unsafe_allow_html=True)
 
-    # Compute Aggregation
-    if agg_func == "count":
-        grp = df.groupby(group_by).agg(
-            Count=("Name", "count"),
-            Avg_Area=("Crop_Area", "mean"),
-            Total_Area=("Crop_Area", "sum")
-        ).reset_index()
-        grp.columns = [group_by.replace("_", " "), "Farmer Count", "Avg Area (Acres)", "Total Area (Acres)"]
-        sort_col = "Farmer Count"
-    elif agg_func == "mean":
-        grp = df.groupby(group_by).agg(
-            Count=("Name", "count"),
-            Avg_Value=(agg_metric, "mean")
-        ).reset_index()
-        label = agg_metric.replace("_", " ")
-        grp.columns = [group_by.replace("_", " "), "Farmer Count", f"Avg {label}"]
-        sort_col = f"Avg {label}"
-    else:
-        grp = df.groupby(group_by).agg(
-            Count=("Name", "count"),
-            Total_Value=(agg_metric, "sum")
-        ).reset_index()
-        label = agg_metric.replace("_", " ")
-        grp.columns = [group_by.replace("_", " "), "Farmer Count", f"Total {label}"]
-        sort_col = f"Total {label}"
+    # Compute Aggregation — Count only
+    grp = df.groupby(group_by).agg(
+        Count=("Name", "count"),
+        Total_Area=("Crop_Area", "sum")
+    ).reset_index()
+    grp.columns = [group_by.replace("_", " "), "Farmer Count", "Total Area (Acres)"]
+    sort_col = "Farmer Count"
 
     grp = grp.sort_values(by=sort_col, ascending=False).reset_index(drop=True)
     top_name = grp.iloc[0, 0]
     top_val  = grp.iloc[0][sort_col]
 
-    log_event("PAGE_VIEW", f"Data Grouping tab — grouped by {group_by} ({agg_func})",
-              {"group_by": group_by, "metric": agg_metric, "operation": agg_func})
+    log_event("PAGE_VIEW", f"Data Grouping tab — grouped by {group_by} (count)",
+              {"group_by": group_by, "operation": "count"})
 
     st.markdown(f"""
     <div class='stats-row'>
@@ -884,7 +863,7 @@ with tab_group:
             <div class='stat-footer'><span class='dot dot-green'></span>Highest aggregate concentration</div>
         </div>
         <div class='stat-card'>
-            <div class='stat-header'><span class='stat-label'>Top Group Value</span><span class='stat-badge'>{agg_func.upper()}</span></div>
+            <div class='stat-header'><span class='stat-label'>Top Group Count</span><span class='stat-badge'>COUNT</span></div>
             <div class='stat-value'>{top_val:,.0f}</div>
             <div class='stat-footer'><span class='dot dot-blue'></span>Peak metric in distribution</div>
         </div>
@@ -931,22 +910,22 @@ with tab_charts:
                   plot_bgcolor="rgba(0,0,0,0)", margin=dict(t=45, b=25, l=10, r=10),
                   title_font=dict(size=16, family=FONT, color="#0F172A"))
 
-    log_event("PAGE_VIEW", "Visual Analytics tab viewed — 5 charts rendered",
-              {"charts": ["Region Bar", "Crop Donut", "Season Bar", "Avg Area H-Bar", "Region-Crop Stack"]})
+    log_event("PAGE_VIEW", "Visual Analytics tab viewed — 4 charts rendered",
+              {"charts": ["City Bar", "Crop Donut", "Season Bar", "City-Crop Stack"]})
 
     r1c1, r1c2 = st.columns(2)
     with r1c1:
         st.markdown("<div class='agron-chart-card'>", unsafe_allow_html=True)
-        rc = df["Region"].value_counts().reset_index()
-        rc.columns = ["Region", "Farmers"]
-        f1 = px.bar(rc, x="Region", y="Farmers", color="Region", text="Farmers",
-                    color_discrete_sequence=["#0C3823","#2E7D32","#81C784"],
-                    title="Geographic Region Concentration")
+        rc = df["Location"].value_counts().reset_index()
+        rc.columns = ["City", "Farmers"]
+        f1 = px.bar(rc, x="City", y="Farmers", color="City", text="Farmers",
+                    color_discrete_sequence=COLOR_GREEN,
+                    title="City-wise Farmer Concentration")
         f1.update_traces(textposition="outside", marker_cornerradius=6,
                          hovertemplate="<b>%{x}</b><br>Farmers: %{y}<extra></extra>")
         f1.update_layout(**LAYOUT, showlegend=False, height=310)
         f1.update_yaxes(showgrid=True, gridcolor="#E2E8F0", zeroline=False)
-        f1.update_xaxes(showgrid=False)
+        f1.update_xaxes(showgrid=False, tickangle=45)
         st.plotly_chart(f1, use_container_width=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
@@ -982,14 +961,14 @@ with tab_charts:
 
     with r2c2:
         st.markdown("<div class='agron-chart-card'>", unsafe_allow_html=True)
-        aa = df.groupby("Crop_Type")["Crop_Area"].mean().sort_values().reset_index()
-        aa.columns = ["Crop", "Avg Area (Acres)"]
-        f4 = px.bar(aa, x="Avg Area (Acres)", y="Crop", orientation="h",
-                    color="Avg Area (Acres)", color_continuous_scale=["#C8E6C9","#0C3823"],
-                    text="Avg Area (Acres)", title="Average Cultivated Area per Crop")
-        f4.update_traces(texttemplate="%{x:.0f} ac", textposition="outside",
+        ta = df.groupby("Crop_Type")["Crop_Area"].sum().sort_values().reset_index()
+        ta.columns = ["Crop", "Total Area (Acres)"]
+        f4 = px.bar(ta, x="Total Area (Acres)", y="Crop", orientation="h",
+                    color="Total Area (Acres)", color_continuous_scale=["#C8E6C9","#0C3823"],
+                    text="Total Area (Acres)", title="Total Cultivated Area per Crop")
+        f4.update_traces(texttemplate="%{x:,.0f} ac", textposition="outside",
                          marker_cornerradius=4,
-                         hovertemplate="<b>%{y}</b><br>Avg Area: %{x:.1f} acres<extra></extra>")
+                         hovertemplate="<b>%{y}</b><br>Total Area: %{x:,.0f} acres<extra></extra>")
         f4.update_layout(**LAYOUT, coloraxis_showscale=False, height=290)
         f4.update_xaxes(showgrid=True, gridcolor="#E2E8F0", zeroline=False)
         f4.update_yaxes(showgrid=False)
@@ -997,16 +976,18 @@ with tab_charts:
         st.markdown("</div>", unsafe_allow_html=True)
 
     st.markdown("<div class='agron-chart-card'>", unsafe_allow_html=True)
-    cr = df.groupby(["Region","Crop_Type"]).size().reset_index(name="Farmers")
-    f5 = px.bar(cr, x="Region", y="Farmers", color="Crop_Type", barmode="stack",
+    cr = df.groupby(["Location","Crop_Type"]).size().reset_index(name="Farmers")
+    top_cities = df["Location"].value_counts().nlargest(10).index.tolist()
+    cr = cr[cr["Location"].isin(top_cities)]
+    f5 = px.bar(cr, x="Location", y="Farmers", color="Crop_Type", barmode="stack",
                 color_discrete_sequence=COLOR_GREEN,
-                title="Multi-Regional Crop Distribution Matrix",
-                labels={"Crop_Type": "Crop", "Farmers": "Registered Farmers"})
+                title="City-wise Crop Distribution Matrix (Top 10 Cities)",
+                labels={"Crop_Type": "Crop", "Farmers": "Registered Farmers", "Location": "City"})
     f5.update_traces(marker_cornerradius=4,
                      hovertemplate="<b>%{fullData.name}</b><br>Farmers: %{y}<extra></extra>")
     f5.update_layout(**LAYOUT, height=360, legend_title_text="Crop Category")
     f5.update_yaxes(showgrid=True, gridcolor="#E2E8F0", zeroline=False)
-    f5.update_xaxes(showgrid=False)
+    f5.update_xaxes(showgrid=False, tickangle=30)
     st.plotly_chart(f5, use_container_width=True)
     st.markdown("</div>", unsafe_allow_html=True)
 
@@ -1123,8 +1104,8 @@ with tab_security:
 
         if etype == "FILTER_APPLY":
             parts = []
-            if det.get("region") and det["region"] != "All Regions":
-                parts.append(f"Region: {det['region']}")
+            if det.get("city") and det["city"] != "All Cities":
+                parts.append(f"City: {det['city']}")
             if det.get("crop") and det["crop"] != "All Crops":
                 parts.append(f"Crop: {det['crop']}")
             if det.get("season") and det["season"] != "All Seasons":
@@ -1153,47 +1134,19 @@ with tab_security:
 
         elif etype == "DATA_ENTRY":
             name = det.get("name", "")
-            region = det.get("region", "")
+            location = det.get("location", det.get("region", ""))
             crop = det.get("crop", "")
             area = det.get("area", "")
             if name:
-                return f"Added new farmer profile into directory: {name} ({region}, {crop}, {area} acres)."
+                return f"Added new farmer profile into directory: {name} ({location}, {crop}, {area} acres)."
             return f"Added new farmer profile into directory: {desc}."
 
         return desc
 
-    af1, af2 = st.columns([3, 2])
-    with af1:
-        audit_search = st.text_input("Filter Audit Log by Keyword", placeholder="Search activity details, names, districts...")
-    with af2:
-        audit_type_filter = st.selectbox("Filter by Event Category", ["All Categories", "Data Entry", "Filter Applied", "Data Export", "Page View", "System Startup"])
-
-    TYPE_FILTER_MAP = {
-        "Data Entry": "DATA_ENTRY",
-        "Filter Applied": "FILTER_APPLY",
-        "Data Export": "DATA_EXPORT",
-        "Page View": "PAGE_VIEW",
-        "System Startup": "SYSTEM"
-    }
-
-    filtered_entries = all_entries.copy()
-    if audit_type_filter != "All Categories":
-        target_etype = TYPE_FILTER_MAP.get(audit_type_filter)
-        filtered_entries = [e for e in filtered_entries if e.get("event_type") == target_etype]
-    if audit_search.strip():
-        q_audit = audit_search.strip().lower()
-        filtered_entries = [
-            e for e in filtered_entries
-            if q_audit in _to_plain_english(e).lower() or q_audit in e.get("description", "").lower()
-        ]
-
-    st.write("")
     if not all_entries:
         st.info("No activity recorded yet in this session. Navigate the portal to generate plain English log records.")
-    elif not filtered_entries:
-        st.info("No matching audit activities found for the selected search criteria.")
     else:
-        for entry in filtered_entries:
+        for entry in all_entries:
             plain_text = _to_plain_english(entry)
             ts = entry.get("display_ts", "")
             sid = entry.get("session", session_id)
