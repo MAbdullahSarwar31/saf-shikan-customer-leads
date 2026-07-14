@@ -24,7 +24,8 @@ AuditEventType = Literal[
     "PAGE_VIEW",
     "FILTER_APPLY",
     "DATA_EXPORT",
-    "SYSTEM"
+    "SYSTEM",
+    "DATA_ENTRY"
 ]
 
 
@@ -142,4 +143,5 @@ EVENT_CONFIG = {
     "FILTER_APPLY": {"icon": "≡",  "color": "#8B5CF6", "bg": "#EDE9FE", "label": "Filter"},
     "DATA_EXPORT":  {"icon": "↓",  "color": "#059669", "bg": "#D1FAE5", "label": "Export"},
     "SYSTEM":       {"icon": "◉",  "color": "#64748B", "bg": "#F1F5F9", "label": "System"},
+    "DATA_ENTRY":   {"icon": "+",  "color": "#10B981", "bg": "#D1FAE5", "label": "Data Entry"},
 }

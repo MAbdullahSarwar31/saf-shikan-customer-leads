@@ -597,6 +597,49 @@ tab_dir, tab_group, tab_charts, tab_security = st.tabs([
 # TAB 1 — FARMER DIRECTORY
 # ══════════════════════════════════════════════════════════════════════════════
 with tab_dir:
+    # ── Quick Add Farmer Profile Expander ─────────────────────────────────────
+    with st.expander("➕ Register New Farmer Profile (Quick Add)", expanded=False):
+        st.markdown("<div style='font-size:0.85rem;color:#64748B;margin-bottom:12px;'>Enter the core farmer credentials and categories below to immediately register and append a new record to the live directory.</div>", unsafe_allow_html=True)
+        with st.form("add_farmer_form", clear_on_submit=True):
+            c1, c2, c3 = st.columns(3)
+            with c1:
+                new_name = st.text_input("Farmer Name *", placeholder="e.g. Tariq Mahmood")
+                new_phone = st.text_input("Phone Number *", placeholder="e.g. 0300-1234567")
+                new_region = st.selectbox("Region *", ["Punjab", "Sindh", "KPK", "Balochistan", "Gilgit-Baltistan", "AJK"])
+            with c2:
+                new_crop = st.selectbox("Crop Category *", ["Wheat", "Cotton", "Rice", "Sugarcane", "Maize", "Orchard", "Vegetables", "Other"])
+                new_area = st.number_input("Crop Area (Acres) *", min_value=1.0, max_value=5000.0, value=15.0, step=1.0)
+                new_season = st.selectbox("Growing Season *", ["Rabi", "Kharif", "Both", "Perennial"])
+            with c3:
+                new_location = st.text_input("Location / District *", placeholder="e.g. Multan")
+                new_scale = st.selectbox("Farm Scale *", ["Small", "Medium", "Large"])
+                new_income = st.number_input("Estimated Income (PKR)", min_value=0, value=1800000, step=50000)
+
+            submitted = st.form_submit_button("✅ Save & Register Profile", use_container_width=True)
+            if submitted:
+                if not new_name.strip() or not new_phone.strip() or not new_location.strip():
+                    st.error("Please fill in all mandatory fields (Name, Phone, Location).")
+                else:
+                    new_row = pd.DataFrame([{
+                        "Name": new_name.strip(),
+                        "Phone": new_phone.strip(),
+                        "Crop_Type": new_crop.lower() if new_crop in ["Wheat", "Cotton", "Rice", "Sugarcane", "Maize"] else new_crop,
+                        "Crop_Area": float(new_area),
+                        "Season": new_season,
+                        "Location": new_location.strip(),
+                        "Estimated_Income": float(new_income),
+                        "Farm_Scale": new_scale,
+                        "Region": new_region
+                    }])
+                    # Ensure columns match raw CSV exactly
+                    csv_cols = ["Name", "Phone", "Crop_Type", "Crop_Area", "Season", "Location", "Estimated_Income", "Farm_Scale", "Region"]
+                    new_row = new_row[csv_cols]
+                    new_row.to_csv(RAW_DATA_PATH, mode="a", header=False, index=False)
+                    load_data.clear()
+                    log_event("DATA_ENTRY", f"Registered new farmer: {new_name.strip()} ({new_region}, {new_crop}, {new_area} ac)", {"name": new_name.strip(), "region": new_region, "crop": new_crop, "area": new_area})
+                    st.success(f"🎉 Successfully registered {new_name.strip()} into the Farmer Directory!")
+                    st.rerun()
+
     st.markdown("""
     <div class='enterprise-panel'>
         <div class='panel-header'>
@@ -1016,6 +1059,15 @@ with tab_security:
                 return f"System started securely over HTTPS (TLS 1.3) and loaded {records} farmer records."
             return f"System notification: {desc}."
 
+        elif etype == "DATA_ENTRY":
+            name = det.get("name", "")
+            region = det.get("region", "")
+            crop = det.get("crop", "")
+            area = det.get("area", "")
+            if name:
+                return f"Added new farmer profile into directory: {name} ({region}, {crop}, {area} acres)."
+            return f"Added new farmer profile into directory: {desc}."
+
         return desc
 
     if not all_entries:
@@ -1029,7 +1081,8 @@ with tab_security:
                 "FILTER_APPLY": "🔍",
                 "DATA_EXPORT": "📥",
                 "PAGE_VIEW": "👁️",
-                "SYSTEM": "🛡️"
+                "SYSTEM": "🛡️",
+                "DATA_ENTRY": "➕"
             }.get(entry.get("event_type", ""), "📋")
 
             card_html = (
