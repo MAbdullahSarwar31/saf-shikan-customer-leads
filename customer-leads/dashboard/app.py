@@ -143,6 +143,57 @@ html, body, [class*="css"], .stApp {
     box-shadow: 0 2px 8px rgba(12,56,35,0.25);
 }
 
+/* Hide default red highlight lines under active tab in Streamlit */
+div[data-baseweb="tab-highlight"], 
+div[data-baseweb="tab-border"], 
+.stTabs [data-baseweb="tab-highlight"], 
+.stTabs [data-baseweb="tab-border"] {
+    background-color: transparent !important;
+    display: none !important;
+    height: 0px !important;
+}
+
+/* Custom styled inputs and dropdowns to replace default theme colors (e.g. red outlines) */
+div[data-baseweb="select"] > div {
+    border: 1px solid #E2E8F0 !important;
+    background-color: #FFFFFF !important;
+    border-radius: 8px !important;
+    transition: all 0.15s ease !important;
+}
+div[data-baseweb="select"] > div:hover {
+    border-color: #CBD5E1 !important;
+}
+div[data-baseweb="select"] > div:focus-within {
+    border-color: #0C3823 !important;
+    box-shadow: 0 0 0 1px #0C3823 !important;
+}
+
+/* Remove validation or primary theme red focus states from selectboxes and text inputs */
+div[role="combobox"] {
+    outline: none !important;
+}
+div[data-testid="stTextInput"] input {
+    border: 1px solid #E2E8F0 !important;
+    border-radius: 8px !important;
+    transition: all 0.15s ease !important;
+}
+div[data-testid="stTextInput"] input:focus {
+    border-color: #0C3823 !important;
+    box-shadow: 0 0 0 1px #0C3823 !important;
+}
+input:focus, textarea:focus, select:focus {
+    outline: none !important;
+    border-color: #0C3823 !important;
+    box-shadow: 0 0 0 1px #0C3823 !important;
+}
+div[data-baseweb="base-input"] {
+    border-color: transparent !important;
+}
+button:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
 /* ── Section Card ────────────────────────────────────── */
 .section-card {
     background: #FFFFFF;
