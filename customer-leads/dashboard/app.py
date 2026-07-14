@@ -202,33 +202,35 @@ html, body, [class*="css"], .stApp {
     border-radius: 20px;
 }
 
-/* ── AGRON Pill Tabs ─────────────────────────────────────────── */
+/* ── AGRON Executive Pill Tabs ───────────────────────────────── */
 .stTabs [data-baseweb="tab-list"] {
-    gap: 6px;
-    background: #FFFFFF;
-    border: 1px solid #E2E8F0;
-    border-radius: 12px;
-    padding: 7px 10px;
-    margin-bottom: 20px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    gap: 8px;
+    background: #E2E8F0;
+    border: 1px solid #CBD5E1;
+    border-radius: 14px;
+    padding: 6px;
+    margin-bottom: 24px;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.06);
 }
 .stTabs [data-baseweb="tab"] {
-    height: 36px;
-    border-radius: 8px;
-    padding: 0 20px;
+    height: 40px;
+    border-radius: 10px;
+    padding: 0 24px;
     font-size: 0.88rem;
     font-weight: 600;
-    color: #64748B;
-    transition: all 0.18s ease;
+    color: #475569;
+    background-color: transparent;
+    transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .stTabs [data-baseweb="tab"]:hover {
     color: #0F172A;
-    background-color: #F1F5F9;
+    background-color: rgba(255, 255, 255, 0.65);
 }
 .stTabs [aria-selected="true"] {
     background-color: #0C3823 !important;
     color: #FFFFFF !important;
-    box-shadow: 0 2px 8px rgba(12,56,35,0.25);
+    font-weight: 700 !important;
+    box-shadow: 0 4px 12px rgba(12, 56, 35, 0.35) !important;
 }
 div[data-baseweb="tab-highlight"],
 div[data-baseweb="tab-border"],
@@ -237,6 +239,71 @@ div[data-baseweb="tab-border"],
     background-color: transparent !important;
     display: none !important;
     height: 0px !important;
+}
+
+/* ── Expander & Registration Console Overrides ──────────────── */
+div[data-testid="stExpander"] {
+    background: #FFFFFF !important;
+    border: 1px solid #CBD5E1 !important;
+    border-radius: 12px !important;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.03) !important;
+    overflow: hidden !important;
+    margin-bottom: 22px !important;
+}
+div[data-testid="stExpander"] details summary {
+    background: #F8FAFC !important;
+    padding: 14px 20px !important;
+    font-family: 'Outfit', -apple-system, sans-serif !important;
+    font-size: 0.95rem !important;
+    font-weight: 700 !important;
+    color: #0F172A !important;
+    letter-spacing: 0.3px !important;
+    border-bottom: 1px solid #E2E8F0 !important;
+    transition: background 0.15s ease !important;
+}
+div[data-testid="stExpander"] details summary:hover {
+    background: #F1F5F9 !important;
+    color: #0C3823 !important;
+}
+div[data-testid="stExpander"] details[open] summary {
+    background: #0C3823 !important;
+    color: #FFFFFF !important;
+    border-bottom: 1px solid #082618 !important;
+}
+div[data-testid="stExpander"] details[open] summary svg {
+    fill: #FFFFFF !important;
+    color: #FFFFFF !important;
+}
+div[data-testid="stExpander"] details > div {
+    padding: 24px !important;
+    background: #FFFFFF !important;
+}
+
+/* ── Form & Submit Button Overrides ─────────────────────────── */
+div[data-testid="stForm"] {
+    border: none !important;
+    padding: 0 !important;
+}
+div[data-testid="stFormSubmitButton"] > button {
+    background-color: #0C3823 !important;
+    color: #FFFFFF !important;
+    border: 1px solid #0C3823 !important;
+    border-radius: 8px !important;
+    padding: 10px 24px !important;
+    font-weight: 700 !important;
+    font-size: 0.88rem !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    box-shadow: 0 2px 6px rgba(12, 56, 35, 0.2) !important;
+    transition: all 0.2s ease !important;
+}
+div[data-testid="stFormSubmitButton"] > button:hover {
+    background-color: #1B5E20 !important;
+    border-color: #1B5E20 !important;
+    box-shadow: 0 4px 12px rgba(12, 56, 35, 0.35) !important;
+}
+div[data-testid="stFormSubmitButton"] > button:active {
+    transform: scale(0.98) !important;
 }
 
 /* ── Input & Select Overrides ───────────────────────────────── */
@@ -597,28 +664,37 @@ tab_dir, tab_group, tab_charts, tab_security = st.tabs([
 # TAB 1 — FARMER DIRECTORY
 # ══════════════════════════════════════════════════════════════════════════════
 with tab_dir:
-    # ── Quick Add Farmer Profile Expander ─────────────────────────────────────
-    with st.expander("➕ Register New Farmer Profile (Quick Add)", expanded=False):
-        st.markdown("<div style='font-size:0.85rem;color:#64748B;margin-bottom:12px;'>Enter the core farmer credentials and categories below to immediately register and append a new record to the live directory.</div>", unsafe_allow_html=True)
+    # ── Enterprise Registration Console ───────────────────────────────────────
+    with st.expander("Register Farmer Profile — Entry Console", expanded=False):
+        st.markdown("""
+        <div style='background:#F8FAFC;border:1px solid #E2E8F0;border-left:4px solid #0C3823;border-radius:8px;padding:16px 20px;margin-bottom:20px;'>
+            <div style='font-family:"Outfit",sans-serif;font-size:0.92rem;font-weight:700;color:#0F172A;margin-bottom:4px;letter-spacing:0.3px;'>NEW RECORD INGESTION SPECIFICATIONS</div>
+            <div style='font-size:0.82rem;color:#475569;line-height:1.5;'>Input the core 6 categories and location attributes below. Upon committing, the record is appended directly to the directory master file and instantly synchronized across all live analytical tabs. Mandatory parameters are marked with an asterisk (*).</div>
+        </div>
+        """, unsafe_allow_html=True)
         with st.form("add_farmer_form", clear_on_submit=True):
             c1, c2, c3 = st.columns(3)
             with c1:
-                new_name = st.text_input("Farmer Name *", placeholder="e.g. Tariq Mahmood")
-                new_phone = st.text_input("Phone Number *", placeholder="e.g. 0300-1234567")
-                new_region = st.selectbox("Region *", ["Punjab", "Sindh", "KPK", "Balochistan", "Gilgit-Baltistan", "AJK"])
+                new_name = st.text_input("Farmer Full Name *", placeholder="e.g. Tariq Mahmood")
+                new_phone = st.text_input("Contact Phone Number *", placeholder="e.g. 0300-1234567")
+                new_region = st.selectbox("Geographic Region *", ["Punjab", "Sindh", "KPK", "Balochistan", "Gilgit-Baltistan", "AJK"])
             with c2:
-                new_crop = st.selectbox("Crop Category *", ["Wheat", "Cotton", "Rice", "Sugarcane", "Maize", "Orchard", "Vegetables", "Other"])
-                new_area = st.number_input("Crop Area (Acres) *", min_value=1.0, max_value=5000.0, value=15.0, step=1.0)
+                new_crop = st.selectbox("Primary Crop Category *", ["Wheat", "Cotton", "Rice", "Sugarcane", "Maize", "Orchard", "Vegetables", "Other"])
+                new_area = st.number_input("Cultivated Area (Acres) *", min_value=1.0, max_value=5000.0, value=15.0, step=1.0)
                 new_season = st.selectbox("Growing Season *", ["Rabi", "Kharif", "Both", "Perennial"])
             with c3:
-                new_location = st.text_input("Location / District *", placeholder="e.g. Multan")
+                new_location = st.text_input("District / Location *", placeholder="e.g. Multan")
                 new_scale = st.selectbox("Farm Scale *", ["Small", "Medium", "Large"])
-                new_income = st.number_input("Estimated Income (PKR)", min_value=0, value=1800000, step=50000)
+                new_income = st.number_input("Estimated Annual Income (PKR)", min_value=0, value=1800000, step=50000)
 
-            submitted = st.form_submit_button("✅ Save & Register Profile", use_container_width=True)
+            st.write("")
+            fc1, fc2, fc3 = st.columns([2.5, 2.5, 2.2])
+            with fc3:
+                submitted = st.form_submit_button("Commit & Register Profile", use_container_width=True)
+
             if submitted:
                 if not new_name.strip() or not new_phone.strip() or not new_location.strip():
-                    st.error("Please fill in all mandatory fields (Name, Phone, Location).")
+                    st.error("Validation Error: Mandatory fields (Farmer Full Name, Contact Phone Number, and District / Location) must be completed before record ingestion.")
                 else:
                     new_row = pd.DataFrame([{
                         "Name": new_name.strip(),
@@ -631,13 +707,12 @@ with tab_dir:
                         "Farm_Scale": new_scale,
                         "Region": new_region
                     }])
-                    # Ensure columns match raw CSV exactly
                     csv_cols = ["Name", "Phone", "Crop_Type", "Crop_Area", "Season", "Location", "Estimated_Income", "Farm_Scale", "Region"]
                     new_row = new_row[csv_cols]
                     new_row.to_csv(RAW_DATA_PATH, mode="a", header=False, index=False)
                     load_data.clear()
-                    log_event("DATA_ENTRY", f"Registered new farmer: {new_name.strip()} ({new_region}, {new_crop}, {new_area} ac)", {"name": new_name.strip(), "region": new_region, "crop": new_crop, "area": new_area})
-                    st.success(f"🎉 Successfully registered {new_name.strip()} into the Farmer Directory!")
+                    log_event("DATA_ENTRY", f"Registered new farmer profile: {new_name.strip()} ({new_region}, {new_crop}, {new_area} ac)", {"name": new_name.strip(), "region": new_region, "crop": new_crop, "area": new_area})
+                    st.success(f"Record successfully ingested: {new_name.strip()} has been committed to the master directory.")
                     st.rerun()
 
     st.markdown("""
