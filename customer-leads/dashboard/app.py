@@ -972,82 +972,78 @@ with tab_security:
     </div>
     """, unsafe_allow_html=True)
 
-    # ── Audit Timeline helpers ────────────────────────────────────────────────
-    LABEL_MAP = {
-        "PAGE_VIEW":    ("Page View", "#3B82F6", "#DBEAFE"),
-        "FILTER_APPLY": ("Filter",    "#8B5CF6", "#EDE9FE"),
-        "DATA_EXPORT":  ("Export",    "#059669", "#D1FAE5"),
-        "SYSTEM":       ("System",    "#64748B", "#F1F5F9"),
-    }
-    ICON_MAP = {"PAGE_VIEW": "→", "FILTER_APPLY": "≡", "DATA_EXPORT": "↓", "SYSTEM": "◉"}
+    # ── Plain English Audit Activity Log ──────────────────────────────────────
+    st.markdown("""
+    <div class='enterprise-panel'>
+        <div class='panel-header'>
+            <div class='panel-title'>PLAIN ENGLISH AUDIT ACTIVITY LOG</div>
+            <div class='panel-count-badge'>HUMAN READABLE RECORD</div>
+        </div>
+    """, unsafe_allow_html=True)
 
-    KEY_LABELS = {
-        "keyword": "Search", "region": "Region", "crop": "Crop",
-        "season": "Season", "results": "Results", "format": "Format",
-        "rows_exported": "Rows", "group_by": "Group By",
-        "metric": "Metric", "operation": "Operation",
-        "total_records": "Records", "transport": "Transport",
-        "data_source": "Source", "charts": "Charts",
-    }
-    SKIP_VALS = {"(none)", "", "All Regions", "All Crops", "All Seasons"}
+    def _to_plain_english(entry: dict) -> str:
+        etype = entry.get("event_type", "")
+        desc = entry.get("description", "")
+        det = entry.get("details", {})
 
-    def _chips(det: dict) -> str:
-        parts = []
-        for k, v in det.items():
-            lbl = KEY_LABELS.get(k, k.replace("_", " ").title())
-            val = ", ".join(str(i) for i in v) if isinstance(v, list) else str(v)
-            if val in SKIP_VALS:
-                continue
-            parts.append(
-                f"<span class='detail-chip'>"
-                f"<span class='detail-chip-key'>{lbl}</span>"
-                f"<span class='detail-chip-val'>{val}</span>"
-                f"</span>"
-            )
-        return "".join(parts)
+        if etype == "FILTER_APPLY":
+            parts = []
+            if det.get("region") and det["region"] != "All Regions":
+                parts.append(f"Region: {det['region']}")
+            if det.get("crop") and det["crop"] != "All Crops":
+                parts.append(f"Crop: {det['crop']}")
+            if det.get("season") and det["season"] != "All Seasons":
+                parts.append(f"Season: {det['season']}")
+            if det.get("keyword") and det["keyword"] not in ("(none)", ""):
+                parts.append(f"Search: '{det['keyword']}'")
+            filter_str = ", ".join(parts) if parts else "All default filters (no restrictions)"
+            res = det.get("results", "")
+            return f"Filtered Farmer Directory ({filter_str}). Found {res} matching farmer records."
 
-    # ── Build entire timeline as one HTML string ───────────────────────────────
+        elif etype == "DATA_EXPORT":
+            fmt = det.get("format", "File")
+            rows = det.get("rows_exported", "")
+            if rows:
+                return f"Downloaded {rows} farmer records as a {fmt} spreadsheet file."
+            return f"Downloaded data summary table as a {fmt} spreadsheet file."
+
+        elif etype == "PAGE_VIEW":
+            return f"Opened and viewed: {desc}."
+
+        elif etype == "SYSTEM":
+            records = det.get("total_records", "")
+            if records:
+                return f"System started securely over HTTPS (TLS 1.3) and loaded {records} farmer records."
+            return f"System notification: {desc}."
+
+        return desc
+
     if not all_entries:
-        timeline_html = """
-        <div class='timeline-wrap'>
-            <div class='timeline-header'>
-                <div class='timeline-title'>Live Audit Trail — Session Event Timeline</div>
-                <div class='timeline-badge'>0 Events</div>
-            </div>
-            <div class='tl-empty'>No events yet. Navigate the portal to generate your first records.</div>
-        </div>"""
+        st.info("No activity recorded yet in this session. Navigate the portal to generate plain English log records.")
     else:
-        rows = ""
         for entry in all_entries:
-            etype = entry["event_type"]
-            label, color, bg = LABEL_MAP.get(etype, ("Event", "#64748B", "#F1F5F9"))
-            icon  = ICON_MAP.get(etype, "•")
-            chips = _chips(entry.get("details", {}))
-            chips_block = f"<div class='detail-chips-row'>{chips}</div>" if chips else ""
-            rows += f"""
-            <div class='timeline-row'>
-                <div class='tl-icon' style='background:{bg};color:{color};'>{icon}</div>
-                <div class='tl-body'>
-                    <div class='tl-title'>{entry['description']}</div>
-                    <div class='tl-meta-row'>
-                        <span class='tl-type-pill' style='background:{bg};color:{color};'>{label}</span>
-                        <span class='tl-time'>{entry['display_ts']}</span>
-                        <span class='tl-session'>{entry['session']}</span>
-                    </div>
-                    {chips_block}
-                </div>
-            </div>"""
+            plain_text = _to_plain_english(entry)
+            ts = entry.get("display_ts", "")
+            sid = entry.get("session", session_id)
+            icon = {
+                "FILTER_APPLY": "🔍",
+                "DATA_EXPORT": "📥",
+                "PAGE_VIEW": "👁️",
+                "SYSTEM": "🛡️"
+            }.get(entry.get("event_type", ""), "📋")
 
-        timeline_html = f"""
-        <div class='timeline-wrap'>
-            <div class='timeline-header'>
-                <div class='timeline-title'>Live Audit Trail — Session Event Timeline</div>
-                <div class='timeline-badge'>{total_events} Events</div>
-            </div>
-            {rows}
-        </div>"""
+            card_html = (
+                f"<div style='background:#FFFFFF;border:1px solid #E2E8F0;border-radius:10px;"
+                f"padding:14px 18px;margin-bottom:10px;box-shadow:0 1px 2px rgba(0,0,0,0.02);'>"
+                f"<div style='font-size:0.95rem;font-weight:600;color:#0F172A;margin-bottom:4px;'>"
+                f"{icon} &nbsp; {plain_text}</div>"
+                f"<div style='font-size:0.78rem;color:#64748B;font-weight:500;'>"
+                f"Logged at {ts} &nbsp;·&nbsp; Session ID: {sid}</div>"
+                f"</div>"
+            )
+            st.markdown(card_html, unsafe_allow_html=True)
 
-    st.markdown(timeline_html, unsafe_allow_html=True)
+    st.markdown("</div>", unsafe_allow_html=True)
 
     # ── Export ────────────────────────────────────────────────────────────────
     audit_col, _ = st.columns([2.5, 5.5])
