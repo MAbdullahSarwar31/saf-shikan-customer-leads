@@ -520,13 +520,19 @@ input:focus, textarea:focus, select:focus {
     font-size: 0.88rem;
 }
 
-/* ── Responsive ──────────────────────────────────────────────── */
+/* ── Comprehensive Mobile & Tablet Responsiveness ─────────────── */
 @media screen and (max-width: 768px) {
     .block-container { padding: 1rem 0.8rem !important; }
-    .stats-row { flex-direction: column; gap: 12px; }
-    .stat-card { min-width: 100%; }
-    .security-badge-row { flex-direction: column; }
-    .security-badge { min-width: 100%; }
+    .portal-header-row { flex-direction: column !important; align-items: flex-start !important; gap: 10px !important; }
+    .page-title { font-size: 1.45rem !important; line-height: 1.2 !important; }
+    .stats-row { flex-direction: column !important; gap: 12px !important; }
+    .stat-card { min-width: 100% !important; }
+    .security-badge-row { flex-direction: column !important; gap: 10px !important; }
+    .security-badge { min-width: 100% !important; }
+    .enterprise-panel { padding: 14px 14px !important; }
+    .stTabs [data-baseweb="tab-list"] { overflow-x: auto !important; flex-wrap: nowrap !important; padding: 6px !important; }
+    .stTabs [data-baseweb="tab"] { flex-shrink: 0 !important; padding: 0 16px !important; font-size: 0.82rem !important; }
+    div[data-testid="stExpander"] details > div { padding: 16px 14px !important; }
 }
 </style>
 """, unsafe_allow_html=True)
@@ -684,8 +690,8 @@ with tab_dir:
                 new_season = st.selectbox("Growing Season *", ["Rabi", "Kharif", "Both", "Perennial"])
             with c3:
                 new_location = st.text_input("District / Location *", placeholder="e.g. Multan")
-                new_scale = st.selectbox("Farm Scale *", ["Small", "Medium", "Large"])
-                new_income = st.number_input("Estimated Annual Income (PKR)", min_value=0, value=1800000, step=50000)
+                new_scale = st.selectbox("Farm Scale (Auto-computed if 'Auto')", ["Auto (Compute by Acreage)", "Small (<12 ac)", "Medium (12-50 ac)", "Large (>50 ac)"])
+                new_income = st.number_input("Estimated Annual Income (PKR, 0 = Auto)", min_value=0, value=0, step=50000)
 
             st.write("")
             fc1, fc2, fc3 = st.columns([2.5, 2.5, 2.2])
@@ -693,9 +699,20 @@ with tab_dir:
                 submitted = st.form_submit_button("Commit & Register Profile", use_container_width=True)
 
             if submitted:
+                import re
+                phone_clean = re.sub(r"[^\d+]", "", new_phone.strip())
                 if not new_name.strip() or not new_phone.strip() or not new_location.strip():
                     st.error("Validation Error: Mandatory fields (Farmer Full Name, Contact Phone Number, and District / Location) must be completed before record ingestion.")
+                elif len(phone_clean) < 10:
+                    st.error("Validation Error: Contact Phone Number must contain at least 10 valid digits (e.g. 0300-1234567).")
                 else:
+                    computed_scale = (
+                        "Small" if float(new_area) < 12.0 else
+                        "Medium" if float(new_area) <= 50.0 else
+                        "Large"
+                    ) if "Auto" in new_scale else new_scale.split(" ")[0]
+                    computed_income = float(new_income) if float(new_income) > 0 else float(new_area) * 120000.0
+
                     new_row = pd.DataFrame([{
                         "Name": new_name.strip(),
                         "Phone": new_phone.strip(),
@@ -703,16 +720,16 @@ with tab_dir:
                         "Crop_Area": float(new_area),
                         "Season": new_season,
                         "Location": new_location.strip(),
-                        "Estimated_Income": float(new_income),
-                        "Farm_Scale": new_scale,
+                        "Estimated_Income": computed_income,
+                        "Farm_Scale": computed_scale,
                         "Region": new_region
                     }])
                     csv_cols = ["Name", "Phone", "Crop_Type", "Crop_Area", "Season", "Location", "Estimated_Income", "Farm_Scale", "Region"]
                     new_row = new_row[csv_cols]
                     new_row.to_csv(RAW_DATA_PATH, mode="a", header=False, index=False)
                     load_data.clear()
-                    log_event("DATA_ENTRY", f"Registered new farmer profile: {new_name.strip()} ({new_region}, {new_crop}, {new_area} ac)", {"name": new_name.strip(), "region": new_region, "crop": new_crop, "area": new_area})
-                    st.success(f"Record successfully ingested: {new_name.strip()} has been committed to the master directory.")
+                    log_event("DATA_ENTRY", f"Registered new farmer profile: {new_name.strip()} ({new_region}, {new_crop}, {new_area} ac)", {"name": new_name.strip(), "region": new_region, "crop": new_crop, "area": new_area, "scale": computed_scale})
+                    st.success(f"Record successfully ingested: {new_name.strip()} ({computed_scale} Farm Scale) has been committed to the master directory.")
                     st.rerun()
 
     st.markdown("""
@@ -1145,10 +1162,38 @@ with tab_security:
 
         return desc
 
+    af1, af2 = st.columns([3, 2])
+    with af1:
+        audit_search = st.text_input("Filter Audit Log by Keyword", placeholder="Search activity details, names, districts...")
+    with af2:
+        audit_type_filter = st.selectbox("Filter by Event Category", ["All Categories", "Data Entry", "Filter Applied", "Data Export", "Page View", "System Startup"])
+
+    TYPE_FILTER_MAP = {
+        "Data Entry": "DATA_ENTRY",
+        "Filter Applied": "FILTER_APPLY",
+        "Data Export": "DATA_EXPORT",
+        "Page View": "PAGE_VIEW",
+        "System Startup": "SYSTEM"
+    }
+
+    filtered_entries = all_entries.copy()
+    if audit_type_filter != "All Categories":
+        target_etype = TYPE_FILTER_MAP.get(audit_type_filter)
+        filtered_entries = [e for e in filtered_entries if e.get("event_type") == target_etype]
+    if audit_search.strip():
+        q_audit = audit_search.strip().lower()
+        filtered_entries = [
+            e for e in filtered_entries
+            if q_audit in _to_plain_english(e).lower() or q_audit in e.get("description", "").lower()
+        ]
+
+    st.write("")
     if not all_entries:
         st.info("No activity recorded yet in this session. Navigate the portal to generate plain English log records.")
+    elif not filtered_entries:
+        st.info("No matching audit activities found for the selected search criteria.")
     else:
-        for entry in all_entries:
+        for entry in filtered_entries:
             plain_text = _to_plain_english(entry)
             ts = entry.get("display_ts", "")
             sid = entry.get("session", session_id)
