@@ -688,13 +688,12 @@ with tab_dir:
                 new_name = st.text_input("Farmer Full Name *", placeholder="e.g. Tariq Mahmood")
                 new_phone = st.text_input("Contact Phone Number *", placeholder="e.g. 0300-1234567",
                                           help="Format: 0300-1234567 (4 digits dash 7 digits)")
-                new_location = st.text_input("District / City *", placeholder="e.g. Multan")
             with c2:
+                new_location = st.text_input("District / City *", placeholder="e.g. Multan")
                 new_area = st.number_input("Cultivated Area (Acres) *", min_value=1.0, max_value=5000.0, value=15.0, step=1.0)
-                new_season = st.selectbox("Growing Season *", ["Rabi", "Kharif", "Both", "Perennial"])
-                new_scale = st.selectbox("Farm Scale *", ["Small", "Medium", "Large"])
             with c3:
-                new_region = st.selectbox("Geographic Region *", ["Punjab", "Sindh", "KPK", "Balochistan", "Gilgit-Baltistan", "AJK"])
+                new_season = st.selectbox("Growing Season *", ["Rabi", "Kharif", "Perennial"])
+                new_scale = st.selectbox("Farm Scale *", ["Small", "Medium", "Large"])
 
             st.write("")
             fc1, fc2, fc3 = st.columns([2.5, 2.5, 2.2])
@@ -722,7 +721,7 @@ with tab_dir:
                         "Season": new_season,
                         "Location": new_location.strip(),
                         "Farm_Scale": new_scale,
-                        "Region": new_region
+                        "Region": new_location.strip()
                     }])
                     csv_cols = ["Name", "Phone", "Crop_Type", "Crop_Area", "Season", "Location", "Farm_Scale", "Region"]
                     new_row = new_row[csv_cols]

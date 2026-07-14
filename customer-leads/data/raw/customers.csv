@@ -1,501 +1,501 @@
 Name,Phone,Crop_Type,Crop_Area,Season,Location,Farm_Scale,Region
-Ahmad Rehman,0315-3218196,wheat,10,Rabi,Rahim Yar Khan,Medium,Punjab
-Rashid Junejo,0314-7940265,wheat,18,Both,Swabi,Medium,KPK
-Hamza Gondal,0345-4078161,cotton,90,Both,Hyderabad,Large,Sindh
-Ali Mughal,0318-1316475,wheat,27,Rabi,Okara,Medium,Punjab
-Imran Dogar,0341-3276483,cotton,17,Kharif,Lahore,Medium,Punjab
-Imran Gill,0343-5376724,wheat,40,Rabi,Gujranwala,Medium,Punjab
-Waseem Mughal,0308-8710122,sugarcane,32,Kharif,Vehari,Medium,Punjab
-Uzma Bajwa,0342-0184514,rice,17,Kharif,Okara,Medium,Punjab
-Shahid Shah,0347-4893252,rice,27,Kharif,Peshawar,Medium,KPK
-Bilal Lashari,0320-3039117,sugarcane,39,Kharif,Larkana,Medium,Sindh
-Maryam Bajwa,0340-9638346,tobacco,6,Rabi,Rahim Yar Khan,Small,Punjab
-Imran Warraich,0301-9839301,sugarcane,8,Kharif,Lahore,Small,Punjab
-Majid Rehman,0349-7382997,wheat,35,Both,Larkana,Medium,Sindh
-Hamza Talpur,0331-7010651,wheat,17,Rabi,Multan,Medium,Punjab
-Majid Choudhary,0333-8108013,wheat,36,Rabi,Vehari,Medium,Punjab
-Muhammad Tarar,0316-7468723,wheat,8,Both,Rahim Yar Khan,Small,Punjab
-Tariq Yousafzai,0337-8208121,cotton,96,Both,Charsadda,Large,KPK
-Hina Malik,0346-1699854,wheat,50,Rabi,Okara,Medium,Punjab
-Haroon Abbasi,0321-1079911,rice,19,Kharif,Pakpattan,Medium,Punjab
-Kiran Lodhi,0310-7849808,wheat,47,Both,Multan,Medium,Punjab
-Humaira Gujjar,0317-4935348,rice,30,Kharif,Vehari,Medium,Punjab
-Junaid Butt,0347-4278680,wheat,49,Rabi,Peshawar,Medium,KPK
-Zafar Talpur,0308-0450533,cotton,55,Kharif,Nawabshah,Large,Sindh
-Majid Dogar,0311-6025634,wheat,49,Rabi,Lahore,Medium,Punjab
-Noman Gondal,0320-3303654,maize,10,Kharif,Rahim Yar Khan,Medium,Punjab
-Farah Warraich,0301-1429401,cotton,54,Both,Hyderabad,Large,Sindh
-Amina Tarar,0343-3406088,cotton,95,Both,Vehari,Large,Punjab
-Junaid Cheema,0349-1484656,cotton,80,Kharif,Vehari,Large,Punjab
-Rizwan Wattoo,0330-8044369,cotton,51,Kharif,Bahawalpur,Large,Punjab
-Asif Jatoi,0318-8951343,sugarcane,14,Kharif,Sahiwal,Medium,Punjab
-Imran Abbasi,0331-9367632,cotton,10,Kharif,Peshawar,Medium,KPK
-Jamil Abbasi,0303-8317278,tobacco,10,Rabi,Bahawalpur,Medium,Punjab
-Shahid Talpur,0342-7277434,sugarcane,38,Both,Sahiwal,Medium,Punjab
-Babar Qureshi,0317-5581223,rice,7,Kharif,Sukkur,Small,Sindh
-Noman Junejo,0303-3669096,rice,14,Kharif,Vehari,Medium,Punjab
-Saima Mughal,0336-3467065,cotton,61,Kharif,Nawabshah,Large,Sindh
-Farah Ahmed,0330-9901627,wheat,21,Rabi,Sahiwal,Medium,Punjab
-Irfan Rehman,0331-4170805,wheat,9,Both,Khairpur,Small,Sindh
-Majid Khokhar,0301-9232719,canola,17,Both,Hyderabad,Medium,Sindh
-Bilal Dogar,0320-1904966,canola,9,Both,Sahiwal,Small,Punjab
-Saeed Nawaz,0343-0586518,cotton,11,Both,Nawabshah,Medium,Sindh
-Ayesha Abbasi,0309-6284987,rice,29,Both,Hyderabad,Medium,Sindh
-Sajid Rehman,0333-3799650,rice,13,Kharif,Sahiwal,Medium,Punjab
-Shehzad Rehman,0342-0831367,cotton,40,Kharif,Khairpur,Medium,Sindh
-Ahmad Jatoi,0318-3634957,cotton,54,Both,Rahim Yar Khan,Large,Punjab
-Shehzad Wattoo,0316-3135182,wheat,35,Rabi,Gujranwala,Medium,Punjab
-Babar Shah,0312-4352408,wheat,7,Rabi,Swabi,Small,KPK
-Kashif Shah,0300-9477752,canola,11,Both,Charsadda,Medium,KPK
-Kashif Choudhary,0343-0229413,wheat,31,Both,Mirpur Khas,Medium,Sindh
-Amjad Laghari,0320-9649909,canola,6,Rabi,Mardan,Small,KPK
-Sajid Dogar,0315-2812067,cotton,70,Both,Sahiwal,Large,Punjab
-Noman Choudhary,0314-4936183,cotton,44,Both,Sukkur,Medium,Sindh
-Saeed Lodhi,0333-1746488,rice,5,Kharif,Vehari,Small,Punjab
-Ahmad Jatoi,0314-9904902,rice,23,Both,Okara,Medium,Punjab
-Kashif Jatoi,0335-5655125,rice,18,Kharif,Vehari,Medium,Punjab
-Noman Jatoi,0321-4516808,rice,4,Kharif,Pakpattan,Small,Punjab
-Amjad Bhatti,0313-4824771,wheat,45,Rabi,Larkana,Medium,Sindh
-Muhammad Junejo,0305-3171274,rice,11,Kharif,Bahawalpur,Medium,Punjab
-Nadeem Gujjar,0325-3982146,wheat,37,Both,Lahore,Medium,Punjab
-Iqbal Khattak,0309-7875588,rice,13,Kharif,Mardan,Medium,KPK
-Sohail Malik,0321-7662702,rice,21,Kharif,Faisalabad,Medium,Punjab
-Jamil Abbasi,0300-2621745,cotton,60,Kharif,Hyderabad,Large,Sindh
-Shazia Cheema,0347-7809134,tobacco,2,Rabi,Faisalabad,Small,Punjab
-Usman Laghari,0310-4005045,rice,7,Kharif,Vehari,Small,Punjab
-Asif Sheikh,0305-9693792,wheat,45,Rabi,Okara,Medium,Punjab
-Iqra Lodhi,0341-2175946,cotton,68,Kharif,Larkana,Large,Sindh
-Amina Qureshi,0325-9594406,wheat,41,Rabi,Peshawar,Medium,KPK
-Babar Mughal,0345-5339421,sunflower,12,Both,Bahawalpur,Medium,Punjab
-Kamran Jatoi,0318-5623285,rice,11,Kharif,Hyderabad,Medium,Sindh
-Bushra Warraich,0307-7123685,wheat,30,Both,Rahim Yar Khan,Medium,Punjab
-Yasir Tarar,0347-5137098,wheat,44,Rabi,Faisalabad,Medium,Punjab
-Haroon Junejo,0307-2004711,wheat,39,Rabi,Bahawalpur,Medium,Punjab
-Mehwish Junejo,0344-2617964,wheat,28,Rabi,Bahawalpur,Medium,Punjab
-Amina Lashari,0341-5064317,wheat,18,Rabi,Mirpur Khas,Medium,Sindh
-Junaid Qureshi,0308-9318393,sugarcane,19,Kharif,Multan,Medium,Punjab
-Shehzad Gujjar,0308-8421020,rice,28,Both,Pakpattan,Medium,Punjab
-Kamran Junejo,0340-1177589,wheat,37,Both,Gujranwala,Medium,Punjab
-Jamil Wattoo,0334-0076617,sugarcane,33,Both,Faisalabad,Medium,Punjab
-Kamran Rehman,0346-9856984,rice,22,Kharif,Faisalabad,Medium,Punjab
-Nadeem Gill,0332-7365766,sugarcane,25,Kharif,Okara,Medium,Punjab
-Farhan Choudhary,0305-1161528,wheat,40,Rabi,Faisalabad,Medium,Punjab
-Saima Bhatti,0318-9451983,wheat,35,Rabi,Faisalabad,Medium,Punjab
-Bilal Rehman,0343-3689980,cotton,94,Both,Hyderabad,Large,Sindh
-Haroon Warraich,0323-0229612,sugarcane,6,Kharif,Rahim Yar Khan,Small,Punjab
-Junaid Dogar,0324-4599102,wheat,44,Both,Faisalabad,Medium,Punjab
-Kashif Laghari,0331-4381561,wheat,48,Rabi,Rahim Yar Khan,Medium,Punjab
-Adeel Bhatti,0300-3432445,wheat,36,Both,Larkana,Medium,Sindh
-Faisal Gondal,0304-6060715,cotton,83,Both,Vehari,Large,Punjab
-Arsalan Dogar,0346-7516136,cotton,77,Kharif,Okara,Large,Punjab
-Asif Choudhary,0337-1883552,wheat,14,Rabi,Multan,Medium,Punjab
-Imran Sheikh,0347-7799799,wheat,45,Both,Bahawalpur,Medium,Punjab
-Haroon Rehman,0344-0581477,wheat,28,Rabi,Sukkur,Medium,Sindh
-Zainab Tarar,0334-9807935,cotton,74,Both,Lahore,Large,Punjab
-Junaid Jatoi,0337-2037788,cotton,56,Both,Okara,Large,Punjab
-Saeed Bhatti,0347-5151864,wheat,47,Both,Mardan,Medium,KPK
-Zafar Gondal,0320-6291486,cotton,52,Kharif,Khairpur,Large,Sindh
-Nazia Jatoi,0348-6850542,canola,13,Both,Charsadda,Medium,KPK
-Sadia Choudhary,0318-1888059,wheat,29,Rabi,Multan,Medium,Punjab
-Asif Laghari,0302-6537947,wheat,20,Rabi,Bahawalpur,Medium,Punjab
-Akram Laghari,0334-4688623,sugarcane,13,Kharif,Peshawar,Medium,KPK
-Farah Shah,0340-1412478,wheat,32,Rabi,Sahiwal,Medium,Punjab
-Fatima Junejo,0303-6853615,wheat,25,Rabi,Swabi,Medium,KPK
-Babar Yousafzai,0308-7790104,wheat,14,Rabi,Gujranwala,Medium,Punjab
-Babar Qureshi,0320-1036971,wheat,36,Rabi,Lahore,Medium,Punjab
-Zafar Lodhi,0332-0953962,cotton,20,Both,Pakpattan,Medium,Punjab
-Shahid Ahmed,0325-7065405,sugarcane,27,Kharif,Faisalabad,Medium,Punjab
-Junaid Butt,0302-5852772,sugarcane,9,Both,Nawabshah,Small,Sindh
-Fawad Malik,0321-4868740,sugarcane,17,Kharif,Lahore,Medium,Punjab
-Bilal Lashari,0332-6765277,rice,28,Kharif,Faisalabad,Medium,Punjab
-Saeed Sheikh,0341-4511544,rice,25,Kharif,Bahawalpur,Medium,Punjab
-Hamza Talpur,0317-0165820,wheat,43,Both,Nawabshah,Medium,Sindh
-Waseem Lashari,0325-9092755,rice,5,Kharif,Rahim Yar Khan,Small,Punjab
-Shehzad Qureshi,0307-0278681,wheat,21,Rabi,Larkana,Medium,Sindh
-Kashif Khokhar,0307-2172715,cotton,100,Both,Rahim Yar Khan,Large,Punjab
-Asif Sheikh,0324-8313237,wheat,40,Rabi,Bahawalpur,Medium,Punjab
-Arshad Jatoi,0304-4678669,wheat,25,Rabi,Nawabshah,Medium,Sindh
-Kamran Sheikh,0308-6801824,wheat,25,Both,Mardan,Medium,KPK
-Bushra Jatoi,0316-3842498,wheat,46,Both,Gujranwala,Medium,Punjab
-Saeed Warraich,0343-0010943,sugarcane,31,Kharif,Sukkur,Medium,Sindh
-Babar Wattoo,0335-3647102,rice,18,Kharif,Pakpattan,Medium,Punjab
-Arsalan Gondal,0330-2588153,rice,11,Both,Multan,Medium,Punjab
-Irfan Junejo,0315-2595327,tobacco,8,Rabi,Okara,Small,Punjab
-Adeel Abbasi,0315-3950047,cotton,93,Both,Hyderabad,Large,Sindh
-Zahid Butt,0316-5650609,cotton,56,Both,Faisalabad,Large,Punjab
-Nadeem Rehman,0346-9121655,cotton,56,Kharif,Larkana,Large,Sindh
-Ali Malik,0302-2578729,maize,6,Kharif,Gujranwala,Small,Punjab
-Arshad Wattoo,0344-5888794,rice,3,Kharif,Faisalabad,Small,Punjab
-Ahmad Yousafzai,0316-9930972,rice,26,Both,Nawabshah,Medium,Sindh
-Ali Nawaz,0312-0756263,rice,27,Kharif,Nawabshah,Medium,Sindh
-Tariq Butt,0340-3857865,canola,17,Rabi,Swabi,Medium,KPK
-Yasir Yousafzai,0312-3484344,sugarcane,36,Kharif,Pakpattan,Medium,Punjab
-Humaira Rehman,0318-1986652,wheat,23,Both,Peshawar,Medium,KPK
-Yasir Yousafzai,0313-3848421,cotton,85,Kharif,Lahore,Large,Punjab
-Faisal Bhatti,0306-6571208,canola,8,Rabi,Bahawalpur,Small,Punjab
-Babar Cheema,0318-0193802,rice,29,Kharif,Lahore,Medium,Punjab
-Kashif Sheikh,0318-0049915,wheat,46,Rabi,Bahawalpur,Medium,Punjab
-Shahid Abbasi,0317-3152742,wheat,26,Rabi,Mirpur Khas,Medium,Sindh
-Arshad Mahar,0332-8516122,rice,10,Both,Vehari,Medium,Punjab
-Junaid Wattoo,0344-9045301,rice,8,Kharif,Rahim Yar Khan,Small,Punjab
-Bushra Nawaz,0347-4593327,wheat,43,Rabi,Rahim Yar Khan,Medium,Punjab
-Naveed Qureshi,0345-1878519,wheat,40,Rabi,Mardan,Medium,KPK
-Arsalan Laghari,0307-3971870,rice,19,Both,Gujranwala,Medium,Punjab
-Haroon Ahmed,0330-4039106,wheat,9,Rabi,Lahore,Small,Punjab
-Farhan Malik,0318-6226567,maize,14,Both,Rahim Yar Khan,Medium,Punjab
-Amina Sheikh,0341-6823004,rice,26,Kharif,Rahim Yar Khan,Medium,Punjab
-Noman Gondal,0309-4310690,wheat,9,Rabi,Lahore,Small,Punjab
-Tariq Qureshi,0302-6738302,rice,12,Both,Gujranwala,Medium,Punjab
-Arsalan Qureshi,0320-2836440,cotton,85,Kharif,Mardan,Large,KPK
-Kashif Bhatti,0323-6856624,rice,27,Kharif,Sahiwal,Medium,Punjab
-Zafar Abbasi,0303-8668826,wheat,18,Rabi,Faisalabad,Medium,Punjab
-Sajid Khokhar,0303-4699013,sugarcane,40,Kharif,Sahiwal,Medium,Punjab
-Muhammad Gill,0312-1739363,cotton,46,Kharif,Rahim Yar Khan,Medium,Punjab
-Waseem Khattak,0334-1753556,wheat,19,Both,Sukkur,Medium,Sindh
-Anum Junejo,0318-2353693,rice,23,Both,Swabi,Medium,KPK
-Kashif Abbasi,0310-5228728,tobacco,1,Rabi,Faisalabad,Small,Punjab
-Muhammad Junejo,0308-3120387,rice,22,Kharif,Mirpur Khas,Medium,Sindh
-Ahmad Khan,0341-8600848,canola,3,Rabi,Vehari,Small,Punjab
-Amina Shah,0340-2339845,wheat,30,Rabi,Vehari,Medium,Punjab
-Faisal Wattoo,0305-0166687,wheat,5,Rabi,Sukkur,Small,Sindh
-Junaid Shah,0340-0339740,sunflower,12,Both,Peshawar,Medium,KPK
-Fatima Gill,0344-2614293,cotton,59,Both,Mirpur Khas,Large,Sindh
-Kamran Jatoi,0337-5016315,cotton,88,Kharif,Charsadda,Large,KPK
-Shehzad Laghari,0336-3586629,cotton,20,Kharif,Hyderabad,Medium,Sindh
-Sajid Rehman,0309-6265511,wheat,24,Both,Okara,Medium,Punjab
-Zahid Laghari,0342-8861015,cotton,86,Kharif,Pakpattan,Large,Punjab
-Sohail Tarar,0305-8398262,wheat,24,Both,Multan,Medium,Punjab
-Sohail Wattoo,0335-1543799,wheat,11,Rabi,Lahore,Medium,Punjab
-Arshad Tarar,0322-7569245,cotton,98,Both,Pakpattan,Large,Punjab
-Arsalan Lodhi,0347-7935646,rice,21,Both,Rahim Yar Khan,Medium,Punjab
-Ahmad Abbasi,0313-7416724,wheat,47,Rabi,Vehari,Medium,Punjab
-Saeed Yousafzai,0344-6886805,sugarcane,39,Both,Faisalabad,Medium,Punjab
-Hamza Dogar,0348-9096561,wheat,21,Rabi,Rahim Yar Khan,Medium,Punjab
-Faisal Laghari,0324-6798250,rice,12,Both,Faisalabad,Medium,Punjab
-Sadia Gondal,0320-5738757,wheat,49,Both,Faisalabad,Medium,Punjab
-Bilal Ahmed,0322-1238282,wheat,32,Rabi,Mardan,Medium,KPK
-Rizwan Talpur,0330-0937966,wheat,18,Rabi,Faisalabad,Medium,Punjab
-Rashid Sheikh,0324-5371478,canola,13,Rabi,Gujranwala,Medium,Punjab
-Hamza Abbasi,0346-2499125,wheat,24,Rabi,Pakpattan,Medium,Punjab
-Sohail Butt,0343-6627828,wheat,23,Rabi,Pakpattan,Medium,Punjab
-Hamza Khan,0336-2368876,cotton,63,Both,Nawabshah,Large,Sindh
-Ahmad Mughal,0318-0438427,cotton,73,Both,Faisalabad,Large,Punjab
-Rashid Lashari,0341-0783613,wheat,7,Rabi,Pakpattan,Small,Punjab
-Bilal Qureshi,0313-9596292,sugarcane,18,Kharif,Mirpur Khas,Medium,Sindh
-Rashid Dogar,0321-4494812,canola,16,Rabi,Swabi,Medium,KPK
-Kamran Qureshi,0309-5367294,cotton,58,Both,Faisalabad,Large,Punjab
-Waseem Abbasi,0336-5901751,sugarcane,30,Kharif,Vehari,Medium,Punjab
-Arsalan Lodhi,0322-8929750,wheat,45,Both,Nawabshah,Medium,Sindh
-Maryam Laghari,0334-0632424,wheat,28,Rabi,Pakpattan,Medium,Punjab
-Tariq Mahar,0347-4361103,rice,7,Kharif,Rahim Yar Khan,Small,Punjab
-Junaid Nawaz,0332-2713611,wheat,28,Rabi,Mardan,Medium,KPK
-Kamran Gujjar,0304-8909275,sugarcane,14,Kharif,Charsadda,Medium,KPK
-Usman Butt,0307-9656523,wheat,10,Rabi,Gujranwala,Medium,Punjab
-Ahmad Wattoo,0313-8983640,sugarcane,20,Both,Faisalabad,Medium,Punjab
-Imran Khan,0324-5269658,cotton,70,Both,Peshawar,Large,KPK
-Yasir Gill,0302-0684866,sugarcane,10,Kharif,Mirpur Khas,Medium,Sindh
-Haroon Jatoi,0337-3285691,wheat,32,Both,Larkana,Medium,Sindh
-Zahid Nawaz,0334-9904210,sugarcane,5,Kharif,Pakpattan,Small,Punjab
-Yasir Dogar,0324-2410564,rice,11,Kharif,Mirpur Khas,Medium,Sindh
-Shahid Lashari,0303-7925241,maize,5,Both,Rahim Yar Khan,Small,Punjab
-Fatima Qureshi,0302-7562208,sugarcane,31,Kharif,Sahiwal,Medium,Punjab
-Shehzad Choudhary,0343-5180238,tobacco,7,Rabi,Bahawalpur,Small,Punjab
-Haroon Cheema,0305-8705349,sugarcane,20,Kharif,Gujranwala,Medium,Punjab
-Sana Qureshi,0309-0603850,canola,3,Rabi,Nawabshah,Small,Sindh
-Usman Gill,0340-3670241,wheat,19,Rabi,Charsadda,Medium,KPK
-Sajid Shah,0337-2619906,cotton,26,Kharif,Okara,Medium,Punjab
-Shazia Cheema,0321-7431329,wheat,11,Both,Bahawalpur,Medium,Punjab
-Hamza Gill,0333-4741124,maize,3,Both,Pakpattan,Small,Punjab
-Hamza Mahar,0337-0442067,cotton,80,Both,Bahawalpur,Large,Punjab
-Bilal Khan,0303-3236519,cotton,19,Both,Faisalabad,Medium,Punjab
-Kamran Jatoi,0322-1070296,maize,14,Kharif,Vehari,Medium,Punjab
-Naveed Sheikh,0317-4720999,wheat,23,Rabi,Rahim Yar Khan,Medium,Punjab
-Irfan Butt,0331-3838065,rice,28,Kharif,Gujranwala,Medium,Punjab
-Rizwan Ahmed,0321-9304078,rice,21,Both,Mardan,Medium,KPK
-Shehzad Bhatti,0314-9652239,wheat,49,Both,Gujranwala,Medium,Punjab
-Akram Gujjar,0343-3784270,wheat,19,Rabi,Sukkur,Medium,Sindh
-Arshad Khokhar,0308-5250029,sugarcane,14,Kharif,Mirpur Khas,Medium,Sindh
-Kiran Mahar,0344-1545226,sugarcane,36,Kharif,Larkana,Medium,Sindh
-Arshad Gondal,0314-9264422,sugarcane,30,Both,Peshawar,Medium,KPK
-Arshad Mughal,0347-9172513,wheat,25,Rabi,Faisalabad,Medium,Punjab
-Junaid Laghari,0300-4331541,sugarcane,8,Kharif,Vehari,Small,Punjab
-Sidra Tarar,0323-8617932,rice,28,Both,Hyderabad,Medium,Sindh
-Usman Choudhary,0322-2621815,cotton,88,Both,Peshawar,Large,KPK
-Saeed Talpur,0310-0153368,sugarcane,39,Both,Okara,Medium,Punjab
-Adeel Khattak,0309-0506149,rice,6,Kharif,Multan,Small,Punjab
-Sidra Nawaz,0320-6774186,wheat,29,Both,Bahawalpur,Medium,Punjab
-Yasir Mughal,0317-9021158,rice,27,Both,Rahim Yar Khan,Medium,Punjab
-Jamil Junejo,0341-7937416,sunflower,13,Rabi,Gujranwala,Medium,Punjab
-Arshad Gujjar,0307-7223320,rice,24,Kharif,Multan,Medium,Punjab
-Imran Jatoi,0325-8685487,sunflower,2,Rabi,Mirpur Khas,Small,Sindh
-Bilal Junejo,0309-2999119,sugarcane,23,Kharif,Swabi,Medium,KPK
-Kashif Yousafzai,0302-2462996,wheat,26,Rabi,Sukkur,Medium,Sindh
-Kiran Ahmed,0322-4447132,wheat,33,Both,Hyderabad,Medium,Sindh
-Sajid Khokhar,0333-3678508,sugarcane,9,Kharif,Rahim Yar Khan,Small,Punjab
-Jamil Ahmed,0311-3303070,sunflower,13,Rabi,Pakpattan,Medium,Punjab
-Bilal Ahmed,0315-5797279,cotton,54,Kharif,Okara,Large,Punjab
-Babar Ahmed,0325-0293333,wheat,31,Rabi,Lahore,Medium,Punjab
-Rizwan Khan,0314-4944665,rice,9,Kharif,Rahim Yar Khan,Small,Punjab
-Usman Khan,0337-5899441,rice,13,Kharif,Swabi,Medium,KPK
-Haroon Khokhar,0309-8309652,sugarcane,36,Kharif,Swabi,Medium,KPK
-Ali Khokhar,0322-3875842,maize,19,Kharif,Faisalabad,Medium,Punjab
-Nadeem Sheikh,0322-1353465,rice,21,Kharif,Faisalabad,Medium,Punjab
-Anum Choudhary,0335-3816846,wheat,14,Both,Sahiwal,Medium,Punjab
-Iqra Gujjar,0321-2175250,wheat,22,Rabi,Multan,Medium,Punjab
-Sajid Butt,0346-6666760,wheat,17,Rabi,Sukkur,Medium,Sindh
-Jamil Khokhar,0301-0335421,rice,21,Kharif,Faisalabad,Medium,Punjab
-Babar Abbasi,0340-9856257,rice,9,Both,Vehari,Small,Punjab
-Kamran Gill,0301-9821506,maize,10,Both,Mirpur Khas,Medium,Sindh
-Nazia Shah,0348-0016761,rice,18,Kharif,Larkana,Medium,Sindh
-Haroon Junejo,0349-1849926,maize,5,Both,Gujranwala,Small,Punjab
-Usman Khattak,0312-9348356,wheat,7,Rabi,Sahiwal,Small,Punjab
-Majid Khan,0300-1197218,wheat,11,Rabi,Mardan,Medium,KPK
-Noreen Abbasi,0303-1204556,sugarcane,11,Both,Peshawar,Medium,KPK
-Asif Warraich,0323-7941552,wheat,30,Rabi,Swabi,Medium,KPK
-Farhan Junejo,0348-2120216,sunflower,9,Rabi,Khairpur,Small,Sindh
-Hamza Ahmed,0308-7716701,wheat,25,Rabi,Rahim Yar Khan,Medium,Punjab
-Akram Mughal,0349-5889163,rice,24,Both,Nawabshah,Medium,Sindh
-Arshad Bhatti,0300-2877217,wheat,26,Rabi,Peshawar,Medium,KPK
-Irfan Mahar,0315-1779717,rice,6,Both,Peshawar,Small,KPK
-Nadeem Khan,0305-9948837,canola,14,Rabi,Larkana,Medium,Sindh
-Arshad Yousafzai,0349-5711305,rice,23,Kharif,Swabi,Medium,KPK
-Usman Malik,0310-7261493,wheat,30,Rabi,Sahiwal,Medium,Punjab
-Sohail Malik,0347-9177982,canola,3,Rabi,Lahore,Small,Punjab
-Iqbal Yousafzai,0337-2922169,cotton,51,Both,Vehari,Large,Punjab
-Majid Rehman,0330-5472269,sugarcane,37,Kharif,Rahim Yar Khan,Medium,Punjab
-Nadeem Gill,0312-3945228,rice,23,Kharif,Faisalabad,Medium,Punjab
-Iqbal Junejo,0341-4608106,wheat,47,Rabi,Okara,Medium,Punjab
-Babar Bajwa,0309-0438057,wheat,48,Rabi,Larkana,Medium,Sindh
-Majid Lodhi,0349-0666580,wheat,21,Rabi,Bahawalpur,Medium,Punjab
-Mehwish Lashari,0344-8933472,tobacco,2,Rabi,Multan,Small,Punjab
-Ali Talpur,0317-8422940,wheat,50,Both,Peshawar,Medium,KPK
-Tariq Wattoo,0336-9851583,canola,19,Both,Rahim Yar Khan,Medium,Punjab
-Adeel Jatoi,0323-3355543,canola,19,Rabi,Rahim Yar Khan,Medium,Punjab
-Fatima Nawaz,0349-5739930,cotton,51,Both,Faisalabad,Large,Punjab
-Babar Ahmed,0340-5887704,maize,8,Kharif,Faisalabad,Small,Punjab
-Rashid Khan,0347-1336138,maize,15,Kharif,Sukkur,Medium,Sindh
-Noman Warraich,0302-1102481,cotton,39,Kharif,Charsadda,Medium,KPK
-Zahid Cheema,0301-6180919,wheat,9,Both,Rahim Yar Khan,Small,Punjab
-Haroon Jatoi,0318-7660728,wheat,30,Both,Mirpur Khas,Medium,Sindh
-Haroon Lashari,0300-8821009,cotton,78,Both,Faisalabad,Large,Punjab
-Hamza Gill,0331-8222394,wheat,16,Rabi,Mirpur Khas,Medium,Sindh
-Farah Abbasi,0348-8141413,sugarcane,36,Both,Swabi,Medium,KPK
-Usman Lodhi,0346-1357759,cotton,98,Both,Gujranwala,Large,Punjab
-Zahid Dogar,0300-5336452,cotton,52,Both,Charsadda,Large,KPK
-Kashif Shah,0311-9142834,sugarcane,9,Kharif,Sukkur,Small,Sindh
-Iqbal Mahar,0344-3084887,cotton,29,Kharif,Sahiwal,Medium,Punjab
-Babar Butt,0334-8816580,cotton,88,Both,Mirpur Khas,Large,Sindh
-Akram Gujjar,0335-5037314,rice,4,Kharif,Mirpur Khas,Small,Sindh
-Farhan Abbasi,0302-0518449,rice,8,Kharif,Vehari,Small,Punjab
-Imran Bajwa,0325-3865577,maize,2,Kharif,Multan,Small,Punjab
-Shahid Rehman,0313-2225913,rice,13,Kharif,Nawabshah,Medium,Sindh
-Iqbal Dogar,0348-6030299,wheat,45,Both,Gujranwala,Medium,Punjab
-Rizwan Mahar,0345-9041379,tobacco,8,Rabi,Vehari,Small,Punjab
-Rizwan Bajwa,0310-5799136,rice,6,Kharif,Rahim Yar Khan,Small,Punjab
-Sohail Gujjar,0345-1279908,rice,6,Kharif,Multan,Small,Punjab
-Muhammad Talpur,0340-6508637,sugarcane,29,Both,Gujranwala,Medium,Punjab
-Farhan Mughal,0305-4986430,sugarcane,5,Kharif,Faisalabad,Small,Punjab
-Naveed Cheema,0331-5126944,maize,15,Both,Gujranwala,Medium,Punjab
-Naveed Junejo,0342-8725887,wheat,24,Rabi,Vehari,Medium,Punjab
-Nazia Nawaz,0314-7213865,sugarcane,8,Kharif,Lahore,Small,Punjab
-Farhan Talpur,0305-1435190,sugarcane,30,Both,Mirpur Khas,Medium,Sindh
-Aisha Sheikh,0347-7703843,wheat,43,Rabi,Sahiwal,Medium,Punjab
-Waseem Qureshi,0348-0214656,rice,9,Kharif,Faisalabad,Small,Punjab
-Nadeem Gondal,0323-4393769,wheat,16,Rabi,Faisalabad,Medium,Punjab
-Junaid Nawaz,0337-4894769,rice,10,Kharif,Nawabshah,Medium,Sindh
-Fatima Yousafzai,0307-4163356,canola,19,Both,Okara,Medium,Punjab
-Junaid Choudhary,0342-2755394,wheat,48,Rabi,Mardan,Medium,KPK
-Majid Bajwa,0313-3339521,wheat,10,Rabi,Khairpur,Medium,Sindh
-Rashid Malik,0335-5957947,wheat,37,Rabi,Sahiwal,Medium,Punjab
-Jamil Talpur,0335-8085627,canola,19,Both,Lahore,Medium,Punjab
-Iqbal Shah,0321-5942843,wheat,44,Rabi,Multan,Medium,Punjab
-Waseem Lashari,0330-4729293,sugarcane,22,Kharif,Mirpur Khas,Medium,Sindh
-Zafar Gujjar,0335-0267288,sugarcane,36,Kharif,Rahim Yar Khan,Medium,Punjab
-Usman Dogar,0303-3471754,rice,20,Both,Okara,Medium,Punjab
-Hamza Khokhar,0343-9824558,rice,26,Kharif,Faisalabad,Medium,Punjab
-Zafar Dogar,0347-5699611,wheat,19,Rabi,Okara,Medium,Punjab
-Adeel Rehman,0333-5987622,maize,6,Kharif,Khairpur,Small,Sindh
-Sajid Gill,0310-6111780,wheat,30,Both,Faisalabad,Medium,Punjab
-Sajid Tarar,0320-3347228,maize,2,Kharif,Pakpattan,Small,Punjab
-Farhan Abbasi,0341-4872829,cotton,90,Both,Mirpur Khas,Large,Sindh
-Rashid Wattoo,0323-7831745,rice,7,Kharif,Lahore,Small,Punjab
-Kamran Gondal,0318-7807740,sugarcane,23,Kharif,Lahore,Medium,Punjab
-Nadeem Talpur,0330-3266341,rice,10,Kharif,Gujranwala,Medium,Punjab
-Babar Rehman,0331-3122417,cotton,44,Both,Nawabshah,Medium,Sindh
-Tariq Ahmed,0311-1442703,wheat,5,Rabi,Pakpattan,Small,Punjab
-Kashif Lashari,0334-0512046,wheat,35,Rabi,Okara,Medium,Punjab
-Bilal Qureshi,0325-7303718,cotton,36,Kharif,Okara,Medium,Punjab
-Ali Nawaz,0316-7435031,wheat,32,Rabi,Multan,Medium,Punjab
-Adeel Qureshi,0300-0979251,wheat,36,Both,Gujranwala,Medium,Punjab
-Ayesha Bhatti,0303-5281273,wheat,40,Rabi,Hyderabad,Medium,Sindh
-Fawad Ahmed,0325-5240778,wheat,49,Both,Gujranwala,Medium,Punjab
-Noman Rehman,0345-8218274,sugarcane,39,Kharif,Lahore,Medium,Punjab
-Rizwan Ahmed,0346-5935186,wheat,48,Both,Rahim Yar Khan,Medium,Punjab
-Sohail Cheema,0307-1810220,wheat,36,Rabi,Lahore,Medium,Punjab
-Kashif Bajwa,0303-5391037,sunflower,15,Rabi,Lahore,Medium,Punjab
-Sohail Lashari,0303-9480141,canola,19,Rabi,Sahiwal,Medium,Punjab
-Jamil Qureshi,0343-2886195,cotton,99,Both,Sukkur,Large,Sindh
-Adeel Warraich,0349-2897558,tobacco,6,Rabi,Nawabshah,Small,Sindh
-Arsalan Qureshi,0343-8368457,rice,15,Kharif,Lahore,Medium,Punjab
-Jamil Butt,0320-0433504,sunflower,10,Both,Gujranwala,Medium,Punjab
-Hamza Gujjar,0308-4593344,wheat,30,Rabi,Sahiwal,Medium,Punjab
-Farhan Sheikh,0336-9194096,wheat,8,Rabi,Swabi,Small,KPK
-Sohail Nawaz,0314-9060480,wheat,41,Rabi,Rahim Yar Khan,Medium,Punjab
-Adeel Laghari,0345-9813646,wheat,26,Rabi,Gujranwala,Medium,Punjab
-Yasir Jatoi,0330-8622783,rice,23,Kharif,Rahim Yar Khan,Medium,Punjab
-Majid Qureshi,0304-4659116,rice,14,Kharif,Pakpattan,Medium,Punjab
-Haroon Dogar,0323-9792703,wheat,28,Both,Faisalabad,Medium,Punjab
-Arshad Gujjar,0318-0514770,wheat,39,Rabi,Rahim Yar Khan,Medium,Punjab
-Farhan Gujjar,0349-0698042,wheat,17,Both,Mirpur Khas,Medium,Sindh
-Muhammad Choudhary,0325-4510463,canola,19,Rabi,Peshawar,Medium,KPK
-Saeed Jatoi,0311-3878003,sunflower,6,Rabi,Vehari,Small,Punjab
-Hamza Gondal,0347-4384046,maize,2,Kharif,Swabi,Small,KPK
-Adeel Butt,0305-6893639,wheat,24,Rabi,Swabi,Medium,KPK
-Kamran Khokhar,0308-4826292,wheat,40,Both,Faisalabad,Medium,Punjab
-Zafar Ahmed,0321-6647423,wheat,16,Rabi,Gujranwala,Medium,Punjab
-Arshad Mughal,0345-3305172,rice,22,Both,Pakpattan,Medium,Punjab
-Farhan Butt,0310-3306046,wheat,47,Both,Mardan,Medium,KPK
-Iqra Khattak,0321-7366096,sugarcane,30,Kharif,Khairpur,Medium,Sindh
-Ali Shah,0333-7038860,cotton,76,Both,Sukkur,Large,Sindh
-Haroon Lodhi,0334-2649082,rice,23,Both,Rahim Yar Khan,Medium,Punjab
-Rashid Butt,0330-6570279,maize,8,Kharif,Peshawar,Small,KPK
-Asif Nawaz,0305-1751868,cotton,30,Both,Vehari,Medium,Punjab
-Junaid Gujjar,0310-2206447,wheat,16,Rabi,Multan,Medium,Punjab
-Yasir Khan,0334-7780973,wheat,47,Rabi,Vehari,Medium,Punjab
-Muhammad Qureshi,0342-4983022,wheat,27,Rabi,Lahore,Medium,Punjab
-Haroon Warraich,0305-0162249,cotton,99,Both,Rahim Yar Khan,Large,Punjab
-Iqbal Lashari,0302-1455616,maize,4,Both,Multan,Small,Punjab
-Nida Junejo,0340-3390198,tobacco,8,Rabi,Mirpur Khas,Small,Sindh
-Bushra Talpur,0345-5489952,cotton,73,Both,Bahawalpur,Large,Punjab
-Arshad Mughal,0318-3010713,sugarcane,31,Both,Pakpattan,Medium,Punjab
-Naveed Khan,0347-3441448,rice,27,Both,Pakpattan,Medium,Punjab
-Arshad Ahmed,0311-3557702,rice,23,Kharif,Rahim Yar Khan,Medium,Punjab
-Sohail Bhatti,0340-4958803,cotton,52,Both,Hyderabad,Large,Sindh
-Ahmad Warraich,0325-8299629,wheat,24,Rabi,Hyderabad,Medium,Sindh
-Sajid Khattak,0315-5743842,wheat,7,Rabi,Sukkur,Small,Sindh
-Farhan Gujjar,0312-5784521,maize,18,Both,Larkana,Medium,Sindh
-Irfan Nawaz,0300-4091570,wheat,47,Rabi,Sukkur,Medium,Sindh
-Naveed Cheema,0312-3448571,wheat,15,Rabi,Lahore,Medium,Punjab
-Usman Gill,0341-5854249,wheat,9,Rabi,Pakpattan,Small,Punjab
-Ahmad Yousafzai,0303-1601662,sugarcane,33,Both,Hyderabad,Medium,Sindh
-Rashid Jatoi,0334-9217174,cotton,100,Both,Nawabshah,Large,Sindh
-Arshad Bajwa,0324-6255770,wheat,12,Rabi,Bahawalpur,Medium,Punjab
-Hamza Butt,0337-1615814,rice,15,Kharif,Sahiwal,Medium,Punjab
-Farhan Tarar,0304-5396695,rice,10,Kharif,Faisalabad,Medium,Punjab
-Kashif Nawaz,0344-9758172,wheat,30,Rabi,Faisalabad,Medium,Punjab
-Irfan Cheema,0336-0132902,cotton,67,Kharif,Vehari,Large,Punjab
-Naveed Cheema,0320-9465190,cotton,75,Kharif,Multan,Large,Punjab
-Nadeem Bhatti,0300-8514036,sugarcane,30,Kharif,Khairpur,Medium,Sindh
-Rashid Gill,0349-2723865,maize,6,Both,Multan,Small,Punjab
-Ahmad Gujjar,0336-6212679,sunflower,11,Rabi,Rahim Yar Khan,Medium,Punjab
-Irfan Gondal,0314-2690973,sugarcane,22,Kharif,Rahim Yar Khan,Medium,Punjab
-Ali Yousafzai,0324-1971284,rice,5,Both,Gujranwala,Small,Punjab
-Imran Wattoo,0346-0580778,sunflower,11,Rabi,Nawabshah,Medium,Sindh
-Bushra Lodhi,0310-0949407,cotton,83,Kharif,Okara,Large,Punjab
-Babar Khattak,0305-2814429,wheat,21,Rabi,Faisalabad,Medium,Punjab
-Humaira Gujjar,0349-7524372,sugarcane,7,Kharif,Faisalabad,Small,Punjab
-Zafar Khattak,0331-6372395,wheat,21,Both,Sukkur,Medium,Sindh
-Farhan Wattoo,0335-8366742,rice,16,Kharif,Bahawalpur,Medium,Punjab
-Jamil Malik,0306-8569454,wheat,11,Rabi,Gujranwala,Medium,Punjab
-Majid Khokhar,0340-5258001,wheat,11,Rabi,Bahawalpur,Medium,Punjab
-Yasir Khokhar,0302-0910939,cotton,100,Kharif,Peshawar,Large,KPK
-Akram Sheikh,0307-2447174,sugarcane,25,Both,Faisalabad,Medium,Punjab
-Irfan Warraich,0303-4427173,cotton,32,Both,Sukkur,Medium,Sindh
-Naveed Shah,0333-4101194,sugarcane,6,Kharif,Mardan,Small,KPK
-Ali Tarar,0317-2569087,rice,15,Kharif,Sukkur,Medium,Sindh
-Farhan Nawaz,0343-8554601,rice,30,Kharif,Peshawar,Medium,KPK
-Babar Khokhar,0311-8063461,cotton,55,Kharif,Bahawalpur,Large,Punjab
-Fawad Ahmed,0344-3761847,rice,29,Both,Sukkur,Medium,Sindh
-Ali Mahar,0307-3878293,sunflower,2,Rabi,Nawabshah,Small,Sindh
-Arshad Malik,0315-2020417,cotton,85,Both,Faisalabad,Large,Punjab
-Arshad Mughal,0304-3656519,rice,13,Kharif,Larkana,Medium,Sindh
-Junaid Choudhary,0307-4262582,rice,21,Kharif,Faisalabad,Medium,Punjab
-Irfan Dogar,0301-7100219,maize,15,Kharif,Nawabshah,Medium,Sindh
-Shehzad Laghari,0331-3290927,cotton,21,Both,Hyderabad,Medium,Sindh
-Majid Khokhar,0307-8195883,rice,23,Both,Hyderabad,Medium,Sindh
-Zafar Yousafzai,0336-2200543,rice,13,Both,Nawabshah,Medium,Sindh
-Rashid Sheikh,0310-0781137,cotton,51,Both,Pakpattan,Large,Punjab
-Faisal Shah,0315-6363179,rice,16,Kharif,Gujranwala,Medium,Punjab
-Kamran Abbasi,0312-5435209,wheat,13,Rabi,Bahawalpur,Medium,Punjab
-Junaid Mughal,0318-9292983,wheat,38,Rabi,Sahiwal,Medium,Punjab
-Shehzad Khan,0332-3356939,canola,3,Both,Lahore,Small,Punjab
-Shahid Malik,0332-8671773,wheat,5,Rabi,Nawabshah,Small,Sindh
-Babar Qureshi,0348-1074279,sugarcane,6,Kharif,Charsadda,Small,KPK
-Shazia Sheikh,0324-7016580,wheat,22,Rabi,Mirpur Khas,Medium,Sindh
-Sajid Warraich,0303-8501657,cotton,56,Kharif,Rahim Yar Khan,Large,Punjab
-Naveed Butt,0322-3817933,wheat,22,Both,Vehari,Medium,Punjab
-Hamza Laghari,0336-8817884,rice,14,Kharif,Khairpur,Medium,Sindh
-Zainab Khokhar,0334-1162411,wheat,12,Both,Nawabshah,Medium,Sindh
-Ahmad Lodhi,0331-8275670,wheat,9,Rabi,Sahiwal,Small,Punjab
-Junaid Junejo,0344-5579887,rice,21,Both,Okara,Medium,Punjab
-Farhan Lashari,0318-0254729,sunflower,13,Rabi,Multan,Medium,Punjab
-Zafar Dogar,0315-1059274,rice,9,Kharif,Lahore,Small,Punjab
-Sadia Lashari,0333-8284106,sunflower,14,Rabi,Bahawalpur,Medium,Punjab
-Rashid Warraich,0348-4749297,wheat,12,Both,Sukkur,Medium,Sindh
-Haroon Ahmed,0330-9375150,cotton,34,Kharif,Sahiwal,Medium,Punjab
-Fawad Ahmed,0305-8718637,wheat,43,Rabi,Lahore,Medium,Punjab
-Zafar Talpur,0324-6504554,canola,20,Rabi,Bahawalpur,Medium,Punjab
-Amjad Lodhi,0310-6629912,wheat,35,Both,Swabi,Medium,KPK
-Shazia Jatoi,0300-6462879,sugarcane,13,Both,Vehari,Medium,Punjab
-Haroon Wattoo,0336-8730024,wheat,45,Both,Nawabshah,Medium,Sindh
-Babar Junejo,0311-7301471,cotton,56,Both,Gujranwala,Large,Punjab
-Farhan Nawaz,0324-8904290,wheat,34,Rabi,Mardan,Medium,KPK
-Waseem Junejo,0347-5044818,wheat,45,Rabi,Faisalabad,Medium,Punjab
-Arsalan Cheema,0320-4518952,wheat,38,Rabi,Bahawalpur,Medium,Punjab
-Maryam Shah,0313-2833898,maize,19,Kharif,Sukkur,Medium,Sindh
-Amina Butt,0301-7545279,rice,13,Both,Okara,Medium,Punjab
-Faisal Butt,0309-3423216,cotton,24,Kharif,Bahawalpur,Medium,Punjab
-Usman Malik,0349-8907140,wheat,47,Rabi,Faisalabad,Medium,Punjab
-Sana Khokhar,0311-5012495,rice,30,Both,Gujranwala,Medium,Punjab
-Usman Khan,0340-3342801,sunflower,10,Rabi,Charsadda,Medium,KPK
-Amjad Shah,0311-5663836,wheat,25,Rabi,Faisalabad,Medium,Punjab
-Waseem Lodhi,0342-0157164,rice,26,Both,Bahawalpur,Medium,Punjab
-Zahid Khokhar,0304-7520716,rice,24,Both,Sukkur,Medium,Sindh
-Iqbal Shah,0310-1535396,wheat,32,Rabi,Hyderabad,Medium,Sindh
-Iqbal Rehman,0348-6579678,wheat,34,Rabi,Okara,Medium,Punjab
-Kamran Ahmed,0306-0170269,cotton,29,Both,Gujranwala,Medium,Punjab
-Jamil Khattak,0334-3477848,wheat,39,Rabi,Lahore,Medium,Punjab
-Amina Tarar,0333-5677002,cotton,48,Kharif,Mardan,Medium,KPK
-Irfan Khattak,0307-9788977,cotton,30,Both,Vehari,Medium,Punjab
-Irfan Gondal,0318-5009025,wheat,42,Rabi,Pakpattan,Medium,Punjab
-Hamza Junejo,0323-0333491,sunflower,3,Rabi,Peshawar,Small,KPK
-Arsalan Malik,0334-6986407,cotton,50,Both,Vehari,Medium,Punjab
-Kashif Shah,0313-5785294,rice,16,Kharif,Faisalabad,Medium,Punjab
-Babar Bajwa,0303-4963919,wheat,26,Rabi,Gujranwala,Medium,Punjab
-Naveed Gondal,0304-4846853,rice,11,Kharif,Nawabshah,Medium,Sindh
-Ahmad Sheikh,0343-7374896,sunflower,13,Both,Mirpur Khas,Medium,Sindh
-Majid Gujjar,0320-6651364,maize,7,Kharif,Gujranwala,Small,Punjab
-Zafar Khokhar,0301-3477866,cotton,14,Both,Okara,Medium,Punjab
-Shehzad Sheikh,0348-0700159,wheat,9,Rabi,Charsadda,Small,KPK
-Sajid Mahar,0308-3198189,canola,19,Both,Faisalabad,Medium,Punjab
-Arsalan Warraich,0344-6363212,wheat,22,Rabi,Okara,Medium,Punjab
-Rashid Lashari,0307-5867342,rice,25,Both,Okara,Medium,Punjab
-Sobia Malik,0349-0348645,sunflower,12,Rabi,Sahiwal,Medium,Punjab
-Adeel Bajwa,0320-1343275,maize,15,Kharif,Hyderabad,Medium,Sindh
-Kashif Yousafzai,0331-5612481,rice,22,Kharif,Mirpur Khas,Medium,Sindh
-Ahmad Bhatti,0348-2720634,wheat,10,Rabi,Sahiwal,Medium,Punjab
-Ayesha Butt,0345-6577242,cotton,51,Both,Larkana,Large,Sindh
-Adeel Tarar,0343-3008931,canola,9,Both,Multan,Small,Punjab
-Saeed Bajwa,0309-1529108,rice,17,Both,Nawabshah,Medium,Sindh
-Fawad Rehman,0318-7626393,tobacco,5,Rabi,Larkana,Small,Sindh
-Zafar Ahmed,0318-4397359,cotton,68,Both,Bahawalpur,Large,Punjab
-Adeel Gill,0325-6941180,wheat,20,Rabi,Pakpattan,Medium,Punjab
-Sobia Malik,0300-4896465,wheat,40,Both,Multan,Medium,Punjab
-Junaid Abbasi,0308-1586241,wheat,13,Rabi,Okara,Medium,Punjab
-Bushra Bajwa,0346-4856257,sugarcane,14,Both,Bahawalpur,Medium,Punjab
-Faisal Sheikh,0302-7427617,wheat,27,Rabi,Charsadda,Medium,KPK
-Zafar Nawaz,0323-1342284,cotton,94,Kharif,Gujranwala,Large,Punjab
-Akram Sheikh,0331-1371504,cotton,97,Both,Pakpattan,Large,Punjab
-Nida Gujjar,0301-1777490,wheat,7,Rabi,Nawabshah,Small,Sindh
-Akram Butt,0313-0450189,rice,15,Kharif,Sahiwal,Medium,Punjab
-Zainab Ahmed,0313-2664214,rice,16,Kharif,Hyderabad,Medium,Sindh
-Hamza Shah,0324-8377674,cotton,64,Kharif,Vehari,Large,Punjab
-Zahid Talpur,0305-0857327,rice,23,Kharif,Okara,Medium,Punjab
-Farhan Wattoo,0309-2438649,wheat,9,Rabi,Peshawar,Small,KPK
-Noman Bajwa,0323-4918017,wheat,16,Both,Sukkur,Medium,Sindh
-Bushra Cheema,0344-7794523,wheat,43,Rabi,Faisalabad,Medium,Punjab
-Adeel Nawaz,0300-2776974,cotton,88,Kharif,Vehari,Large,Punjab
-Kamran Khan,0312-1030372,cotton,65,Both,Mirpur Khas,Large,Sindh
-Noman Gujjar,0335-6012277,rice,30,Both,Sahiwal,Medium,Punjab
-Adeel Bhatti,0322-0166799,sugarcane,23,Kharif,Vehari,Medium,Punjab
-Arshad Khattak,0314-0806958,wheat,46,Both,Bahawalpur,Medium,Punjab
+Ahmad Rehman,0315-3218196,wheat,10,Rabi,Rahim Yar Khan,Medium,Rahim Yar Khan
+Rashid Junejo,0314-7940265,wheat,18,Rabi,Swabi,Medium,Swabi
+Hamza Gondal,0345-4078161,cotton,90,Kharif,Hyderabad,Large,Hyderabad
+Ali Mughal,0318-1316475,wheat,27,Rabi,Okara,Medium,Okara
+Imran Dogar,0341-3276483,cotton,17,Kharif,Lahore,Medium,Lahore
+Imran Gill,0343-5376724,wheat,40,Rabi,Gujranwala,Medium,Gujranwala
+Waseem Mughal,0308-8710122,sugarcane,32,Kharif,Vehari,Medium,Vehari
+Uzma Bajwa,0342-0184514,rice,17,Kharif,Okara,Medium,Okara
+Shahid Shah,0347-4893252,rice,27,Kharif,Peshawar,Medium,Peshawar
+Bilal Lashari,0320-3039117,sugarcane,39,Kharif,Larkana,Medium,Larkana
+Maryam Bajwa,0340-9638346,tobacco,6,Rabi,Rahim Yar Khan,Small,Rahim Yar Khan
+Imran Warraich,0301-9839301,sugarcane,8,Kharif,Lahore,Small,Lahore
+Majid Rehman,0349-7382997,wheat,35,Rabi,Larkana,Medium,Larkana
+Hamza Talpur,0331-7010651,wheat,17,Rabi,Multan,Medium,Multan
+Majid Choudhary,0333-8108013,wheat,36,Rabi,Vehari,Medium,Vehari
+Muhammad Tarar,0316-7468723,wheat,8,Rabi,Rahim Yar Khan,Small,Rahim Yar Khan
+Tariq Yousafzai,0337-8208121,cotton,96,Rabi,Charsadda,Large,Charsadda
+Hina Malik,0346-1699854,wheat,50,Rabi,Okara,Medium,Okara
+Haroon Abbasi,0321-1079911,rice,19,Kharif,Pakpattan,Medium,Pakpattan
+Kiran Lodhi,0310-7849808,wheat,47,Kharif,Multan,Medium,Multan
+Humaira Gujjar,0317-4935348,rice,30,Kharif,Vehari,Medium,Vehari
+Junaid Butt,0347-4278680,wheat,49,Rabi,Peshawar,Medium,Peshawar
+Zafar Talpur,0308-0450533,cotton,55,Kharif,Nawabshah,Large,Nawabshah
+Majid Dogar,0311-6025634,wheat,49,Rabi,Lahore,Medium,Lahore
+Noman Gondal,0320-3303654,maize,10,Kharif,Rahim Yar Khan,Medium,Rahim Yar Khan
+Farah Warraich,0301-1429401,cotton,54,Rabi,Hyderabad,Large,Hyderabad
+Amina Tarar,0343-3406088,cotton,95,Rabi,Vehari,Large,Vehari
+Junaid Cheema,0349-1484656,cotton,80,Kharif,Vehari,Large,Vehari
+Rizwan Wattoo,0330-8044369,cotton,51,Kharif,Bahawalpur,Large,Bahawalpur
+Asif Jatoi,0318-8951343,sugarcane,14,Kharif,Sahiwal,Medium,Sahiwal
+Imran Abbasi,0331-9367632,cotton,10,Kharif,Peshawar,Medium,Peshawar
+Jamil Abbasi,0303-8317278,tobacco,10,Rabi,Bahawalpur,Medium,Bahawalpur
+Shahid Talpur,0342-7277434,sugarcane,38,Rabi,Sahiwal,Medium,Sahiwal
+Babar Qureshi,0317-5581223,rice,7,Kharif,Sukkur,Small,Sukkur
+Noman Junejo,0303-3669096,rice,14,Kharif,Vehari,Medium,Vehari
+Saima Mughal,0336-3467065,cotton,61,Kharif,Nawabshah,Large,Nawabshah
+Farah Ahmed,0330-9901627,wheat,21,Rabi,Sahiwal,Medium,Sahiwal
+Irfan Rehman,0331-4170805,wheat,9,Kharif,Khairpur,Small,Khairpur
+Majid Khokhar,0301-9232719,canola,17,Rabi,Hyderabad,Medium,Hyderabad
+Bilal Dogar,0320-1904966,canola,9,Rabi,Sahiwal,Small,Sahiwal
+Saeed Nawaz,0343-0586518,cotton,11,Rabi,Nawabshah,Medium,Nawabshah
+Ayesha Abbasi,0309-6284987,rice,29,Rabi,Hyderabad,Medium,Hyderabad
+Sajid Rehman,0333-3799650,rice,13,Kharif,Sahiwal,Medium,Sahiwal
+Shehzad Rehman,0342-0831367,cotton,40,Kharif,Khairpur,Medium,Khairpur
+Ahmad Jatoi,0318-3634957,cotton,54,Kharif,Rahim Yar Khan,Large,Rahim Yar Khan
+Shehzad Wattoo,0316-3135182,wheat,35,Rabi,Gujranwala,Medium,Gujranwala
+Babar Shah,0312-4352408,wheat,7,Rabi,Swabi,Small,Swabi
+Kashif Shah,0300-9477752,canola,11,Rabi,Charsadda,Medium,Charsadda
+Kashif Choudhary,0343-0229413,wheat,31,Kharif,Mirpur Khas,Medium,Mirpur Khas
+Amjad Laghari,0320-9649909,canola,6,Rabi,Mardan,Small,Mardan
+Sajid Dogar,0315-2812067,cotton,70,Kharif,Sahiwal,Large,Sahiwal
+Noman Choudhary,0314-4936183,cotton,44,Kharif,Sukkur,Medium,Sukkur
+Saeed Lodhi,0333-1746488,rice,5,Kharif,Vehari,Small,Vehari
+Ahmad Jatoi,0314-9904902,rice,23,Rabi,Okara,Medium,Okara
+Kashif Jatoi,0335-5655125,rice,18,Kharif,Vehari,Medium,Vehari
+Noman Jatoi,0321-4516808,rice,4,Kharif,Pakpattan,Small,Pakpattan
+Amjad Bhatti,0313-4824771,wheat,45,Rabi,Larkana,Medium,Larkana
+Muhammad Junejo,0305-3171274,rice,11,Kharif,Bahawalpur,Medium,Bahawalpur
+Nadeem Gujjar,0325-3982146,wheat,37,Kharif,Lahore,Medium,Lahore
+Iqbal Khattak,0309-7875588,rice,13,Kharif,Mardan,Medium,Mardan
+Sohail Malik,0321-7662702,rice,21,Kharif,Faisalabad,Medium,Faisalabad
+Jamil Abbasi,0300-2621745,cotton,60,Kharif,Hyderabad,Large,Hyderabad
+Shazia Cheema,0347-7809134,tobacco,2,Rabi,Faisalabad,Small,Faisalabad
+Usman Laghari,0310-4005045,rice,7,Kharif,Vehari,Small,Vehari
+Asif Sheikh,0305-9693792,wheat,45,Rabi,Okara,Medium,Okara
+Iqra Lodhi,0341-2175946,cotton,68,Kharif,Larkana,Large,Larkana
+Amina Qureshi,0325-9594406,wheat,41,Rabi,Peshawar,Medium,Peshawar
+Babar Mughal,0345-5339421,sunflower,12,Rabi,Bahawalpur,Medium,Bahawalpur
+Kamran Jatoi,0318-5623285,rice,11,Kharif,Hyderabad,Medium,Hyderabad
+Bushra Warraich,0307-7123685,wheat,30,Kharif,Rahim Yar Khan,Medium,Rahim Yar Khan
+Yasir Tarar,0347-5137098,wheat,44,Rabi,Faisalabad,Medium,Faisalabad
+Haroon Junejo,0307-2004711,wheat,39,Rabi,Bahawalpur,Medium,Bahawalpur
+Mehwish Junejo,0344-2617964,wheat,28,Rabi,Bahawalpur,Medium,Bahawalpur
+Amina Lashari,0341-5064317,wheat,18,Rabi,Mirpur Khas,Medium,Mirpur Khas
+Junaid Qureshi,0308-9318393,sugarcane,19,Kharif,Multan,Medium,Multan
+Shehzad Gujjar,0308-8421020,rice,28,Kharif,Pakpattan,Medium,Pakpattan
+Kamran Junejo,0340-1177589,wheat,37,Kharif,Gujranwala,Medium,Gujranwala
+Jamil Wattoo,0334-0076617,sugarcane,33,Kharif,Faisalabad,Medium,Faisalabad
+Kamran Rehman,0346-9856984,rice,22,Kharif,Faisalabad,Medium,Faisalabad
+Nadeem Gill,0332-7365766,sugarcane,25,Kharif,Okara,Medium,Okara
+Farhan Choudhary,0305-1161528,wheat,40,Rabi,Faisalabad,Medium,Faisalabad
+Saima Bhatti,0318-9451983,wheat,35,Rabi,Faisalabad,Medium,Faisalabad
+Bilal Rehman,0343-3689980,cotton,94,Kharif,Hyderabad,Large,Hyderabad
+Haroon Warraich,0323-0229612,sugarcane,6,Kharif,Rahim Yar Khan,Small,Rahim Yar Khan
+Junaid Dogar,0324-4599102,wheat,44,Kharif,Faisalabad,Medium,Faisalabad
+Kashif Laghari,0331-4381561,wheat,48,Rabi,Rahim Yar Khan,Medium,Rahim Yar Khan
+Adeel Bhatti,0300-3432445,wheat,36,Kharif,Larkana,Medium,Larkana
+Faisal Gondal,0304-6060715,cotton,83,Kharif,Vehari,Large,Vehari
+Arsalan Dogar,0346-7516136,cotton,77,Kharif,Okara,Large,Okara
+Asif Choudhary,0337-1883552,wheat,14,Rabi,Multan,Medium,Multan
+Imran Sheikh,0347-7799799,wheat,45,Rabi,Bahawalpur,Medium,Bahawalpur
+Haroon Rehman,0344-0581477,wheat,28,Rabi,Sukkur,Medium,Sukkur
+Zainab Tarar,0334-9807935,cotton,74,Rabi,Lahore,Large,Lahore
+Junaid Jatoi,0337-2037788,cotton,56,Kharif,Okara,Large,Okara
+Saeed Bhatti,0347-5151864,wheat,47,Kharif,Mardan,Medium,Mardan
+Zafar Gondal,0320-6291486,cotton,52,Kharif,Khairpur,Large,Khairpur
+Nazia Jatoi,0348-6850542,canola,13,Kharif,Charsadda,Medium,Charsadda
+Sadia Choudhary,0318-1888059,wheat,29,Rabi,Multan,Medium,Multan
+Asif Laghari,0302-6537947,wheat,20,Rabi,Bahawalpur,Medium,Bahawalpur
+Akram Laghari,0334-4688623,sugarcane,13,Kharif,Peshawar,Medium,Peshawar
+Farah Shah,0340-1412478,wheat,32,Rabi,Sahiwal,Medium,Sahiwal
+Fatima Junejo,0303-6853615,wheat,25,Rabi,Swabi,Medium,Swabi
+Babar Yousafzai,0308-7790104,wheat,14,Rabi,Gujranwala,Medium,Gujranwala
+Babar Qureshi,0320-1036971,wheat,36,Rabi,Lahore,Medium,Lahore
+Zafar Lodhi,0332-0953962,cotton,20,Rabi,Pakpattan,Medium,Pakpattan
+Shahid Ahmed,0325-7065405,sugarcane,27,Kharif,Faisalabad,Medium,Faisalabad
+Junaid Butt,0302-5852772,sugarcane,9,Kharif,Nawabshah,Small,Nawabshah
+Fawad Malik,0321-4868740,sugarcane,17,Kharif,Lahore,Medium,Lahore
+Bilal Lashari,0332-6765277,rice,28,Kharif,Faisalabad,Medium,Faisalabad
+Saeed Sheikh,0341-4511544,rice,25,Kharif,Bahawalpur,Medium,Bahawalpur
+Hamza Talpur,0317-0165820,wheat,43,Rabi,Nawabshah,Medium,Nawabshah
+Waseem Lashari,0325-9092755,rice,5,Kharif,Rahim Yar Khan,Small,Rahim Yar Khan
+Shehzad Qureshi,0307-0278681,wheat,21,Rabi,Larkana,Medium,Larkana
+Kashif Khokhar,0307-2172715,cotton,100,Rabi,Rahim Yar Khan,Large,Rahim Yar Khan
+Asif Sheikh,0324-8313237,wheat,40,Rabi,Bahawalpur,Medium,Bahawalpur
+Arshad Jatoi,0304-4678669,wheat,25,Rabi,Nawabshah,Medium,Nawabshah
+Kamran Sheikh,0308-6801824,wheat,25,Rabi,Mardan,Medium,Mardan
+Bushra Jatoi,0316-3842498,wheat,46,Rabi,Gujranwala,Medium,Gujranwala
+Saeed Warraich,0343-0010943,sugarcane,31,Kharif,Sukkur,Medium,Sukkur
+Babar Wattoo,0335-3647102,rice,18,Kharif,Pakpattan,Medium,Pakpattan
+Arsalan Gondal,0330-2588153,rice,11,Rabi,Multan,Medium,Multan
+Irfan Junejo,0315-2595327,tobacco,8,Rabi,Okara,Small,Okara
+Adeel Abbasi,0315-3950047,cotton,93,Kharif,Hyderabad,Large,Hyderabad
+Zahid Butt,0316-5650609,cotton,56,Kharif,Faisalabad,Large,Faisalabad
+Nadeem Rehman,0346-9121655,cotton,56,Kharif,Larkana,Large,Larkana
+Ali Malik,0302-2578729,maize,6,Kharif,Gujranwala,Small,Gujranwala
+Arshad Wattoo,0344-5888794,rice,3,Kharif,Faisalabad,Small,Faisalabad
+Ahmad Yousafzai,0316-9930972,rice,26,Kharif,Nawabshah,Medium,Nawabshah
+Ali Nawaz,0312-0756263,rice,27,Kharif,Nawabshah,Medium,Nawabshah
+Tariq Butt,0340-3857865,canola,17,Rabi,Swabi,Medium,Swabi
+Yasir Yousafzai,0312-3484344,sugarcane,36,Kharif,Pakpattan,Medium,Pakpattan
+Humaira Rehman,0318-1986652,wheat,23,Kharif,Peshawar,Medium,Peshawar
+Yasir Yousafzai,0313-3848421,cotton,85,Kharif,Lahore,Large,Lahore
+Faisal Bhatti,0306-6571208,canola,8,Rabi,Bahawalpur,Small,Bahawalpur
+Babar Cheema,0318-0193802,rice,29,Kharif,Lahore,Medium,Lahore
+Kashif Sheikh,0318-0049915,wheat,46,Rabi,Bahawalpur,Medium,Bahawalpur
+Shahid Abbasi,0317-3152742,wheat,26,Rabi,Mirpur Khas,Medium,Mirpur Khas
+Arshad Mahar,0332-8516122,rice,10,Kharif,Vehari,Medium,Vehari
+Junaid Wattoo,0344-9045301,rice,8,Kharif,Rahim Yar Khan,Small,Rahim Yar Khan
+Bushra Nawaz,0347-4593327,wheat,43,Rabi,Rahim Yar Khan,Medium,Rahim Yar Khan
+Naveed Qureshi,0345-1878519,wheat,40,Rabi,Mardan,Medium,Mardan
+Arsalan Laghari,0307-3971870,rice,19,Rabi,Gujranwala,Medium,Gujranwala
+Haroon Ahmed,0330-4039106,wheat,9,Rabi,Lahore,Small,Lahore
+Farhan Malik,0318-6226567,maize,14,Kharif,Rahim Yar Khan,Medium,Rahim Yar Khan
+Amina Sheikh,0341-6823004,rice,26,Kharif,Rahim Yar Khan,Medium,Rahim Yar Khan
+Noman Gondal,0309-4310690,wheat,9,Rabi,Lahore,Small,Lahore
+Tariq Qureshi,0302-6738302,rice,12,Kharif,Gujranwala,Medium,Gujranwala
+Arsalan Qureshi,0320-2836440,cotton,85,Kharif,Mardan,Large,Mardan
+Kashif Bhatti,0323-6856624,rice,27,Kharif,Sahiwal,Medium,Sahiwal
+Zafar Abbasi,0303-8668826,wheat,18,Rabi,Faisalabad,Medium,Faisalabad
+Sajid Khokhar,0303-4699013,sugarcane,40,Kharif,Sahiwal,Medium,Sahiwal
+Muhammad Gill,0312-1739363,cotton,46,Kharif,Rahim Yar Khan,Medium,Rahim Yar Khan
+Waseem Khattak,0334-1753556,wheat,19,Rabi,Sukkur,Medium,Sukkur
+Anum Junejo,0318-2353693,rice,23,Kharif,Swabi,Medium,Swabi
+Kashif Abbasi,0310-5228728,tobacco,1,Rabi,Faisalabad,Small,Faisalabad
+Muhammad Junejo,0308-3120387,rice,22,Kharif,Mirpur Khas,Medium,Mirpur Khas
+Ahmad Khan,0341-8600848,canola,3,Rabi,Vehari,Small,Vehari
+Amina Shah,0340-2339845,wheat,30,Rabi,Vehari,Medium,Vehari
+Faisal Wattoo,0305-0166687,wheat,5,Rabi,Sukkur,Small,Sukkur
+Junaid Shah,0340-0339740,sunflower,12,Rabi,Peshawar,Medium,Peshawar
+Fatima Gill,0344-2614293,cotton,59,Kharif,Mirpur Khas,Large,Mirpur Khas
+Kamran Jatoi,0337-5016315,cotton,88,Kharif,Charsadda,Large,Charsadda
+Shehzad Laghari,0336-3586629,cotton,20,Kharif,Hyderabad,Medium,Hyderabad
+Sajid Rehman,0309-6265511,wheat,24,Rabi,Okara,Medium,Okara
+Zahid Laghari,0342-8861015,cotton,86,Kharif,Pakpattan,Large,Pakpattan
+Sohail Tarar,0305-8398262,wheat,24,Kharif,Multan,Medium,Multan
+Sohail Wattoo,0335-1543799,wheat,11,Rabi,Lahore,Medium,Lahore
+Arshad Tarar,0322-7569245,cotton,98,Kharif,Pakpattan,Large,Pakpattan
+Arsalan Lodhi,0347-7935646,rice,21,Rabi,Rahim Yar Khan,Medium,Rahim Yar Khan
+Ahmad Abbasi,0313-7416724,wheat,47,Rabi,Vehari,Medium,Vehari
+Saeed Yousafzai,0344-6886805,sugarcane,39,Rabi,Faisalabad,Medium,Faisalabad
+Hamza Dogar,0348-9096561,wheat,21,Rabi,Rahim Yar Khan,Medium,Rahim Yar Khan
+Faisal Laghari,0324-6798250,rice,12,Rabi,Faisalabad,Medium,Faisalabad
+Sadia Gondal,0320-5738757,wheat,49,Rabi,Faisalabad,Medium,Faisalabad
+Bilal Ahmed,0322-1238282,wheat,32,Rabi,Mardan,Medium,Mardan
+Rizwan Talpur,0330-0937966,wheat,18,Rabi,Faisalabad,Medium,Faisalabad
+Rashid Sheikh,0324-5371478,canola,13,Rabi,Gujranwala,Medium,Gujranwala
+Hamza Abbasi,0346-2499125,wheat,24,Rabi,Pakpattan,Medium,Pakpattan
+Sohail Butt,0343-6627828,wheat,23,Rabi,Pakpattan,Medium,Pakpattan
+Hamza Khan,0336-2368876,cotton,63,Rabi,Nawabshah,Large,Nawabshah
+Ahmad Mughal,0318-0438427,cotton,73,Rabi,Faisalabad,Large,Faisalabad
+Rashid Lashari,0341-0783613,wheat,7,Rabi,Pakpattan,Small,Pakpattan
+Bilal Qureshi,0313-9596292,sugarcane,18,Kharif,Mirpur Khas,Medium,Mirpur Khas
+Rashid Dogar,0321-4494812,canola,16,Rabi,Swabi,Medium,Swabi
+Kamran Qureshi,0309-5367294,cotton,58,Rabi,Faisalabad,Large,Faisalabad
+Waseem Abbasi,0336-5901751,sugarcane,30,Kharif,Vehari,Medium,Vehari
+Arsalan Lodhi,0322-8929750,wheat,45,Rabi,Nawabshah,Medium,Nawabshah
+Maryam Laghari,0334-0632424,wheat,28,Rabi,Pakpattan,Medium,Pakpattan
+Tariq Mahar,0347-4361103,rice,7,Kharif,Rahim Yar Khan,Small,Rahim Yar Khan
+Junaid Nawaz,0332-2713611,wheat,28,Rabi,Mardan,Medium,Mardan
+Kamran Gujjar,0304-8909275,sugarcane,14,Kharif,Charsadda,Medium,Charsadda
+Usman Butt,0307-9656523,wheat,10,Rabi,Gujranwala,Medium,Gujranwala
+Ahmad Wattoo,0313-8983640,sugarcane,20,Kharif,Faisalabad,Medium,Faisalabad
+Imran Khan,0324-5269658,cotton,70,Kharif,Peshawar,Large,Peshawar
+Yasir Gill,0302-0684866,sugarcane,10,Kharif,Mirpur Khas,Medium,Mirpur Khas
+Haroon Jatoi,0337-3285691,wheat,32,Rabi,Larkana,Medium,Larkana
+Zahid Nawaz,0334-9904210,sugarcane,5,Kharif,Pakpattan,Small,Pakpattan
+Yasir Dogar,0324-2410564,rice,11,Kharif,Mirpur Khas,Medium,Mirpur Khas
+Shahid Lashari,0303-7925241,maize,5,Kharif,Rahim Yar Khan,Small,Rahim Yar Khan
+Fatima Qureshi,0302-7562208,sugarcane,31,Kharif,Sahiwal,Medium,Sahiwal
+Shehzad Choudhary,0343-5180238,tobacco,7,Rabi,Bahawalpur,Small,Bahawalpur
+Haroon Cheema,0305-8705349,sugarcane,20,Kharif,Gujranwala,Medium,Gujranwala
+Sana Qureshi,0309-0603850,canola,3,Rabi,Nawabshah,Small,Nawabshah
+Usman Gill,0340-3670241,wheat,19,Rabi,Charsadda,Medium,Charsadda
+Sajid Shah,0337-2619906,cotton,26,Kharif,Okara,Medium,Okara
+Shazia Cheema,0321-7431329,wheat,11,Kharif,Bahawalpur,Medium,Bahawalpur
+Hamza Gill,0333-4741124,maize,3,Kharif,Pakpattan,Small,Pakpattan
+Hamza Mahar,0337-0442067,cotton,80,Kharif,Bahawalpur,Large,Bahawalpur
+Bilal Khan,0303-3236519,cotton,19,Rabi,Faisalabad,Medium,Faisalabad
+Kamran Jatoi,0322-1070296,maize,14,Kharif,Vehari,Medium,Vehari
+Naveed Sheikh,0317-4720999,wheat,23,Rabi,Rahim Yar Khan,Medium,Rahim Yar Khan
+Irfan Butt,0331-3838065,rice,28,Kharif,Gujranwala,Medium,Gujranwala
+Rizwan Ahmed,0321-9304078,rice,21,Kharif,Mardan,Medium,Mardan
+Shehzad Bhatti,0314-9652239,wheat,49,Rabi,Gujranwala,Medium,Gujranwala
+Akram Gujjar,0343-3784270,wheat,19,Rabi,Sukkur,Medium,Sukkur
+Arshad Khokhar,0308-5250029,sugarcane,14,Kharif,Mirpur Khas,Medium,Mirpur Khas
+Kiran Mahar,0344-1545226,sugarcane,36,Kharif,Larkana,Medium,Larkana
+Arshad Gondal,0314-9264422,sugarcane,30,Kharif,Peshawar,Medium,Peshawar
+Arshad Mughal,0347-9172513,wheat,25,Rabi,Faisalabad,Medium,Faisalabad
+Junaid Laghari,0300-4331541,sugarcane,8,Kharif,Vehari,Small,Vehari
+Sidra Tarar,0323-8617932,rice,28,Kharif,Hyderabad,Medium,Hyderabad
+Usman Choudhary,0322-2621815,cotton,88,Kharif,Peshawar,Large,Peshawar
+Saeed Talpur,0310-0153368,sugarcane,39,Rabi,Okara,Medium,Okara
+Adeel Khattak,0309-0506149,rice,6,Kharif,Multan,Small,Multan
+Sidra Nawaz,0320-6774186,wheat,29,Kharif,Bahawalpur,Medium,Bahawalpur
+Yasir Mughal,0317-9021158,rice,27,Rabi,Rahim Yar Khan,Medium,Rahim Yar Khan
+Jamil Junejo,0341-7937416,sunflower,13,Rabi,Gujranwala,Medium,Gujranwala
+Arshad Gujjar,0307-7223320,rice,24,Kharif,Multan,Medium,Multan
+Imran Jatoi,0325-8685487,sunflower,2,Rabi,Mirpur Khas,Small,Mirpur Khas
+Bilal Junejo,0309-2999119,sugarcane,23,Kharif,Swabi,Medium,Swabi
+Kashif Yousafzai,0302-2462996,wheat,26,Rabi,Sukkur,Medium,Sukkur
+Kiran Ahmed,0322-4447132,wheat,33,Kharif,Hyderabad,Medium,Hyderabad
+Sajid Khokhar,0333-3678508,sugarcane,9,Kharif,Rahim Yar Khan,Small,Rahim Yar Khan
+Jamil Ahmed,0311-3303070,sunflower,13,Rabi,Pakpattan,Medium,Pakpattan
+Bilal Ahmed,0315-5797279,cotton,54,Kharif,Okara,Large,Okara
+Babar Ahmed,0325-0293333,wheat,31,Rabi,Lahore,Medium,Lahore
+Rizwan Khan,0314-4944665,rice,9,Kharif,Rahim Yar Khan,Small,Rahim Yar Khan
+Usman Khan,0337-5899441,rice,13,Kharif,Swabi,Medium,Swabi
+Haroon Khokhar,0309-8309652,sugarcane,36,Kharif,Swabi,Medium,Swabi
+Ali Khokhar,0322-3875842,maize,19,Kharif,Faisalabad,Medium,Faisalabad
+Nadeem Sheikh,0322-1353465,rice,21,Kharif,Faisalabad,Medium,Faisalabad
+Anum Choudhary,0335-3816846,wheat,14,Rabi,Sahiwal,Medium,Sahiwal
+Iqra Gujjar,0321-2175250,wheat,22,Rabi,Multan,Medium,Multan
+Sajid Butt,0346-6666760,wheat,17,Rabi,Sukkur,Medium,Sukkur
+Jamil Khokhar,0301-0335421,rice,21,Kharif,Faisalabad,Medium,Faisalabad
+Babar Abbasi,0340-9856257,rice,9,Kharif,Vehari,Small,Vehari
+Kamran Gill,0301-9821506,maize,10,Rabi,Mirpur Khas,Medium,Mirpur Khas
+Nazia Shah,0348-0016761,rice,18,Kharif,Larkana,Medium,Larkana
+Haroon Junejo,0349-1849926,maize,5,Rabi,Gujranwala,Small,Gujranwala
+Usman Khattak,0312-9348356,wheat,7,Rabi,Sahiwal,Small,Sahiwal
+Majid Khan,0300-1197218,wheat,11,Rabi,Mardan,Medium,Mardan
+Noreen Abbasi,0303-1204556,sugarcane,11,Kharif,Peshawar,Medium,Peshawar
+Asif Warraich,0323-7941552,wheat,30,Rabi,Swabi,Medium,Swabi
+Farhan Junejo,0348-2120216,sunflower,9,Rabi,Khairpur,Small,Khairpur
+Hamza Ahmed,0308-7716701,wheat,25,Rabi,Rahim Yar Khan,Medium,Rahim Yar Khan
+Akram Mughal,0349-5889163,rice,24,Rabi,Nawabshah,Medium,Nawabshah
+Arshad Bhatti,0300-2877217,wheat,26,Rabi,Peshawar,Medium,Peshawar
+Irfan Mahar,0315-1779717,rice,6,Kharif,Peshawar,Small,Peshawar
+Nadeem Khan,0305-9948837,canola,14,Rabi,Larkana,Medium,Larkana
+Arshad Yousafzai,0349-5711305,rice,23,Kharif,Swabi,Medium,Swabi
+Usman Malik,0310-7261493,wheat,30,Rabi,Sahiwal,Medium,Sahiwal
+Sohail Malik,0347-9177982,canola,3,Rabi,Lahore,Small,Lahore
+Iqbal Yousafzai,0337-2922169,cotton,51,Kharif,Vehari,Large,Vehari
+Majid Rehman,0330-5472269,sugarcane,37,Kharif,Rahim Yar Khan,Medium,Rahim Yar Khan
+Nadeem Gill,0312-3945228,rice,23,Kharif,Faisalabad,Medium,Faisalabad
+Iqbal Junejo,0341-4608106,wheat,47,Rabi,Okara,Medium,Okara
+Babar Bajwa,0309-0438057,wheat,48,Rabi,Larkana,Medium,Larkana
+Majid Lodhi,0349-0666580,wheat,21,Rabi,Bahawalpur,Medium,Bahawalpur
+Mehwish Lashari,0344-8933472,tobacco,2,Rabi,Multan,Small,Multan
+Ali Talpur,0317-8422940,wheat,50,Kharif,Peshawar,Medium,Peshawar
+Tariq Wattoo,0336-9851583,canola,19,Kharif,Rahim Yar Khan,Medium,Rahim Yar Khan
+Adeel Jatoi,0323-3355543,canola,19,Rabi,Rahim Yar Khan,Medium,Rahim Yar Khan
+Fatima Nawaz,0349-5739930,cotton,51,Kharif,Faisalabad,Large,Faisalabad
+Babar Ahmed,0340-5887704,maize,8,Kharif,Faisalabad,Small,Faisalabad
+Rashid Khan,0347-1336138,maize,15,Kharif,Sukkur,Medium,Sukkur
+Noman Warraich,0302-1102481,cotton,39,Kharif,Charsadda,Medium,Charsadda
+Zahid Cheema,0301-6180919,wheat,9,Kharif,Rahim Yar Khan,Small,Rahim Yar Khan
+Haroon Jatoi,0318-7660728,wheat,30,Kharif,Mirpur Khas,Medium,Mirpur Khas
+Haroon Lashari,0300-8821009,cotton,78,Kharif,Faisalabad,Large,Faisalabad
+Hamza Gill,0331-8222394,wheat,16,Rabi,Mirpur Khas,Medium,Mirpur Khas
+Farah Abbasi,0348-8141413,sugarcane,36,Kharif,Swabi,Medium,Swabi
+Usman Lodhi,0346-1357759,cotton,98,Kharif,Gujranwala,Large,Gujranwala
+Zahid Dogar,0300-5336452,cotton,52,Kharif,Charsadda,Large,Charsadda
+Kashif Shah,0311-9142834,sugarcane,9,Kharif,Sukkur,Small,Sukkur
+Iqbal Mahar,0344-3084887,cotton,29,Kharif,Sahiwal,Medium,Sahiwal
+Babar Butt,0334-8816580,cotton,88,Rabi,Mirpur Khas,Large,Mirpur Khas
+Akram Gujjar,0335-5037314,rice,4,Kharif,Mirpur Khas,Small,Mirpur Khas
+Farhan Abbasi,0302-0518449,rice,8,Kharif,Vehari,Small,Vehari
+Imran Bajwa,0325-3865577,maize,2,Kharif,Multan,Small,Multan
+Shahid Rehman,0313-2225913,rice,13,Kharif,Nawabshah,Medium,Nawabshah
+Iqbal Dogar,0348-6030299,wheat,45,Rabi,Gujranwala,Medium,Gujranwala
+Rizwan Mahar,0345-9041379,tobacco,8,Rabi,Vehari,Small,Vehari
+Rizwan Bajwa,0310-5799136,rice,6,Kharif,Rahim Yar Khan,Small,Rahim Yar Khan
+Sohail Gujjar,0345-1279908,rice,6,Kharif,Multan,Small,Multan
+Muhammad Talpur,0340-6508637,sugarcane,29,Kharif,Gujranwala,Medium,Gujranwala
+Farhan Mughal,0305-4986430,sugarcane,5,Kharif,Faisalabad,Small,Faisalabad
+Naveed Cheema,0331-5126944,maize,15,Kharif,Gujranwala,Medium,Gujranwala
+Naveed Junejo,0342-8725887,wheat,24,Rabi,Vehari,Medium,Vehari
+Nazia Nawaz,0314-7213865,sugarcane,8,Kharif,Lahore,Small,Lahore
+Farhan Talpur,0305-1435190,sugarcane,30,Kharif,Mirpur Khas,Medium,Mirpur Khas
+Aisha Sheikh,0347-7703843,wheat,43,Rabi,Sahiwal,Medium,Sahiwal
+Waseem Qureshi,0348-0214656,rice,9,Kharif,Faisalabad,Small,Faisalabad
+Nadeem Gondal,0323-4393769,wheat,16,Rabi,Faisalabad,Medium,Faisalabad
+Junaid Nawaz,0337-4894769,rice,10,Kharif,Nawabshah,Medium,Nawabshah
+Fatima Yousafzai,0307-4163356,canola,19,Kharif,Okara,Medium,Okara
+Junaid Choudhary,0342-2755394,wheat,48,Rabi,Mardan,Medium,Mardan
+Majid Bajwa,0313-3339521,wheat,10,Rabi,Khairpur,Medium,Khairpur
+Rashid Malik,0335-5957947,wheat,37,Rabi,Sahiwal,Medium,Sahiwal
+Jamil Talpur,0335-8085627,canola,19,Kharif,Lahore,Medium,Lahore
+Iqbal Shah,0321-5942843,wheat,44,Rabi,Multan,Medium,Multan
+Waseem Lashari,0330-4729293,sugarcane,22,Kharif,Mirpur Khas,Medium,Mirpur Khas
+Zafar Gujjar,0335-0267288,sugarcane,36,Kharif,Rahim Yar Khan,Medium,Rahim Yar Khan
+Usman Dogar,0303-3471754,rice,20,Kharif,Okara,Medium,Okara
+Hamza Khokhar,0343-9824558,rice,26,Kharif,Faisalabad,Medium,Faisalabad
+Zafar Dogar,0347-5699611,wheat,19,Rabi,Okara,Medium,Okara
+Adeel Rehman,0333-5987622,maize,6,Kharif,Khairpur,Small,Khairpur
+Sajid Gill,0310-6111780,wheat,30,Kharif,Faisalabad,Medium,Faisalabad
+Sajid Tarar,0320-3347228,maize,2,Kharif,Pakpattan,Small,Pakpattan
+Farhan Abbasi,0341-4872829,cotton,90,Kharif,Mirpur Khas,Large,Mirpur Khas
+Rashid Wattoo,0323-7831745,rice,7,Kharif,Lahore,Small,Lahore
+Kamran Gondal,0318-7807740,sugarcane,23,Kharif,Lahore,Medium,Lahore
+Nadeem Talpur,0330-3266341,rice,10,Kharif,Gujranwala,Medium,Gujranwala
+Babar Rehman,0331-3122417,cotton,44,Rabi,Nawabshah,Medium,Nawabshah
+Tariq Ahmed,0311-1442703,wheat,5,Rabi,Pakpattan,Small,Pakpattan
+Kashif Lashari,0334-0512046,wheat,35,Rabi,Okara,Medium,Okara
+Bilal Qureshi,0325-7303718,cotton,36,Kharif,Okara,Medium,Okara
+Ali Nawaz,0316-7435031,wheat,32,Rabi,Multan,Medium,Multan
+Adeel Qureshi,0300-0979251,wheat,36,Kharif,Gujranwala,Medium,Gujranwala
+Ayesha Bhatti,0303-5281273,wheat,40,Rabi,Hyderabad,Medium,Hyderabad
+Fawad Ahmed,0325-5240778,wheat,49,Rabi,Gujranwala,Medium,Gujranwala
+Noman Rehman,0345-8218274,sugarcane,39,Kharif,Lahore,Medium,Lahore
+Rizwan Ahmed,0346-5935186,wheat,48,Kharif,Rahim Yar Khan,Medium,Rahim Yar Khan
+Sohail Cheema,0307-1810220,wheat,36,Rabi,Lahore,Medium,Lahore
+Kashif Bajwa,0303-5391037,sunflower,15,Rabi,Lahore,Medium,Lahore
+Sohail Lashari,0303-9480141,canola,19,Rabi,Sahiwal,Medium,Sahiwal
+Jamil Qureshi,0343-2886195,cotton,99,Kharif,Sukkur,Large,Sukkur
+Adeel Warraich,0349-2897558,tobacco,6,Rabi,Nawabshah,Small,Nawabshah
+Arsalan Qureshi,0343-8368457,rice,15,Kharif,Lahore,Medium,Lahore
+Jamil Butt,0320-0433504,sunflower,10,Rabi,Gujranwala,Medium,Gujranwala
+Hamza Gujjar,0308-4593344,wheat,30,Rabi,Sahiwal,Medium,Sahiwal
+Farhan Sheikh,0336-9194096,wheat,8,Rabi,Swabi,Small,Swabi
+Sohail Nawaz,0314-9060480,wheat,41,Rabi,Rahim Yar Khan,Medium,Rahim Yar Khan
+Adeel Laghari,0345-9813646,wheat,26,Rabi,Gujranwala,Medium,Gujranwala
+Yasir Jatoi,0330-8622783,rice,23,Kharif,Rahim Yar Khan,Medium,Rahim Yar Khan
+Majid Qureshi,0304-4659116,rice,14,Kharif,Pakpattan,Medium,Pakpattan
+Haroon Dogar,0323-9792703,wheat,28,Kharif,Faisalabad,Medium,Faisalabad
+Arshad Gujjar,0318-0514770,wheat,39,Rabi,Rahim Yar Khan,Medium,Rahim Yar Khan
+Farhan Gujjar,0349-0698042,wheat,17,Rabi,Mirpur Khas,Medium,Mirpur Khas
+Muhammad Choudhary,0325-4510463,canola,19,Rabi,Peshawar,Medium,Peshawar
+Saeed Jatoi,0311-3878003,sunflower,6,Rabi,Vehari,Small,Vehari
+Hamza Gondal,0347-4384046,maize,2,Kharif,Swabi,Small,Swabi
+Adeel Butt,0305-6893639,wheat,24,Rabi,Swabi,Medium,Swabi
+Kamran Khokhar,0308-4826292,wheat,40,Kharif,Faisalabad,Medium,Faisalabad
+Zafar Ahmed,0321-6647423,wheat,16,Rabi,Gujranwala,Medium,Gujranwala
+Arshad Mughal,0345-3305172,rice,22,Kharif,Pakpattan,Medium,Pakpattan
+Farhan Butt,0310-3306046,wheat,47,Rabi,Mardan,Medium,Mardan
+Iqra Khattak,0321-7366096,sugarcane,30,Kharif,Khairpur,Medium,Khairpur
+Ali Shah,0333-7038860,cotton,76,Kharif,Sukkur,Large,Sukkur
+Haroon Lodhi,0334-2649082,rice,23,Rabi,Rahim Yar Khan,Medium,Rahim Yar Khan
+Rashid Butt,0330-6570279,maize,8,Kharif,Peshawar,Small,Peshawar
+Asif Nawaz,0305-1751868,cotton,30,Kharif,Vehari,Medium,Vehari
+Junaid Gujjar,0310-2206447,wheat,16,Rabi,Multan,Medium,Multan
+Yasir Khan,0334-7780973,wheat,47,Rabi,Vehari,Medium,Vehari
+Muhammad Qureshi,0342-4983022,wheat,27,Rabi,Lahore,Medium,Lahore
+Haroon Warraich,0305-0162249,cotton,99,Rabi,Rahim Yar Khan,Large,Rahim Yar Khan
+Iqbal Lashari,0302-1455616,maize,4,Rabi,Multan,Small,Multan
+Nida Junejo,0340-3390198,tobacco,8,Rabi,Mirpur Khas,Small,Mirpur Khas
+Bushra Talpur,0345-5489952,cotton,73,Kharif,Bahawalpur,Large,Bahawalpur
+Arshad Mughal,0318-3010713,sugarcane,31,Kharif,Pakpattan,Medium,Pakpattan
+Naveed Khan,0347-3441448,rice,27,Rabi,Pakpattan,Medium,Pakpattan
+Arshad Ahmed,0311-3557702,rice,23,Kharif,Rahim Yar Khan,Medium,Rahim Yar Khan
+Sohail Bhatti,0340-4958803,cotton,52,Kharif,Hyderabad,Large,Hyderabad
+Ahmad Warraich,0325-8299629,wheat,24,Rabi,Hyderabad,Medium,Hyderabad
+Sajid Khattak,0315-5743842,wheat,7,Rabi,Sukkur,Small,Sukkur
+Farhan Gujjar,0312-5784521,maize,18,Kharif,Larkana,Medium,Larkana
+Irfan Nawaz,0300-4091570,wheat,47,Rabi,Sukkur,Medium,Sukkur
+Naveed Cheema,0312-3448571,wheat,15,Rabi,Lahore,Medium,Lahore
+Usman Gill,0341-5854249,wheat,9,Rabi,Pakpattan,Small,Pakpattan
+Ahmad Yousafzai,0303-1601662,sugarcane,33,Kharif,Hyderabad,Medium,Hyderabad
+Rashid Jatoi,0334-9217174,cotton,100,Rabi,Nawabshah,Large,Nawabshah
+Arshad Bajwa,0324-6255770,wheat,12,Rabi,Bahawalpur,Medium,Bahawalpur
+Hamza Butt,0337-1615814,rice,15,Kharif,Sahiwal,Medium,Sahiwal
+Farhan Tarar,0304-5396695,rice,10,Kharif,Faisalabad,Medium,Faisalabad
+Kashif Nawaz,0344-9758172,wheat,30,Rabi,Faisalabad,Medium,Faisalabad
+Irfan Cheema,0336-0132902,cotton,67,Kharif,Vehari,Large,Vehari
+Naveed Cheema,0320-9465190,cotton,75,Kharif,Multan,Large,Multan
+Nadeem Bhatti,0300-8514036,sugarcane,30,Kharif,Khairpur,Medium,Khairpur
+Rashid Gill,0349-2723865,maize,6,Rabi,Multan,Small,Multan
+Ahmad Gujjar,0336-6212679,sunflower,11,Rabi,Rahim Yar Khan,Medium,Rahim Yar Khan
+Irfan Gondal,0314-2690973,sugarcane,22,Kharif,Rahim Yar Khan,Medium,Rahim Yar Khan
+Ali Yousafzai,0324-1971284,rice,5,Rabi,Gujranwala,Small,Gujranwala
+Imran Wattoo,0346-0580778,sunflower,11,Rabi,Nawabshah,Medium,Nawabshah
+Bushra Lodhi,0310-0949407,cotton,83,Kharif,Okara,Large,Okara
+Babar Khattak,0305-2814429,wheat,21,Rabi,Faisalabad,Medium,Faisalabad
+Humaira Gujjar,0349-7524372,sugarcane,7,Kharif,Faisalabad,Small,Faisalabad
+Zafar Khattak,0331-6372395,wheat,21,Rabi,Sukkur,Medium,Sukkur
+Farhan Wattoo,0335-8366742,rice,16,Kharif,Bahawalpur,Medium,Bahawalpur
+Jamil Malik,0306-8569454,wheat,11,Rabi,Gujranwala,Medium,Gujranwala
+Majid Khokhar,0340-5258001,wheat,11,Rabi,Bahawalpur,Medium,Bahawalpur
+Yasir Khokhar,0302-0910939,cotton,100,Kharif,Peshawar,Large,Peshawar
+Akram Sheikh,0307-2447174,sugarcane,25,Rabi,Faisalabad,Medium,Faisalabad
+Irfan Warraich,0303-4427173,cotton,32,Rabi,Sukkur,Medium,Sukkur
+Naveed Shah,0333-4101194,sugarcane,6,Kharif,Mardan,Small,Mardan
+Ali Tarar,0317-2569087,rice,15,Kharif,Sukkur,Medium,Sukkur
+Farhan Nawaz,0343-8554601,rice,30,Kharif,Peshawar,Medium,Peshawar
+Babar Khokhar,0311-8063461,cotton,55,Kharif,Bahawalpur,Large,Bahawalpur
+Fawad Ahmed,0344-3761847,rice,29,Rabi,Sukkur,Medium,Sukkur
+Ali Mahar,0307-3878293,sunflower,2,Rabi,Nawabshah,Small,Nawabshah
+Arshad Malik,0315-2020417,cotton,85,Rabi,Faisalabad,Large,Faisalabad
+Arshad Mughal,0304-3656519,rice,13,Kharif,Larkana,Medium,Larkana
+Junaid Choudhary,0307-4262582,rice,21,Kharif,Faisalabad,Medium,Faisalabad
+Irfan Dogar,0301-7100219,maize,15,Kharif,Nawabshah,Medium,Nawabshah
+Shehzad Laghari,0331-3290927,cotton,21,Rabi,Hyderabad,Medium,Hyderabad
+Majid Khokhar,0307-8195883,rice,23,Kharif,Hyderabad,Medium,Hyderabad
+Zafar Yousafzai,0336-2200543,rice,13,Rabi,Nawabshah,Medium,Nawabshah
+Rashid Sheikh,0310-0781137,cotton,51,Kharif,Pakpattan,Large,Pakpattan
+Faisal Shah,0315-6363179,rice,16,Kharif,Gujranwala,Medium,Gujranwala
+Kamran Abbasi,0312-5435209,wheat,13,Rabi,Bahawalpur,Medium,Bahawalpur
+Junaid Mughal,0318-9292983,wheat,38,Rabi,Sahiwal,Medium,Sahiwal
+Shehzad Khan,0332-3356939,canola,3,Kharif,Lahore,Small,Lahore
+Shahid Malik,0332-8671773,wheat,5,Rabi,Nawabshah,Small,Nawabshah
+Babar Qureshi,0348-1074279,sugarcane,6,Kharif,Charsadda,Small,Charsadda
+Shazia Sheikh,0324-7016580,wheat,22,Rabi,Mirpur Khas,Medium,Mirpur Khas
+Sajid Warraich,0303-8501657,cotton,56,Kharif,Rahim Yar Khan,Large,Rahim Yar Khan
+Naveed Butt,0322-3817933,wheat,22,Kharif,Vehari,Medium,Vehari
+Hamza Laghari,0336-8817884,rice,14,Kharif,Khairpur,Medium,Khairpur
+Zainab Khokhar,0334-1162411,wheat,12,Rabi,Nawabshah,Medium,Nawabshah
+Ahmad Lodhi,0331-8275670,wheat,9,Rabi,Sahiwal,Small,Sahiwal
+Junaid Junejo,0344-5579887,rice,21,Rabi,Okara,Medium,Okara
+Farhan Lashari,0318-0254729,sunflower,13,Rabi,Multan,Medium,Multan
+Zafar Dogar,0315-1059274,rice,9,Kharif,Lahore,Small,Lahore
+Sadia Lashari,0333-8284106,sunflower,14,Rabi,Bahawalpur,Medium,Bahawalpur
+Rashid Warraich,0348-4749297,wheat,12,Rabi,Sukkur,Medium,Sukkur
+Haroon Ahmed,0330-9375150,cotton,34,Kharif,Sahiwal,Medium,Sahiwal
+Fawad Ahmed,0305-8718637,wheat,43,Rabi,Lahore,Medium,Lahore
+Zafar Talpur,0324-6504554,canola,20,Rabi,Bahawalpur,Medium,Bahawalpur
+Amjad Lodhi,0310-6629912,wheat,35,Rabi,Swabi,Medium,Swabi
+Shazia Jatoi,0300-6462879,sugarcane,13,Kharif,Vehari,Medium,Vehari
+Haroon Wattoo,0336-8730024,wheat,45,Rabi,Nawabshah,Medium,Nawabshah
+Babar Junejo,0311-7301471,cotton,56,Rabi,Gujranwala,Large,Gujranwala
+Farhan Nawaz,0324-8904290,wheat,34,Rabi,Mardan,Medium,Mardan
+Waseem Junejo,0347-5044818,wheat,45,Rabi,Faisalabad,Medium,Faisalabad
+Arsalan Cheema,0320-4518952,wheat,38,Rabi,Bahawalpur,Medium,Bahawalpur
+Maryam Shah,0313-2833898,maize,19,Kharif,Sukkur,Medium,Sukkur
+Amina Butt,0301-7545279,rice,13,Rabi,Okara,Medium,Okara
+Faisal Butt,0309-3423216,cotton,24,Kharif,Bahawalpur,Medium,Bahawalpur
+Usman Malik,0349-8907140,wheat,47,Rabi,Faisalabad,Medium,Faisalabad
+Sana Khokhar,0311-5012495,rice,30,Rabi,Gujranwala,Medium,Gujranwala
+Usman Khan,0340-3342801,sunflower,10,Rabi,Charsadda,Medium,Charsadda
+Amjad Shah,0311-5663836,wheat,25,Rabi,Faisalabad,Medium,Faisalabad
+Waseem Lodhi,0342-0157164,rice,26,Rabi,Bahawalpur,Medium,Bahawalpur
+Zahid Khokhar,0304-7520716,rice,24,Kharif,Sukkur,Medium,Sukkur
+Iqbal Shah,0310-1535396,wheat,32,Rabi,Hyderabad,Medium,Hyderabad
+Iqbal Rehman,0348-6579678,wheat,34,Rabi,Okara,Medium,Okara
+Kamran Ahmed,0306-0170269,cotton,29,Rabi,Gujranwala,Medium,Gujranwala
+Jamil Khattak,0334-3477848,wheat,39,Rabi,Lahore,Medium,Lahore
+Amina Tarar,0333-5677002,cotton,48,Kharif,Mardan,Medium,Mardan
+Irfan Khattak,0307-9788977,cotton,30,Kharif,Vehari,Medium,Vehari
+Irfan Gondal,0318-5009025,wheat,42,Rabi,Pakpattan,Medium,Pakpattan
+Hamza Junejo,0323-0333491,sunflower,3,Rabi,Peshawar,Small,Peshawar
+Arsalan Malik,0334-6986407,cotton,50,Rabi,Vehari,Medium,Vehari
+Kashif Shah,0313-5785294,rice,16,Kharif,Faisalabad,Medium,Faisalabad
+Babar Bajwa,0303-4963919,wheat,26,Rabi,Gujranwala,Medium,Gujranwala
+Naveed Gondal,0304-4846853,rice,11,Kharif,Nawabshah,Medium,Nawabshah
+Ahmad Sheikh,0343-7374896,sunflower,13,Kharif,Mirpur Khas,Medium,Mirpur Khas
+Majid Gujjar,0320-6651364,maize,7,Kharif,Gujranwala,Small,Gujranwala
+Zafar Khokhar,0301-3477866,cotton,14,Rabi,Okara,Medium,Okara
+Shehzad Sheikh,0348-0700159,wheat,9,Rabi,Charsadda,Small,Charsadda
+Sajid Mahar,0308-3198189,canola,19,Rabi,Faisalabad,Medium,Faisalabad
+Arsalan Warraich,0344-6363212,wheat,22,Rabi,Okara,Medium,Okara
+Rashid Lashari,0307-5867342,rice,25,Kharif,Okara,Medium,Okara
+Sobia Malik,0349-0348645,sunflower,12,Rabi,Sahiwal,Medium,Sahiwal
+Adeel Bajwa,0320-1343275,maize,15,Kharif,Hyderabad,Medium,Hyderabad
+Kashif Yousafzai,0331-5612481,rice,22,Kharif,Mirpur Khas,Medium,Mirpur Khas
+Ahmad Bhatti,0348-2720634,wheat,10,Rabi,Sahiwal,Medium,Sahiwal
+Ayesha Butt,0345-6577242,cotton,51,Kharif,Larkana,Large,Larkana
+Adeel Tarar,0343-3008931,canola,9,Kharif,Multan,Small,Multan
+Saeed Bajwa,0309-1529108,rice,17,Rabi,Nawabshah,Medium,Nawabshah
+Fawad Rehman,0318-7626393,tobacco,5,Rabi,Larkana,Small,Larkana
+Zafar Ahmed,0318-4397359,cotton,68,Kharif,Bahawalpur,Large,Bahawalpur
+Adeel Gill,0325-6941180,wheat,20,Rabi,Pakpattan,Medium,Pakpattan
+Sobia Malik,0300-4896465,wheat,40,Rabi,Multan,Medium,Multan
+Junaid Abbasi,0308-1586241,wheat,13,Rabi,Okara,Medium,Okara
+Bushra Bajwa,0346-4856257,sugarcane,14,Rabi,Bahawalpur,Medium,Bahawalpur
+Faisal Sheikh,0302-7427617,wheat,27,Rabi,Charsadda,Medium,Charsadda
+Zafar Nawaz,0323-1342284,cotton,94,Kharif,Gujranwala,Large,Gujranwala
+Akram Sheikh,0331-1371504,cotton,97,Kharif,Pakpattan,Large,Pakpattan
+Nida Gujjar,0301-1777490,wheat,7,Rabi,Nawabshah,Small,Nawabshah
+Akram Butt,0313-0450189,rice,15,Kharif,Sahiwal,Medium,Sahiwal
+Zainab Ahmed,0313-2664214,rice,16,Kharif,Hyderabad,Medium,Hyderabad
+Hamza Shah,0324-8377674,cotton,64,Kharif,Vehari,Large,Vehari
+Zahid Talpur,0305-0857327,rice,23,Kharif,Okara,Medium,Okara
+Farhan Wattoo,0309-2438649,wheat,9,Rabi,Peshawar,Small,Peshawar
+Noman Bajwa,0323-4918017,wheat,16,Kharif,Sukkur,Medium,Sukkur
+Bushra Cheema,0344-7794523,wheat,43,Rabi,Faisalabad,Medium,Faisalabad
+Adeel Nawaz,0300-2776974,cotton,88,Kharif,Vehari,Large,Vehari
+Kamran Khan,0312-1030372,cotton,65,Rabi,Mirpur Khas,Large,Mirpur Khas
+Noman Gujjar,0335-6012277,rice,30,Rabi,Sahiwal,Medium,Sahiwal
+Adeel Bhatti,0322-0166799,sugarcane,23,Kharif,Vehari,Medium,Vehari
+Arshad Khattak,0314-0806958,wheat,46,Kharif,Bahawalpur,Medium,Bahawalpur
