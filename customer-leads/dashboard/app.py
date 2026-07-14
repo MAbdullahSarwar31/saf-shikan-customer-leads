@@ -1,577 +1,607 @@
-"""AGRON - SAF SHIKAN Admin Portal Friendly Lead Scoring Dashboard.
+"""SAF SHIKAN Farmer Data Portal — AGRON Admin Integration Module.
 
-Designed specifically for seamless integration into the AGRON Admin Dashboard as a single cohesive tab.
-Mirrors the exact visual design system of the AGRON Portal (Screenshots 1, 2, & 3):
-- Soft off-white portal background (#F8FAF9)
-- AGRON page header & typography
-- AGRON console metric cards with colored dot indicators
-- AGRON pill-style tab bar navigation
-- Embedded inline filters and search bar (no sidebar reliance)
+Open-source farmer data directory with filtering, grouping analytics, and export.
+Data source: customers.csv (raw, no preprocessing pipeline).
+Core columns: Name, Phone, Crop_Type, Crop_Area, Season, Region.
+No AI scoring, no lead categories, no ML pipeline required.
 """
 
 import os
 import sys
 import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
 import streamlit as st
+from io import BytesIO
+from openpyxl import Workbook
+from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
+from openpyxl.utils import get_column_letter
 
-# Configure page layout for seamless AGRON Admin Dashboard embedding
+# ─── Page Configuration ──────────────────────────────────────────────────────
 st.set_page_config(
-    page_title="SAF SHIKAN | Customer Leads Intelligence",
-    page_icon="SAF",
+    page_title="SAF SHIKAN | Farmer Data Portal",
+    page_icon="🌾",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
 
-# Resolve project root relative to app.py
+# ─── Path Resolution ──────────────────────────────────────────────────────────
 APP_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.dirname(APP_DIR)
+RAW_DATA_PATH = os.path.join(PROJECT_ROOT, "data", "raw", "customers.csv")
 
-# Add PROJECT_ROOT and components directory to sys.path
-sys.path.append(PROJECT_ROOT)
-sys.path.append(os.path.join(APP_DIR, "components"))
+# ─── AGRON Portal Design System CSS ──────────────────────────────────────────
+st.markdown("""
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-# Import custom components and helpers
-try:
-    from components.charts import (
-        plot_lead_category_distribution,
-        plot_customers_by_region,
-        plot_cluster_scatter_2d,
-        plot_crops_per_cluster,
-        plot_grouped_analytics
-    )
-    from components.tables import (
-        display_leads_table, 
-        generate_excel_bytes,
-        display_grouped_table
-    )
-except ImportError:
-    from dashboard.components.charts import (
-        plot_lead_category_distribution,
-        plot_customers_by_region,
-        plot_cluster_scatter_2d,
-        plot_crops_per_cluster,
-        plot_grouped_analytics
-    )
-    from dashboard.components.tables import (
-        display_leads_table, 
-        generate_excel_bytes,
-        display_grouped_table
-    )
+html, body, [class*="css"], .stApp {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: #F8FAF9 !important;
+    color: #0F172A;
+}
 
-# Inject AGRON Portal Design System CSS
-st.markdown(
-    """
-    <style>
-    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
-    
-    html, body, [class*="css"], .stApp {
-        font-family: 'Inter', 'Outfit', -apple-system, sans-serif;
-        background-color: #F8FAF9 !important;
-        color: #0F172A;
-    }
-    
-    /* Hide extra default Streamlit top padding when embedded */
-    .block-container {
-        padding-top: 1.8rem !important;
-        padding-left: 1.5rem !important;
-        padding-right: 1.5rem !important;
-        padding-bottom: 2.5rem !important;
-        max-width: 100% !important;
-    }
-    
-    /* AGRON Page Header (Screenshot 1 & 2 style) */
-    .agron-page-header {
-        margin-bottom: 24px;
-    }
-    .agron-page-title {
-        font-size: 1.85rem;
-        font-weight: 800;
-        color: #0F172A;
-        margin: 0;
-        letter-spacing: -0.5px;
-        font-family: 'Outfit', sans-serif;
-    }
-    .agron-page-subtitle {
-        font-size: 0.92rem;
-        color: #64748B;
-        margin: 4px 0 0 0;
-        font-weight: 400;
-    }
-    
-    /* AGRON Metric Grid (Screenshot 2 / Console style) */
-    .agron-metric-grid {
-        display: flex;
-        gap: 16px;
-        margin-bottom: 24px;
-        flex-wrap: wrap;
-        width: 100%;
-    }
-    .agron-card {
-        flex: 1;
-        min-width: 220px;
-        background: #FFFFFF;
-        border: 1px solid #E2E8F0;
-        border-radius: 14px;
-        padding: 18px 20px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
-        transition: all 0.2s ease;
-    }
-    .agron-card:hover {
-        border-color: #CBD5E1;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    }
-    .agron-card-label {
-        font-size: 0.72rem;
-        font-weight: 700;
-        color: #64748B;
-        text-transform: uppercase;
-        letter-spacing: 0.6px;
-    }
-    .agron-card-value {
-        font-size: 2.1rem;
-        font-weight: 800;
-        color: #0F172A;
-        margin: 4px 0 6px 0;
-        font-family: 'Outfit', sans-serif;
-        line-height: 1.1;
-    }
-    .agron-card-footer {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 0.78rem;
-        color: #64748B;
-    }
-    .agron-dot {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        display: inline-block;
-        flex-shrink: 0;
-    }
-    .agron-dot.green { background-color: #10B981; }
-    .agron-dot.red { background-color: #EF4444; }
-    .agron-dot.amber { background-color: #F59E0B; }
-    .agron-dot.blue { background-color: #3B82F6; }
-    
-    /* AGRON Pill Navigation Tabs (Matching Screenshot 1 active pill buttons) */
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 8px;
-        background-color: #FFFFFF;
-        padding: 8px 12px;
-        border-radius: 12px;
-        border: 1px solid #E2E8F0;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
-        margin-bottom: 18px;
-    }
-    .stTabs [data-baseweb="tab"] {
-        height: 38px;
-        border-radius: 8px;
-        padding: 0 20px;
-        font-size: 0.88rem;
-        font-weight: 600;
-        color: #64748B;
-        transition: all 0.2s ease;
-    }
-    .stTabs [data-baseweb="tab"]:hover {
-        color: #0F172A;
-        background-color: #F1F5F9;
-    }
-    .stTabs [aria-selected="true"] {
-        background-color: #0C3823 !important;
-        color: #FFFFFF !important;
-        box-shadow: 0 2px 6px rgba(12, 56, 35, 0.2);
-    }
-    
-    /* Container Cards */
-    .agron-section-card {
-        background: #FFFFFF;
-        border: 1px solid #E2E8F0;
-        border-radius: 14px;
-        padding: 22px;
-        margin-bottom: 20px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
-    }
-    .agron-section-title {
-        font-size: 1.15rem;
-        font-weight: 700;
-        color: #0F172A;
-        margin-bottom: 4px;
-    }
-    .agron-section-subtitle {
-        font-size: 0.85rem;
-        color: #64748B;
-        margin-bottom: 16px;
-    }
-    
-    /* Segment Card Styling */
-    .segment-portal-card {
-        background: #FFFFFF;
-        border: 1px solid #E2E8F0;
-        border-radius: 14px;
-        padding: 20px;
-        margin-bottom: 16px;
-        transition: all 0.2s ease;
-    }
-    .segment-portal-card:hover {
-        border-color: #10B981;
-        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.08);
-    }
-    .segment-header-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 10px;
-    }
-    .segment-name {
-        font-size: 1.15rem;
-        font-weight: 700;
-        color: #0F172A;
-        margin: 0;
-    }
-    .segment-pill {
-        font-size: 0.72rem;
-        font-weight: 700;
-        padding: 4px 10px;
-        border-radius: 20px;
-        text-transform: uppercase;
-    }
-    .segment-pill.high {
-        background-color: #FEE2E2;
-        color: #991B1B;
-    }
-    .segment-pill.mod {
-        background-color: #D1FAE5;
-        color: #065F46;
-    }
-    .segment-desc {
-        font-size: 0.86rem;
-        color: #475569;
-        margin-bottom: 14px;
-    }
-    .segment-tags {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-    }
-    .segment-tag {
-        background: #F8FAF9;
-        border: 1px solid #E2E8F0;
-        border-radius: 6px;
-        padding: 5px 10px;
-        font-size: 0.78rem;
-        color: #334155;
-    }
-    
-    /* Mobile Responsiveness */
-    @media screen and (max-width: 768px) {
-        .block-container {
-            padding: 1rem 0.8rem !important;
-        }
-        .agron-metric-grid {
-            flex-direction: column;
-            gap: 12px;
-        }
-        .agron-card {
-            min-width: 100%;
-            width: 100%;
-        }
-        .stTabs [data-baseweb="tab-list"] {
-            flex-wrap: wrap;
-        }
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+.block-container {
+    padding-top: 1.8rem !important;
+    padding-left: 1.6rem !important;
+    padding-right: 1.6rem !important;
+    padding-bottom: 2.5rem !important;
+    max-width: 100% !important;
+}
+
+/* ── Page Header ─────────────────────────────────────── */
+.page-title {
+    font-size: 1.9rem;
+    font-weight: 800;
+    color: #0F172A;
+    margin: 0 0 4px 0;
+    letter-spacing: -0.4px;
+}
+.page-subtitle {
+    font-size: 0.92rem;
+    color: #64748B;
+    margin: 0 0 24px 0;
+    font-weight: 400;
+}
+
+/* ── Stat Cards ──────────────────────────────────────── */
+.stats-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+.stat-card {
+    flex: 1;
+    min-width: 180px;
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    padding: 16px 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    transition: box-shadow 0.2s ease;
+}
+.stat-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+.stat-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    color: #64748B;
+    margin-bottom: 6px;
+}
+.stat-value {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #0F172A;
+    line-height: 1;
+    margin-bottom: 6px;
+}
+.stat-footer {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 0.78rem;
+    color: #64748B;
+}
+.dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; display:inline-block; }
+.dot-green  { background:#10B981; }
+.dot-amber  { background:#F59E0B; }
+.dot-blue   { background:#3B82F6; }
+.dot-purple { background:#8B5CF6; }
+.dot-teal   { background:#14B8A6; }
+.dot-rose   { background:#F43F5E; }
+
+/* ── AGRON Pill Tabs ─────────────────────────────────── */
+.stTabs [data-baseweb="tab-list"] {
+    gap: 6px;
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    padding: 7px 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+.stTabs [data-baseweb="tab"] {
+    height: 36px;
+    border-radius: 8px;
+    padding: 0 18px;
+    font-size: 0.87rem;
+    font-weight: 600;
+    color: #64748B;
+    transition: all 0.18s ease;
+}
+.stTabs [data-baseweb="tab"]:hover {
+    color: #0F172A;
+    background-color: #F1F5F9;
+}
+.stTabs [aria-selected="true"] {
+    background-color: #0C3823 !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 2px 8px rgba(12,56,35,0.25);
+}
+
+/* ── Section Card ────────────────────────────────────── */
+.section-card {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    padding: 20px 22px;
+    margin-bottom: 18px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+.section-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #0F172A;
+    margin: 0 0 4px 0;
+}
+.section-sub {
+    font-size: 0.84rem;
+    color: #64748B;
+    margin: 0 0 14px 0;
+}
+
+/* ── Group Summary Row Cards ─────────────────────────── */
+.group-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border: 1px solid #E2E8F0;
+    border-radius: 10px;
+    background: #FFFFFF;
+    margin-bottom: 10px;
+    transition: border-color 0.2s;
+}
+.group-row:hover { border-color: #10B981; }
+.group-row-label { font-weight: 600; color: #0F172A; font-size: 0.95rem; }
+.group-row-badge {
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+.badge-green { background:#D1FAE5; color:#065F46; }
+.badge-blue  { background:#DBEAFE; color:#1E3A8A; }
+.badge-amber { background:#FEF3C7; color:#92400E; }
+
+/* ── Mobile ──────────────────────────────────────────── */
+@media screen and (max-width: 768px) {
+    .block-container { padding: 1rem 0.8rem !important; }
+    .stats-row { flex-direction: column; gap: 12px; }
+    .stat-card { min-width: 100%; }
+    .stTabs [data-baseweb="tab-list"] { flex-wrap: wrap; }
+}
+</style>
+""", unsafe_allow_html=True)
 
 
+# ─── Data Loading ─────────────────────────────────────────────────────────────
 @st.cache_data
-def load_data():
-    """Load final processed lead dataset.
+def load_data() -> pd.DataFrame:
+    """Load raw farmer data directly from customers.csv.
     
     Returns:
-        DataFrame.
+        DataFrame with 6 core columns: Name, Phone, Crop_Type, Crop_Area, Season, Region.
     """
-    data_path = os.path.join(PROJECT_ROOT, "data", "processed", "customers_final.csv")
-    if not os.path.exists(data_path):
-        st.error(f"Scored dataset not found at: {data_path}. Please run scorer.py first.")
+    if not os.path.exists(RAW_DATA_PATH):
+        st.error(f"Data file not found: {RAW_DATA_PATH}")
         st.stop()
-    return pd.read_csv(data_path)
+    df = pd.read_csv(RAW_DATA_PATH)
+    # Standardise casing
+    df["Crop_Type"] = df["Crop_Type"].str.title()
+    df["Season"]    = df["Season"].str.strip()
+    df["Region"]    = df["Region"].str.strip()
+    df["Location"]  = df["Location"].str.strip()
+    df["Farm_Scale"]= df["Farm_Scale"].str.strip()
+    return df
 
 
-# Load dataset
-df = load_data()
-
-# Optional Collapsed Sidebar for Brand Info
-st.sidebar.caption("SAF SHIKAN AGRON INTEGRATION")
-st.sidebar.write("Integrated Lead Intelligence Module v2.0")
-
-# 1. AGRON Portal Header (matching Screenshot 1)
-st.markdown(
+def generate_excel(df: pd.DataFrame) -> bytes:
+    """Export filtered DataFrame to a styled Excel file.
+    
+    Args:
+        df: Filtered farmers DataFrame.
+        
+    Returns:
+        Excel bytes.
     """
-    <div class='agron-page-header'>
-        <h1 class='agron-page-title'>Customer Leads Intelligence</h1>
-        <p class='agron-page-subtitle'>Manage and track AI-scored farmer leads, segment clusters, and precision spray opportunities</p>
+    cols = ["Name", "Phone", "Crop_Type", "Crop_Area", "Season", "Region"]
+    available = [c for c in cols if c in df.columns]
+    export = df[available].copy()
+    export.columns = [c.replace("_", " ") for c in available]
+
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "SAF SHIKAN Farmers"
+
+    hdr_fill = PatternFill("solid", fgColor="0C3823")
+    hdr_font = Font(name="Calibri", size=11, bold=True, color="FFFFFF")
+    thin = Border(
+        left=Side("thin", color="E0E0E0"), right=Side("thin", color="E0E0E0"),
+        top=Side("thin", color="E0E0E0"), bottom=Side("thin", color="E0E0E0")
+    )
+    center = Alignment(horizontal="center", vertical="center")
+    left   = Alignment(horizontal="left",   vertical="center")
+
+    ws.append(list(export.columns))
+    for idx, cell in enumerate(ws[1], 1):
+        cell.fill, cell.font, cell.alignment, cell.border = hdr_fill, hdr_font, center, thin
+
+    for _, row in export.iterrows():
+        ws.append(list(row))
+        r = ws.max_row
+        for c_idx, cell in enumerate(ws[r], 1):
+            cell.border = thin
+            cell.font = Font(name="Calibri", size=10)
+            cell.alignment = center if available[c_idx - 1] in ["Crop_Area", "Season", "Region", "Farm_Scale"] else left
+
+    for col in ws.columns:
+        letter = get_column_letter(col[0].column)
+        max_len = max((len(str(cell.value or "")) for cell in col), default=8)
+        ws.column_dimensions[letter].width = min(max_len + 4, 40)
+
+    buf = BytesIO()
+    wb.save(buf)
+    return buf.getvalue()
+
+
+# ─── Load & Pre-compute ───────────────────────────────────────────────────────
+df = load_data()
+CORE_COLS = ["Name", "Phone", "Crop_Type", "Crop_Area", "Season", "Region"]
+
+total_farmers   = len(df)
+unique_crops    = df["Crop_Type"].nunique()
+unique_regions  = df["Region"].nunique()
+avg_area_acres  = df["Crop_Area"].mean()
+total_area      = df["Crop_Area"].sum()
+unique_seasons  = df["Season"].nunique()
+
+# ─── Page Header ─────────────────────────────────────────────────────────────
+st.markdown("""
+<div class='page-title'>Farmer Data Directory</div>
+<p class='page-subtitle'>Browse, filter, group and export SAF SHIKAN registered farmer profiles — 6 core data categories</p>
+""", unsafe_allow_html=True)
+
+# ─── Summary Stats Row ────────────────────────────────────────────────────────
+st.markdown(f"""
+<div class='stats-row'>
+    <div class='stat-card'>
+        <div class='stat-label'>Total Farmers</div>
+        <div class='stat-value'>{total_farmers:,}</div>
+        <div class='stat-footer'><span class='dot dot-green'></span>Registered profiles</div>
     </div>
-    """,
-    unsafe_allow_html=True
-)
-
-# 2. AGRON Portal Executive Metrics Grid (matching Screenshot 2 & 3)
-total_cust = len(df)
-hot_count = len(df[df["Lead_Category"] == "HOT"])
-warm_count = len(df[df["Lead_Category"] == "WARM"])
-avg_score = df["Lead_Score"].mean()
-
-st.markdown(
-    f"""
-    <div class='agron-metric-grid'>
-        <div class='agron-card'>
-            <div class='agron-card-label'>Total Farmer Leads</div>
-            <div class='agron-card-value'>{total_cust:,}</div>
-            <div class='agron-card-footer'>
-                <span class='agron-dot green'></span>
-                <span>Registered farmer profiles</span>
-            </div>
-        </div>
-        <div class='agron-card'>
-            <div class='agron-card-label'>Hot Pipeline (48h)</div>
-            <div class='agron-card-value'>{hot_count:,}</div>
-            <div class='agron-card-footer'>
-                <span class='agron-dot red'></span>
-                <span>Urgent spray opportunity</span>
-            </div>
-        </div>
-        <div class='agron-card'>
-            <div class='agron-card-label'>Warm Opportunities</div>
-            <div class='agron-card-value'>{warm_count:,}</div>
-            <div class='agron-card-footer'>
-                <span class='agron-dot amber'></span>
-                <span>Active engagement targets</span>
-            </div>
-        </div>
-        <div class='agron-card'>
-            <div class='agron-card-label'>Average Lead Score</div>
-            <div class='agron-card-value'>{avg_score:.1f}</div>
-            <div class='agron-card-footer'>
-                <span class='agron-dot blue'></span>
-                <span>Normalized score out of 100</span>
-            </div>
-        </div>
+    <div class='stat-card'>
+        <div class='stat-label'>Crop Types</div>
+        <div class='stat-value'>{unique_crops}</div>
+        <div class='stat-footer'><span class='dot dot-amber'></span>Unique crop categories</div>
     </div>
-    """,
-    unsafe_allow_html=True
-)
+    <div class='stat-card'>
+        <div class='stat-label'>Regions Covered</div>
+        <div class='stat-value'>{unique_regions}</div>
+        <div class='stat-footer'><span class='dot dot-blue'></span>Punjab · Sindh · KPK</div>
+    </div>
+    <div class='stat-card'>
+        <div class='stat-label'>Avg Farm Size</div>
+        <div class='stat-value'>{avg_area_acres:.0f}</div>
+        <div class='stat-footer'><span class='dot dot-purple'></span>Acres per farmer</div>
+    </div>
+    <div class='stat-card'>
+        <div class='stat-label'>Total Crop Area</div>
+        <div class='stat-value'>{total_area:,.0f}</div>
+        <div class='stat-footer'><span class='dot dot-teal'></span>Acres across all profiles</div>
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
-# 3. AGRON Module Navigation Tabs (Single-Page Seamless Experience)
-tab_leads, tab_segments, tab_analytics, tab_priority = st.tabs([
-    "Leads Directory & Scoring",
-    "Customer Segmentation (AI)",
-    "Grouped Analytics",
-    "Priority Call List"
+# ─── Tab Navigation ───────────────────────────────────────────────────────────
+tab_dir, tab_group, tab_charts = st.tabs([
+    "Farmer Directory",
+    "Data Grouping & Aggregation",
+    "Visual Analytics"
 ])
 
 
-# ================== TAB 1: LEADS DIRECTORY & SCORING ==================
-with tab_leads:
-    # Inline AGRON Filter Control Bar (Mirrors Screenshot 1 Orders Search & Pills)
-    f_col1, f_col2, f_col3, f_col4 = st.columns([2.5, 1.5, 1.3, 1.3])
-    
-    with f_col1:
-        search_query = st.text_input(
-            "Search Leads",
-            placeholder="Search by Farmer Name, Phone, or Location...",
+# ══════════════════════════════════════════════════════════════════════════════
+# TAB 1 — FARMER DIRECTORY
+# ══════════════════════════════════════════════════════════════════════════════
+with tab_dir:
+    # ── Inline Filter Bar ─────────────────────────────────────────────────────
+    f1, f2, f3, f4 = st.columns([2.8, 1.4, 1.4, 1.4])
+
+    with f1:
+        search = st.text_input(
+            "Search",
+            placeholder="Search by Name, Phone or Location...",
             label_visibility="collapsed"
         )
-    
-    with f_col2:
-        all_cats = ["All Categories"] + sorted(df["Lead_Category"].unique().tolist())
-        selected_cat = st.selectbox("Priority Category", all_cats, label_visibility="collapsed")
-        
-    with f_col3:
-        all_regions = ["All Regions"] + sorted(df["Region"].unique().tolist())
-        selected_region = st.selectbox("Region", all_regions, label_visibility="collapsed")
-        
-    with f_col4:
-        df_crop_display = df["Crop_Type"].str.title()
-        all_crops = ["All Crops"] + sorted(df_crop_display.unique().tolist())
-        selected_crop = st.selectbox("Crop Type", all_crops, label_visibility="collapsed")
-        
-    # Apply Inline Filters
-    filtered_df = df.copy()
-    if search_query.strip():
-        q = search_query.strip().lower()
-        filtered_df = filtered_df[
-            filtered_df["Name"].str.lower().str.contains(q, na=False) |
-            filtered_df["Phone"].str.lower().str.contains(q, na=False) |
-            filtered_df["Location"].str.lower().str.contains(q, na=False)
+    with f2:
+        region_opts = ["All Regions"] + sorted(df["Region"].unique())
+        sel_region = st.selectbox("Region", region_opts, label_visibility="collapsed")
+    with f3:
+        crop_opts = ["All Crops"] + sorted(df["Crop_Type"].unique())
+        sel_crop = st.selectbox("Crop", crop_opts, label_visibility="collapsed")
+    with f4:
+        season_opts = ["All Seasons"] + sorted(df["Season"].unique())
+        sel_season = st.selectbox("Season", season_opts, label_visibility="collapsed")
+
+    # ── Apply Filters ─────────────────────────────────────────────────────────
+    filtered = df.copy()
+    if search.strip():
+        q = search.strip().lower()
+        filtered = filtered[
+            filtered["Name"].str.lower().str.contains(q, na=False) |
+            filtered["Phone"].str.lower().str.contains(q, na=False) |
+            filtered["Location"].str.lower().str.contains(q, na=False)
         ]
-    if selected_cat != "All Categories":
-        filtered_df = filtered_df[filtered_df["Lead_Category"] == selected_cat]
-    if selected_region != "All Regions":
-        filtered_df = filtered_df[filtered_df["Region"] == selected_region]
-    if selected_crop != "All Crops":
-        filtered_df = filtered_df[filtered_df["Crop_Type"].str.title() == selected_crop]
-        
-    st.write(f"Showing **{len(filtered_df):,}** of **{len(df):,}** customer lead records:")
-    
-    # Display sortable datatable
-    display_leads_table(filtered_df)
-    
+    if sel_region != "All Regions":
+        filtered = filtered[filtered["Region"] == sel_region]
+    if sel_crop != "All Crops":
+        filtered = filtered[filtered["Crop_Type"] == sel_crop]
+    if sel_season != "All Seasons":
+        filtered = filtered[filtered["Season"] == sel_season]
+
+    st.write(f"Showing **{len(filtered):,}** of **{total_farmers:,}** farmer records")
+
+    # ── Farmer Directory Table (6 core columns) ───────────────────────────────
+    display_df = filtered[CORE_COLS].copy()
+
+    st.dataframe(
+        display_df,
+        column_config={
+            "Name": st.column_config.TextColumn("Farmer Name", width="medium"),
+            "Phone": st.column_config.TextColumn("Phone Number", width="medium"),
+            "Crop_Type": st.column_config.TextColumn("Crop Type", width="small"),
+            "Crop_Area": st.column_config.NumberColumn(
+                "Farm Area (Acres)",
+                format="%d acres",
+                width="small"
+            ),
+            "Season": st.column_config.TextColumn("Season", width="small"),
+            "Region": st.column_config.TextColumn("Region", width="small"),
+        },
+        use_container_width=True,
+        hide_index=True,
+        height=500
+    )
+
+    # ── Export Actions ────────────────────────────────────────────────────────
     st.write("")
-    
-    # Export Actions
-    dl_col1, dl_col2, _ = st.columns([1.8, 1.8, 4.4])
-    csv_data = filtered_df.to_csv(index=False).encode('utf-8')
-    with dl_col1:
+    dl1, dl2, _ = st.columns([1.6, 1.8, 4.6])
+    with dl1:
         st.download_button(
-            label="Export Filtered Leads (CSV)",
-            data=csv_data,
-            file_name="saf_shikan_leads_export.csv",
+            "Export as CSV",
+            data=filtered[CORE_COLS].to_csv(index=False).encode("utf-8"),
+            file_name="saf_shikan_farmers.csv",
             mime="text/csv",
             use_container_width=True
         )
-    excel_bytes = generate_excel_bytes(filtered_df)
-    with dl_col2:
+    with dl2:
         st.download_button(
-            label="Export Filtered Leads (Styled Excel)",
-            data=excel_bytes,
-            file_name="saf_shikan_leads_export.xlsx",
+            "Export as Styled Excel",
+            data=generate_excel(filtered),
+            file_name="saf_shikan_farmers.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             use_container_width=True
         )
 
 
-# ================== TAB 2: CUSTOMER SEGMENTATION (AI) ==================
-with tab_segments:
-    st.markdown(
-        """
-        <div class='agron-section-card' style='margin-bottom: 16px;'>
-            <div class='agron-section-title'>AI K-Means Customer Clustering</div>
-            <div class='agron-section-subtitle'>Target farmer segments dynamically identified from operational scores and crop scale matrices</div>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-    
-    # Visual Cluster Projections
-    c1, c2 = st.columns(2)
-    with c1:
-        st.plotly_chart(plot_cluster_scatter_2d(df), use_container_width=True)
-    with c2:
-        st.plotly_chart(plot_crops_per_cluster(df), use_container_width=True)
-        
-    st.write("### Target Segment Profiles")
-    
-    # Pre-calculate profiling metrics
-    profile_rows = []
-    for cluster_name in sorted(df["Cluster_Name"].unique()):
-        c_df = df[df["Cluster_Name"] == cluster_name]
-        mean_area = c_df["Crop_Area"].mean()
-        mean_income = c_df["Estimated_Income"].mean()
-        dominant_crop = c_df["Crop_Type"].mode()[0]
-        dominant_region = c_df["Region"].mode()[0]
-        dominant_season = c_df["Season"].mode()[0]
-        drone_need = "High" if c_df["Drone_Service_Potential"].mean() >= 8.0 else "Moderate"
-        
-        profile_rows.append({
-            "name": cluster_name,
-            "size": len(c_df),
-            "area": round(mean_area, 1),
-            "income": mean_income,
-            "crop": dominant_crop,
-            "region": dominant_region,
-            "season": dominant_season,
-            "need": drone_need
-        })
-        
-    card_cols = st.columns(2)
-    for idx, card in enumerate(profile_rows):
-        col = card_cols[idx % 2]
-        pill_class = "high" if card["need"] == "High" else "mod"
-        
-        with col:
-            st.markdown(
-                f"""
-                <div class='segment-portal-card'>
-                    <div class='segment-header-row'>
-                        <h4 class='segment-name'>{card["name"]}</h4>
-                        <span class='segment-pill {pill_class}'>{card["need"]} Drone Need</span>
-                    </div>
-                    <p class='segment-desc'>
-                        Focusing on <strong>{card["crop"].title()}</strong> cultivations in <strong>{card["region"]}</strong> region during <strong>{card["season"]}</strong> season.
-                    </p>
-                    <div class='segment-tags'>
-                        <span class='segment-tag'><strong>Segment Size:</strong> {card["size"]} profiles</span>
-                        <span class='segment-tag'><strong>Avg Scale:</strong> {card["area"]} Acres</span>
-                        <span class='segment-tag'><strong>Avg Revenue:</strong> PKR {int(card["income"]):,}</span>
-                    </div>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
+# ══════════════════════════════════════════════════════════════════════════════
+# TAB 2 — DATA GROUPING & AGGREGATION
+# ══════════════════════════════════════════════════════════════════════════════
+with tab_group:
+    st.markdown("""
+    <div class='section-card'>
+        <div class='section-title'>Data Grouping & Aggregation</div>
+        <div class='section-sub'>Group farmer records across the 6 core categories and compute farm area statistics</div>
+    </div>
+    """, unsafe_allow_html=True)
 
+    # ── Grouping Controls ─────────────────────────────────────────────────────
+    g1, g2, g3 = st.columns(3)
+    group_by = g1.selectbox(
+        "Group By Category",
+        ["Region", "Crop_Type", "Season", "Farm_Scale"],
+        format_func=lambda x: x.replace("_", " "),
+        help="Select one of the 6 data categories to group farmers by."
+    )
+    agg_metric = g2.selectbox(
+        "Aggregate Field",
+        ["Crop_Area", "Estimated_Income"],
+        format_func=lambda x: x.replace("_", " "),
+        help="Numerical field to aggregate."
+    )
+    agg_func = g3.selectbox(
+        "Aggregation Function",
+        ["count", "mean", "sum"],
+        help="How to summarize the metric across each group."
+    )
 
-# ================== TAB 3: GROUPED ANALYTICS ==================
-with tab_analytics:
-    st.markdown(
-        """
-        <div class='agron-section-card'>
-            <div class='agron-section-title'>Multi-Dimensional Grouping Analytics</div>
-            <div class='agron-section-subtitle'>Aggregate farmer counts, average lead scores, and total crop areas across operational categories</div>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-    
-    g_col1, g_col2, g_col3 = st.columns(3)
-    group_by = g_col1.selectbox(
-        "Group Column By",
-        ["Region", "Crop_Type", "Season", "Farm_Scale", "Lead_Category"],
-        help="Categorical column to aggregate records on."
-    )
-    metric = g_col2.selectbox(
-        "Aggregate Metric",
-        ["Lead_Score", "Crop_Area", "Estimated_Income"],
-        help="Numerical column to summarize."
-    )
-    operation = g_col3.selectbox(
-        "Mathematical Operation",
-        ["mean", "sum", "count"],
-        help="Summarization function to calculate."
-    )
-    
     st.write("---")
-    
-    # Display grouped table and chart
-    display_grouped_table(df, group_by)
-    st.write("")
-    st.plotly_chart(plot_grouped_analytics(df, group_by, metric, operation), use_container_width=True)
 
+    # ── Compute Aggregation ───────────────────────────────────────────────────
+    if agg_func == "count":
+        grp = df.groupby(group_by).agg(
+            Count=("Name", "count"),
+            Avg_Area=("Crop_Area", "mean"),
+            Total_Area=("Crop_Area", "sum")
+        ).reset_index()
+        grp.columns = [group_by.replace("_", " "), "Farmer Count", "Avg Area (Acres)", "Total Area (Acres)"]
+        sort_col = "Farmer Count"
+    elif agg_func == "mean":
+        grp = df.groupby(group_by).agg(
+            Count=("Name", "count"),
+            Avg_Value=(agg_metric, "mean")
+        ).reset_index()
+        label = agg_metric.replace("_", " ")
+        grp.columns = [group_by.replace("_", " "), "Farmer Count", f"Avg {label}"]
+        sort_col = f"Avg {label}"
+    else:  # sum
+        grp = df.groupby(group_by).agg(
+            Count=("Name", "count"),
+            Total_Value=(agg_metric, "sum")
+        ).reset_index()
+        label = agg_metric.replace("_", " ")
+        grp.columns = [group_by.replace("_", " "), "Farmer Count", f"Total {label}"]
+        sort_col = f"Total {label}"
 
-# ================== TAB 4: PRIORITY CALL LIST ==================
-with tab_priority:
-    st.markdown(
-        """
-        <div class='agron-section-card'>
-            <div class='agron-section-title'>Top 20 Urgent Sales Call List</div>
-            <div class='agron-section-subtitle'>Highest priority HOT leads requiring immediate outbound calling and drone spray scheduling within 48 hours</div>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-    
-    hot_df = df[df["Lead_Category"] == "HOT"].copy()
-    top_20_hot = hot_df.head(20)
-    
-    display_leads_table(top_20_hot)
-    st.write("")
-    
-    excel_hot = generate_excel_bytes(top_20_hot)
+    grp = grp.sort_values(by=sort_col, ascending=False).reset_index(drop=True)
+
+    # ── Styled Aggregation Table ──────────────────────────────────────────────
+    # Apply background gradient on the aggregated column
+    styled = grp.style.background_gradient(
+        subset=[sort_col], cmap="YlGn"
+    ).format({
+        col: "{:,.0f}" for col in grp.select_dtypes("number").columns
+    })
+    st.dataframe(styled, use_container_width=True, hide_index=True)
+
+    # ── Export Grouped Summary ────────────────────────────────────────────────
     st.download_button(
-        label="Export Priority Calling List (Styled Excel)",
-        data=excel_hot,
-        file_name="saf_shikan_priority_call_list.xlsx",
-        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        "Export Group Summary (CSV)",
+        data=grp.to_csv(index=False).encode("utf-8"),
+        file_name=f"saf_shikan_grouped_by_{group_by.lower()}.csv",
+        mime="text/csv"
     )
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# TAB 3 — VISUAL ANALYTICS
+# ══════════════════════════════════════════════════════════════════════════════
+with tab_charts:
+    FONT  = "Inter, Segoe UI, sans-serif"
+    COLOR_GREEN = ["#0C3823", "#1B5E20", "#2E7D32", "#388E3C", "#43A047",
+                   "#66BB6A", "#A5D6A7", "#C8E6C9"]
+    LAYOUT = dict(
+        font=dict(family=FONT),
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        margin=dict(t=50, b=30, l=10, r=10),
+        title_font=dict(size=17, family=FONT, color="#0F172A")
+    )
+
+    r1c1, r1c2 = st.columns(2)
+
+    # Chart 1 — Farmers by Region (bar)
+    with r1c1:
+        region_cnt = df["Region"].value_counts().reset_index()
+        region_cnt.columns = ["Region", "Farmers"]
+        fig1 = px.bar(
+            region_cnt, x="Region", y="Farmers",
+            color="Region", text="Farmers",
+            color_discrete_sequence=["#0C3823", "#2E7D32", "#81C784"],
+            title="Farmers by Region"
+        )
+        fig1.update_traces(
+            textposition="outside",
+            marker_cornerradius=6,
+            hovertemplate="<b>%{x}</b><br>Farmers: %{y}<extra></extra>"
+        )
+        fig1.update_layout(**LAYOUT, showlegend=False, height=320)
+        fig1.update_yaxes(showgrid=True, gridcolor="#E2E8F0", zeroline=False)
+        fig1.update_xaxes(showgrid=False)
+        st.plotly_chart(fig1, use_container_width=True)
+
+    # Chart 2 — Crop Type Distribution (donut)
+    with r1c2:
+        crop_cnt = df["Crop_Type"].value_counts().reset_index()
+        crop_cnt.columns = ["Crop", "Farmers"]
+        fig2 = px.pie(
+            crop_cnt, names="Crop", values="Farmers",
+            hole=0.55,
+            title="Crop Type Distribution",
+            color_discrete_sequence=COLOR_GREEN
+        )
+        fig2.update_traces(
+            textposition="inside", textinfo="percent+label",
+            hovertemplate="<b>%{label}</b><br>Farmers: %{value}<br>Share: %{percent}<extra></extra>",
+            marker=dict(line=dict(color="#FFFFFF", width=2))
+        )
+        fig2.update_layout(**LAYOUT, showlegend=False, height=320)
+        st.plotly_chart(fig2, use_container_width=True)
+
+    r2c1, r2c2 = st.columns(2)
+
+    # Chart 3 — Farmers by Season (bar)
+    with r2c1:
+        season_cnt = df["Season"].value_counts().reset_index()
+        season_cnt.columns = ["Season", "Farmers"]
+        fig3 = px.bar(
+            season_cnt, x="Season", y="Farmers",
+            color="Season", text="Farmers",
+            color_discrete_sequence=["#0C3823", "#388E3C", "#81C784"],
+            title="Farmers by Growing Season"
+        )
+        fig3.update_traces(
+            textposition="outside",
+            marker_cornerradius=6,
+            hovertemplate="<b>%{x}</b><br>Farmers: %{y}<extra></extra>"
+        )
+        fig3.update_layout(**LAYOUT, showlegend=False, height=300)
+        fig3.update_yaxes(showgrid=True, gridcolor="#E2E8F0", zeroline=False)
+        fig3.update_xaxes(showgrid=False)
+        st.plotly_chart(fig3, use_container_width=True)
+
+    # Chart 4 — Avg Farm Area by Crop (horizontal bar)
+    with r2c2:
+        avg_area = df.groupby("Crop_Type")["Crop_Area"].mean().sort_values().reset_index()
+        avg_area.columns = ["Crop", "Avg Area (Acres)"]
+        fig4 = px.bar(
+            avg_area, x="Avg Area (Acres)", y="Crop",
+            orientation="h",
+            color="Avg Area (Acres)",
+            color_continuous_scale=["#C8E6C9", "#0C3823"],
+            text="Avg Area (Acres)",
+            title="Avg Farm Area by Crop Type"
+        )
+        fig4.update_traces(
+            texttemplate="%{x:.0f} ac",
+            textposition="outside",
+            marker_cornerradius=4,
+            hovertemplate="<b>%{y}</b><br>Avg Area: %{x:.1f} acres<extra></extra>"
+        )
+        fig4.update_layout(**LAYOUT, coloraxis_showscale=False, height=300)
+        fig4.update_xaxes(showgrid=True, gridcolor="#E2E8F0", zeroline=False)
+        fig4.update_yaxes(showgrid=False)
+        st.plotly_chart(fig4, use_container_width=True)
+
+    # Chart 5 — Crop breakdown by Region (stacked bar, full width)
+    crop_region = df.groupby(["Region", "Crop_Type"]).size().reset_index(name="Farmers")
+    fig5 = px.bar(
+        crop_region, x="Region", y="Farmers", color="Crop_Type",
+        barmode="stack",
+        color_discrete_sequence=COLOR_GREEN,
+        title="Crop Portfolio Breakdown by Region",
+        labels={"Crop_Type": "Crop", "Farmers": "Registered Farmers"}
+    )
+    fig5.update_traces(
+        marker_cornerradius=4,
+        hovertemplate="<b>%{fullData.name}</b><br>Farmers: %{y}<extra></extra>"
+    )
+    fig5.update_layout(**LAYOUT, height=380, legend_title_text="Crop Type")
+    fig5.update_yaxes(showgrid=True, gridcolor="#E2E8F0", zeroline=False)
+    fig5.update_xaxes(showgrid=False)
+    st.plotly_chart(fig5, use_container_width=True)
