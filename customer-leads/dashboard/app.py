@@ -30,8 +30,8 @@ from audit_logger import (
 
 # ─── Page Configuration ──────────────────────────────────────────────────────
 st.set_page_config(
-    page_title="SAF SHIKAN | Enterprise Farmer Portal",
-    page_icon="🌾",
+    page_title="Saf Shikan — Customer Data & Management Portal",
+    page_icon="⚫",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
@@ -610,12 +610,12 @@ if "portal_started" not in st.session_state:
 st.markdown(f"""
 <div class='portal-header-row'>
     <div>
-        <div class='portal-breadcrumb'>AGRON ENTERPRISE / DATA DIRECTORY / PORTAL VIEW</div>
-        <h1 class='page-title'>Farmer Intelligence &amp; Directory Console</h1>
+        <div class='portal-breadcrumb'>AGRON ADMIN DASHBOARD / SAF SHIKAN MODULE / DATA REPOSITORY</div>
+        <h1 class='page-title'>Saf Shikan — Customer Data &amp; Management Portal</h1>
     </div>
     <div class='status-pill'>
         <span class='status-dot'></span>
-        <span>SYSTEM LIVE &nbsp;·&nbsp; {total_farmers:,} PROFILES SYNCED</span>
+        <span>SYSTEM LIVE &nbsp;·&nbsp; {total_farmers:,} RECORDS SYNCED</span>
     </div>
 </div>
 """, unsafe_allow_html=True)
