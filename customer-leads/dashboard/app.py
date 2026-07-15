@@ -16,6 +16,8 @@ from io import BytesIO
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
+import gspread
+from google.oauth2.service_account import Credentials
 
 # ─── Audit Logger Import ──────────────────────────────────────────────────────
 APP_DIR_IMPORT = os.path.dirname(os.path.abspath(__file__))
@@ -40,6 +42,27 @@ st.set_page_config(
 APP_DIR = APP_DIR_IMPORT
 PROJECT_ROOT = os.path.dirname(APP_DIR)
 RAW_DATA_PATH = os.path.join(PROJECT_ROOT, "data", "raw", "customers.csv")
+
+# ─── Google Sheets Configuration ──────────────────────────────────────────────
+GSHEET_URL = st.secrets.get("spreadsheet_url", "")
+
+def get_gsheet_client():
+    """Authenticate and return the Google Sheets client using Streamlit secrets."""
+    if "gspread" in st.secrets:
+        try:
+            creds_dict = dict(st.secrets["gspread"])
+            # Format private key properly to handle multiline/escaped newlines from secrets
+            if "private_key" in creds_dict:
+                creds_dict["private_key"] = creds_dict["private_key"].replace("\\n", "\n")
+            scopes = [
+                "https://www.googleapis.com/auth/spreadsheets",
+                "https://www.googleapis.com/auth/drive"
+            ]
+            creds = Credentials.from_service_account_info(creds_dict, scopes=scopes)
+            return gspread.authorize(creds)
+        except Exception:
+            pass
+    return None
 
 # ─── Enterprise AGRON Portal Design System CSS ───────────────────────────────
 st.markdown("""
@@ -533,9 +556,36 @@ input:focus, textarea:focus, select:focus {
 
 
 # ─── Data Loading ─────────────────────────────────────────────────────────────
-@st.cache_data
+@st.cache_data(ttl=15)
 def load_data() -> pd.DataFrame:
-    """Load raw farmer data directly from customers.csv."""
+    """Load farmer data from Google Sheets if configured, otherwise fallback to customers.csv."""
+    client = None
+    try:
+        if "gspread" in st.secrets and GSHEET_URL:
+            client = get_gsheet_client()
+    except Exception:
+        pass
+
+    if client:
+        try:
+            sh = client.open_by_url(GSHEET_URL).sheet1
+            records = sh.get_all_records()
+            df = pd.DataFrame(records)
+            req_cols = ["Name", "Phone", "Crop_Type", "Crop_Area", "Season", "Location", "Farm_Scale", "Region"]
+            for col in req_cols:
+                if col not in df.columns:
+                    df[col] = ""
+            df = df[req_cols]
+            df["Crop_Type"]  = df["Crop_Type"].astype(str).str.title()
+            df["Season"]     = df["Season"].astype(str).str.strip()
+            df["Region"]     = df["Region"].astype(str).str.strip()
+            df["Location"]   = df["Location"].astype(str).str.strip()
+            df["Farm_Scale"] = df["Farm_Scale"].astype(str).str.strip()
+            return df
+        except Exception:
+            pass
+
+    # Fallback to local customers.csv
     if not os.path.exists(RAW_DATA_PATH):
         os.makedirs(os.path.dirname(RAW_DATA_PATH), exist_ok=True)
         default_data = pd.DataFrame([
@@ -557,6 +607,67 @@ def load_data() -> pd.DataFrame:
     if "Farm_Scale" in df.columns:
         df["Farm_Scale"] = df["Farm_Scale"].astype(str).str.strip()
     return df
+
+
+def save_new_row(row_dict: dict) -> bool:
+    """Save new farmer profile to Google Sheets if configured, otherwise fallback to customers.csv."""
+    client = None
+    try:
+        if "gspread" in st.secrets and GSHEET_URL:
+            client = get_gsheet_client()
+    except Exception:
+        pass
+
+    if client:
+        try:
+            sh = client.open_by_url(GSHEET_URL).sheet1
+            row_vals = [
+                row_dict["Name"],
+                row_dict["Phone"],
+                row_dict["Crop_Type"],
+                float(row_dict["Crop_Area"]),
+                row_dict["Season"],
+                row_dict["Location"],
+                row_dict["Farm_Scale"],
+                row_dict["Region"]
+            ]
+            sh.append_row(row_vals)
+            return True
+        except Exception:
+            pass
+
+    # Fallback to local CSV
+    new_row_df = pd.DataFrame([row_dict])
+    csv_cols = ["Name", "Phone", "Crop_Type", "Crop_Area", "Season", "Location", "Farm_Scale", "Region"]
+    new_row_df = new_row_df[csv_cols]
+    new_row_df.to_csv(RAW_DATA_PATH, mode="a", header=False, index=False)
+    return True
+
+
+def save_batch_dataframe(df_batch: pd.DataFrame) -> bool:
+    """Overwrite datastore with batch uploaded DataFrame."""
+    client = None
+    try:
+        if "gspread" in st.secrets and GSHEET_URL:
+            client = get_gsheet_client()
+    except Exception:
+        pass
+
+    csv_cols = ["Name", "Phone", "Crop_Type", "Crop_Area", "Season", "Location", "Farm_Scale", "Region"]
+    clean_batch = df_batch[csv_cols].copy()
+
+    if client:
+        try:
+            sh = client.open_by_url(GSHEET_URL).sheet1
+            sh.clear()
+            sh.update([csv_cols] + clean_batch.values.tolist())
+            return True
+        except Exception:
+            pass
+
+    # Fallback to local CSV
+    clean_batch.to_csv(RAW_DATA_PATH, index=False)
+    return True
 
 
 def generate_excel(df: pd.DataFrame) -> bytes:
@@ -610,10 +721,14 @@ unique_cities  = df["Location"].nunique()
 total_area     = df["Crop_Area"].sum()
 
 # Startup audit event (once per session)
+is_gsheet = "gspread" in st.secrets and bool(GSHEET_URL)
+status_source = "GSHEET CONNECTED" if is_gsheet else "LOCAL OFFLINE"
+
 if "portal_started" not in st.session_state:
+    ds_source = "Google Sheets" if is_gsheet else "data/raw/customers.csv"
     log_event("SYSTEM", "Portal session initialised — farmer data loaded",
               {"total_records": total_farmers, "transport": "HTTPS (TLS 1.3)",
-               "data_source": "data/raw/customers.csv"})
+               "data_source": ds_source})
     st.session_state["portal_started"] = True
 
 # ─── Top Executive Header ─────────────────────────────────────────────────────
@@ -625,7 +740,7 @@ st.markdown(f"""
     </div>
     <div class='status-pill'>
         <span class='status-dot'></span>
-        <span>SYSTEM LIVE &nbsp;·&nbsp; {total_farmers:,} RECORDS SYNCED</span>
+        <span>SYSTEM LIVE &nbsp;·&nbsp; {status_source} &nbsp;·&nbsp; {total_farmers:,} RECORDS SYNCED</span>
     </div>
 </div>
 """, unsafe_allow_html=True)
@@ -724,7 +839,7 @@ with tab_dir:
                 elif crop_choice == "Other" and not final_crop:
                     st.error("Validation Error: Please specify the crop name when selecting 'Other'.")
                 else:
-                    new_row = pd.DataFrame([{
+                    new_farmer = {
                         "Name": new_name.strip(),
                         "Phone": new_phone.strip(),
                         "Crop_Type": final_crop.title(),
@@ -733,10 +848,8 @@ with tab_dir:
                         "Location": new_location.strip(),
                         "Farm_Scale": new_scale,
                         "Region": new_location.strip()
-                    }])
-                    csv_cols = ["Name", "Phone", "Crop_Type", "Crop_Area", "Season", "Location", "Farm_Scale", "Region"]
-                    new_row = new_row[csv_cols]
-                    new_row.to_csv(RAW_DATA_PATH, mode="a", header=False, index=False)
+                    }
+                    save_new_row(new_farmer)
                     load_data.clear()
                     log_event("DATA_ENTRY", f"Registered new farmer profile: {new_name.strip()} ({new_location.strip()}, {final_crop}, {new_area} ac)", {"name": new_name.strip(), "location": new_location.strip(), "crop": final_crop, "area": new_area})
                     st.toast(f"Farmer profile committed: {new_name.strip()} has been added to the master directory.", icon=None)
@@ -761,7 +874,7 @@ with tab_dir:
                         if "Farm_Scale" not in up_df.columns:
                             up_df["Farm_Scale"] = "Medium"
                         csv_cols = ["Name", "Phone", "Crop_Type", "Crop_Area", "Season", "Location", "Farm_Scale", "Region"]
-                        up_df[csv_cols].to_csv(RAW_DATA_PATH, index=False)
+                        save_batch_dataframe(up_df[csv_cols])
                         load_data.clear()
                         log_event("DATA_ENTRY", f"Batch CSV imported: {len(up_df)} records synchronized", {"records": len(up_df)})
                         st.toast(f"Synchronized {len(up_df):,} records successfully from uploaded CSV.", icon=None)
