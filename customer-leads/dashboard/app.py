@@ -537,14 +537,25 @@ input:focus, textarea:focus, select:focus {
 def load_data() -> pd.DataFrame:
     """Load raw farmer data directly from customers.csv."""
     if not os.path.exists(RAW_DATA_PATH):
-        st.error(f"Data file not found: {RAW_DATA_PATH}")
-        st.stop()
+        os.makedirs(os.path.dirname(RAW_DATA_PATH), exist_ok=True)
+        default_data = pd.DataFrame([
+            {"Name": "Ahmad Rehman", "Phone": "0315-3218196", "Crop_Type": "Wheat", "Crop_Area": 15.0, "Season": "Rabi", "Location": "Rahim Yar Khan", "Farm_Scale": "Medium", "Region": "Rahim Yar Khan"},
+            {"Name": "Bilal Khan", "Phone": "0300-1122334", "Crop_Type": "Cotton", "Crop_Area": 25.0, "Season": "Kharif", "Location": "Multan", "Farm_Scale": "Large", "Region": "Multan"},
+            {"Name": "Usman Ali", "Phone": "0333-4455667", "Crop_Type": "Rice", "Crop_Area": 12.0, "Season": "Kharif", "Location": "Gujranwala", "Farm_Scale": "Small", "Region": "Gujranwala"},
+            {"Name": "Tariq Mahmood", "Phone": "0321-9988776", "Crop_Type": "Sugarcane", "Crop_Area": 30.0, "Season": "Kharif", "Location": "Faisalabad", "Farm_Scale": "Large", "Region": "Faisalabad"}
+        ])
+        default_data.to_csv(RAW_DATA_PATH, index=False)
     df = pd.read_csv(RAW_DATA_PATH)
-    df["Crop_Type"]  = df["Crop_Type"].str.title()
-    df["Season"]     = df["Season"].str.strip()
-    df["Region"]     = df["Region"].str.strip()
-    df["Location"]   = df["Location"].str.strip()
-    df["Farm_Scale"] = df["Farm_Scale"].str.strip()
+    if "Crop_Type" in df.columns:
+        df["Crop_Type"]  = df["Crop_Type"].astype(str).str.title()
+    if "Season" in df.columns:
+        df["Season"]     = df["Season"].astype(str).str.strip()
+    if "Region" in df.columns:
+        df["Region"]     = df["Region"].astype(str).str.strip()
+    if "Location" in df.columns:
+        df["Location"]   = df["Location"].astype(str).str.strip()
+    if "Farm_Scale" in df.columns:
+        df["Farm_Scale"] = df["Farm_Scale"].astype(str).str.strip()
     return df
 
 
@@ -730,6 +741,35 @@ with tab_dir:
                     log_event("DATA_ENTRY", f"Registered new farmer profile: {new_name.strip()} ({new_location.strip()}, {final_crop}, {new_area} ac)", {"name": new_name.strip(), "location": new_location.strip(), "crop": final_crop, "area": new_area})
                     st.toast(f"Farmer profile committed: {new_name.strip()} has been added to the master directory.", icon=None)
                     st.rerun()
+
+    with st.expander("Batch Import — Upload CSV Directory File", expanded=False):
+        st.markdown("""
+        <div style='background:#F8FAFC;border:1px solid #E2E8F0;border-left:4px solid #0C3823;border-radius:8px;padding:16px 20px;margin-bottom:16px;'>
+            <div style='font-family:"Outfit",sans-serif;font-size:0.92rem;font-weight:700;color:#0F172A;margin-bottom:4px;letter-spacing:0.3px;'>SECURE CLIENT-SIDE CSV INGESTION</div>
+            <div style='font-size:0.82rem;color:#475569;line-height:1.5;'>To maintain strict data privacy without committing customer records to GitHub, upload your local <code>customers.csv</code> directly into the active session here.</div>
+        </div>
+        """, unsafe_allow_html=True)
+        uploaded_csv = st.file_uploader("Select CSV File", type=["csv"], key="batch_csv_upload")
+        if uploaded_csv is not None:
+            if st.button("Synchronize Uploaded Data to Master Directory", use_container_width=True):
+                try:
+                    up_df = pd.read_csv(uploaded_csv)
+                    req_cols = ["Name", "Phone", "Crop_Type", "Crop_Area", "Season", "Location"]
+                    if all(col in up_df.columns for col in req_cols):
+                        if "Region" not in up_df.columns:
+                            up_df["Region"] = up_df["Location"]
+                        if "Farm_Scale" not in up_df.columns:
+                            up_df["Farm_Scale"] = "Medium"
+                        csv_cols = ["Name", "Phone", "Crop_Type", "Crop_Area", "Season", "Location", "Farm_Scale", "Region"]
+                        up_df[csv_cols].to_csv(RAW_DATA_PATH, index=False)
+                        load_data.clear()
+                        log_event("DATA_ENTRY", f"Batch CSV imported: {len(up_df)} records synchronized", {"records": len(up_df)})
+                        st.toast(f"Synchronized {len(up_df):,} records successfully from uploaded CSV.", icon=None)
+                        st.rerun()
+                    else:
+                        st.error(f"Upload failed: CSV must contain columns: {', '.join(req_cols)}")
+                except Exception as e:
+                    st.error(f"Error processing CSV: {e}")
 
     st.markdown("""
     <div class='enterprise-panel'>

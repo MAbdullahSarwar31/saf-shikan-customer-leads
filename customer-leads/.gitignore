@@ -72,8 +72,11 @@ venv.bak/
 *.sw?
 
 # Project specific
-models/*.pkl
-reports/Customer_Leads_SAF_SHIKAN.xlsx
-reports/figures/*.png
-!reports/figures/.gitkeep
+data/*.csv
+data/raw/*.csv
+data/processed/*.csv
+*.csv
+models/
+reports/
+*.pkl
 

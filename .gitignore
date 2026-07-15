@@ -70,7 +70,10 @@ venv.bak/
 *.sw?
 
 # Project specific
-customer-leads/models/*.pkl
-customer-leads/reports/Customer_Leads_SAF_SHIKAN.xlsx
-customer-leads/reports/figures/*.png
-!customer-leads/reports/figures/.gitkeep
+*.csv
+customer-leads/data/*.csv
+customer-leads/data/raw/*.csv
+customer-leads/data/processed/*.csv
+customer-leads/models/
+customer-leads/reports/
+customer-leads/*.pkl
