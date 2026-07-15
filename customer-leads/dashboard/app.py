@@ -556,7 +556,6 @@ input:focus, textarea:focus, select:focus {
 
 
 # ─── Data Loading ─────────────────────────────────────────────────────────────
-@st.cache_data(ttl=15)
 def load_data() -> pd.DataFrame:
     """Load farmer data from Google Sheets if configured, otherwise fallback to customers.csv."""
     client = None
@@ -856,34 +855,6 @@ with tab_dir:
                     st.toast(f"Farmer profile committed: {new_name.strip()} has been added to the master directory.", icon=None)
                     st.rerun()
 
-    with st.expander("Batch Import — Upload CSV Directory File", expanded=False):
-        st.markdown("""
-        <div style='background:#F8FAFC;border:1px solid #E2E8F0;border-left:4px solid #0C3823;border-radius:8px;padding:16px 20px;margin-bottom:16px;'>
-            <div style='font-family:"Outfit",sans-serif;font-size:0.92rem;font-weight:700;color:#0F172A;margin-bottom:4px;letter-spacing:0.3px;'>SECURE CLIENT-SIDE CSV INGESTION</div>
-            <div style='font-size:0.82rem;color:#475569;line-height:1.5;'>To maintain strict data privacy without committing customer records to GitHub, upload your local <code>customers.csv</code> directly into the active session here.</div>
-        </div>
-        """, unsafe_allow_html=True)
-        uploaded_csv = st.file_uploader("Select CSV File", type=["csv"], key="batch_csv_upload")
-        if uploaded_csv is not None:
-            if st.button("Synchronize Uploaded Data to Master Directory", use_container_width=True):
-                try:
-                    up_df = pd.read_csv(uploaded_csv)
-                    req_cols = ["Name", "Phone", "Crop_Type", "Crop_Area", "Season", "Location"]
-                    if all(col in up_df.columns for col in req_cols):
-                        if "Region" not in up_df.columns:
-                            up_df["Region"] = up_df["Location"]
-                        if "Farm_Scale" not in up_df.columns:
-                            up_df["Farm_Scale"] = "Medium"
-                        csv_cols = ["Name", "Phone", "Crop_Type", "Crop_Area", "Season", "Location", "Farm_Scale", "Region"]
-                        save_batch_dataframe(up_df[csv_cols])
-                        load_data.clear()
-                        log_event("DATA_ENTRY", f"Batch CSV imported: {len(up_df)} records synchronized", {"records": len(up_df)})
-                        st.toast(f"Synchronized {len(up_df):,} records successfully from uploaded CSV.", icon=None)
-                        st.rerun()
-                    else:
-                        st.error(f"Upload failed: CSV must contain columns: {', '.join(req_cols)}")
-                except Exception as e:
-                    st.error(f"Error processing CSV: {e}")
 
     st.markdown("""
     <div class='enterprise-panel'>
