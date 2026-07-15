@@ -45,7 +45,7 @@ RAW_DATA_PATH = os.path.join(PROJECT_ROOT, "data", "raw", "customers.csv")
 # ─── Supabase Configuration ──────────────────────────────────────────────────────────
 SUPABASE_URL = st.secrets.get("supabase_url", "")
 SUPABASE_KEY = st.secrets.get("supabase_key", "")
-SUPABASE_TABLE = st.secrets.get("supabase_table", "farmers")
+SUPABASE_TABLE = st.secrets.get("supabase_table", "farmer")
 
 def get_supabase_client() -> Client | None:
     """Return an authenticated Supabase client using Streamlit secrets."""
@@ -554,25 +554,32 @@ def load_data() -> pd.DataFrame:
     req_cols = ["Name", "Phone", "Crop_Type", "Crop_Area", "Season", "Location", "Farm_Scale", "Region"]
 
     if supabase:
-        try:
-            response = supabase.table(SUPABASE_TABLE).select(
-                "Name, Phone, Crop_Type, Crop_Area, Season, Location, Farm_Scale, Region"
-            ).execute()
-            if response.data:
-                df = pd.DataFrame(response.data)
-                for col in req_cols:
-                    if col not in df.columns:
-                        df[col] = ""
-                df = df[req_cols]
-                df["Crop_Type"]  = df["Crop_Type"].astype(str).str.title()
-                df["Season"]     = df["Season"].astype(str).str.strip()
-                df["Region"]     = df["Region"].astype(str).str.strip()
-                df["Location"]   = df["Location"].astype(str).str.strip()
-                df["Farm_Scale"] = df["Farm_Scale"].astype(str).str.strip()
-                df["Crop_Area"]  = pd.to_numeric(df["Crop_Area"], errors="coerce").fillna(0.0)
-                return df
-        except Exception:
-            pass
+        # Try SUPABASE_TABLE, singular 'farmer', and plural 'farmers' automatically
+        candidate_tables = [SUPABASE_TABLE]
+        for t in ["farmer", "farmers"]:
+            if t not in candidate_tables:
+                candidate_tables.append(t)
+
+        for tbl in candidate_tables:
+            try:
+                response = supabase.table(tbl).select(
+                    "Name, Phone, Crop_Type, Crop_Area, Season, Location, Farm_Scale, Region"
+                ).execute()
+                if response.data:
+                    df = pd.DataFrame(response.data)
+                    for col in req_cols:
+                        if col not in df.columns:
+                            df[col] = ""
+                    df = df[req_cols]
+                    df["Crop_Type"]  = df["Crop_Type"].astype(str).str.title()
+                    df["Season"]     = df["Season"].astype(str).str.strip()
+                    df["Region"]     = df["Region"].astype(str).str.strip()
+                    df["Location"]   = df["Location"].astype(str).str.strip()
+                    df["Farm_Scale"] = df["Farm_Scale"].astype(str).str.strip()
+                    df["Crop_Area"]  = pd.to_numeric(df["Crop_Area"], errors="coerce").fillna(0.0)
+                    return df
+            except Exception:
+                continue
 
     # Fallback: empty DataFrame with correct schema so app never crashes
     return pd.DataFrame(columns=req_cols)
@@ -582,21 +589,28 @@ def save_new_row(row_dict: dict) -> bool:
     """Insert a new farmer record directly into Supabase."""
     supabase = get_supabase_client()
     if supabase:
-        try:
-            supabase.table(SUPABASE_TABLE).insert({
-                "Name":       row_dict["Name"],
-                "Phone":      row_dict["Phone"],
-                "Crop_Type":  row_dict["Crop_Type"],
-                "Crop_Area":  float(row_dict["Crop_Area"]),
-                "Season":     row_dict["Season"],
-                "Location":   row_dict["Location"],
-                "Farm_Scale": row_dict["Farm_Scale"],
-                "Region":     row_dict["Region"]
-            }).execute()
-            return True
-        except Exception as e:
-            st.error(f"Database error: {e}")
-            return False
+        candidate_tables = [SUPABASE_TABLE]
+        for t in ["farmer", "farmers"]:
+            if t not in candidate_tables:
+                candidate_tables.append(t)
+
+        for tbl in candidate_tables:
+            try:
+                supabase.table(tbl).insert({
+                    "Name":       row_dict["Name"],
+                    "Phone":      row_dict["Phone"],
+                    "Crop_Type":  row_dict["Crop_Type"],
+                    "Crop_Area":  float(row_dict["Crop_Area"]),
+                    "Season":     row_dict["Season"],
+                    "Location":   row_dict["Location"],
+                    "Farm_Scale": row_dict["Farm_Scale"],
+                    "Region":     row_dict["Region"]
+                }).execute()
+                return True
+            except Exception:
+                continue
+        st.error("Database error: Could not insert into table 'farmer' or 'farmers'. Check Row Level Security (RLS) policies or table schema.")
+        return False
     return False
 
 
