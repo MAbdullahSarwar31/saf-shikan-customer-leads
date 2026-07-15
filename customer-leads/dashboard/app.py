@@ -570,6 +570,26 @@ def load_data() -> pd.DataFrame:
         try:
             sh = client.open_by_url(GSHEET_URL).sheet1
             records = sh.get_all_records()
+            if not records:
+                # If Google Sheet is completely blank/empty, automatically populate headers and initial dataset!
+                if os.path.exists(RAW_DATA_PATH):
+                    local_df = pd.read_csv(RAW_DATA_PATH)
+                else:
+                    local_df = pd.DataFrame([
+                        {"Name": "Ahmad Rehman", "Phone": "0315-3218196", "Crop_Type": "Wheat", "Crop_Area": 15.0, "Season": "Rabi", "Location": "Rahim Yar Khan", "Farm_Scale": "Medium", "Region": "Rahim Yar Khan"},
+                        {"Name": "Bilal Khan", "Phone": "0300-1122334", "Crop_Type": "Cotton", "Crop_Area": 25.0, "Season": "Kharif", "Location": "Multan", "Farm_Scale": "Large", "Region": "Multan"},
+                        {"Name": "Usman Ali", "Phone": "0333-4455667", "Crop_Type": "Rice", "Crop_Area": 12.0, "Season": "Kharif", "Location": "Gujranwala", "Farm_Scale": "Small", "Region": "Gujranwala"},
+                        {"Name": "Tariq Mahmood", "Phone": "0321-9988776", "Crop_Type": "Sugarcane", "Crop_Area": 30.0, "Season": "Kharif", "Location": "Faisalabad", "Farm_Scale": "Large", "Region": "Faisalabad"}
+                    ])
+                req_cols = ["Name", "Phone", "Crop_Type", "Crop_Area", "Season", "Location", "Farm_Scale", "Region"]
+                for col in req_cols:
+                    if col not in local_df.columns:
+                        local_df[col] = ""
+                local_df = local_df[req_cols]
+                sh.clear()
+                sh.update([req_cols] + local_df.values.tolist())
+                return local_df
+
             df = pd.DataFrame(records)
             req_cols = ["Name", "Phone", "Crop_Type", "Crop_Area", "Season", "Location", "Farm_Scale", "Region"]
             for col in req_cols:
@@ -583,7 +603,27 @@ def load_data() -> pd.DataFrame:
             df["Farm_Scale"] = df["Farm_Scale"].astype(str).str.strip()
             return df
         except Exception:
-            pass
+            try:
+                sh = client.open_by_url(GSHEET_URL).sheet1
+                if os.path.exists(RAW_DATA_PATH):
+                    local_df = pd.read_csv(RAW_DATA_PATH)
+                else:
+                    local_df = pd.DataFrame([
+                        {"Name": "Ahmad Rehman", "Phone": "0315-3218196", "Crop_Type": "Wheat", "Crop_Area": 15.0, "Season": "Rabi", "Location": "Rahim Yar Khan", "Farm_Scale": "Medium", "Region": "Rahim Yar Khan"},
+                        {"Name": "Bilal Khan", "Phone": "0300-1122334", "Crop_Type": "Cotton", "Crop_Area": 25.0, "Season": "Kharif", "Location": "Multan", "Farm_Scale": "Large", "Region": "Multan"},
+                        {"Name": "Usman Ali", "Phone": "0333-4455667", "Crop_Type": "Rice", "Crop_Area": 12.0, "Season": "Kharif", "Location": "Gujranwala", "Farm_Scale": "Small", "Region": "Gujranwala"},
+                        {"Name": "Tariq Mahmood", "Phone": "0321-9988776", "Crop_Type": "Sugarcane", "Crop_Area": 30.0, "Season": "Kharif", "Location": "Faisalabad", "Farm_Scale": "Large", "Region": "Faisalabad"}
+                    ])
+                req_cols = ["Name", "Phone", "Crop_Type", "Crop_Area", "Season", "Location", "Farm_Scale", "Region"]
+                for col in req_cols:
+                    if col not in local_df.columns:
+                        local_df[col] = ""
+                local_df = local_df[req_cols]
+                sh.clear()
+                sh.update([req_cols] + local_df.values.tolist())
+                return local_df
+            except Exception:
+                pass
 
     # Fallback to local customers.csv
     if not os.path.exists(RAW_DATA_PATH):
@@ -883,6 +923,23 @@ with tab_dir:
                         st.error(f"Upload failed: CSV must contain columns: {', '.join(req_cols)}")
                 except Exception as e:
                     st.error(f"Error processing CSV: {e}")
+
+        if is_gsheet:
+            st.markdown("<hr style='margin: 16px 0; border: 0; border-top: 1px solid #E2E8F0;' />", unsafe_allow_html=True)
+            st.markdown("""
+            <div style='background:#F0FDF4;border:1px solid #BBF7D0;border-left:4px solid #16A34A;border-radius:8px;padding:14px 18px;margin-bottom:12px;'>
+                <div style='font-family:"Outfit",sans-serif;font-size:0.88rem;font-weight:700;color:#166534;margin-bottom:3px;'>GOOGLE SHEETS LIVE SYNCHRONIZATION</div>
+                <div style='font-size:0.8rem;color:#15803D;line-height:1.4;'>Your Google Sheet is connected. If your spreadsheet is currently empty, or if you want to push all active customer records directly into Google Sheets, click below.</div>
+            </div>
+            """, unsafe_allow_html=True)
+            if st.button("🚀 Push / Initialize Google Sheet with Current Master Data", use_container_width=True):
+                try:
+                    save_batch_dataframe(df)
+                    load_data.clear()
+                    st.toast("Active master directory successfully exported and synchronized to Google Sheet!", icon=None)
+                    st.rerun()
+                except Exception as e:
+                    st.error(f"Failed to push data to Google Sheet: {e}")
 
     st.markdown("""
     <div class='enterprise-panel'>
