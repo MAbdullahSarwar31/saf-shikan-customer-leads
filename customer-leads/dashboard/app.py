@@ -16,8 +16,7 @@ from io import BytesIO
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
-import gspread
-from google.oauth2.service_account import Credentials
+from supabase import create_client, Client
 
 # ─── Audit Logger Import ──────────────────────────────────────────────────────
 APP_DIR_IMPORT = os.path.dirname(os.path.abspath(__file__))
@@ -43,23 +42,16 @@ APP_DIR = APP_DIR_IMPORT
 PROJECT_ROOT = os.path.dirname(APP_DIR)
 RAW_DATA_PATH = os.path.join(PROJECT_ROOT, "data", "raw", "customers.csv")
 
-# ─── Google Sheets Configuration ──────────────────────────────────────────────
-GSHEET_URL = st.secrets.get("spreadsheet_url", "")
+# ─── Supabase Configuration ──────────────────────────────────────────────────────────
+SUPABASE_URL = st.secrets.get("supabase_url", "")
+SUPABASE_KEY = st.secrets.get("supabase_key", "")
+SUPABASE_TABLE = st.secrets.get("supabase_table", "farmers")
 
-def get_gsheet_client():
-    """Authenticate and return the Google Sheets client using Streamlit secrets."""
-    if "gspread" in st.secrets:
+def get_supabase_client() -> Client | None:
+    """Return an authenticated Supabase client using Streamlit secrets."""
+    if SUPABASE_URL and SUPABASE_KEY:
         try:
-            creds_dict = dict(st.secrets["gspread"])
-            # Format private key properly to handle multiline/escaped newlines from secrets
-            if "private_key" in creds_dict:
-                creds_dict["private_key"] = creds_dict["private_key"].replace("\\n", "\n")
-            scopes = [
-                "https://www.googleapis.com/auth/spreadsheets",
-                "https://www.googleapis.com/auth/drive"
-            ]
-            creds = Credentials.from_service_account_info(creds_dict, scopes=scopes)
-            return gspread.authorize(creds)
+            return create_client(SUPABASE_URL, SUPABASE_KEY)
         except Exception:
             pass
     return None
@@ -557,21 +549,17 @@ input:focus, textarea:focus, select:focus {
 
 # ─── Data Loading ─────────────────────────────────────────────────────────────
 def load_data() -> pd.DataFrame:
-    """Load farmer data from Google Sheets if configured, otherwise fallback to customers.csv."""
-    client = None
-    try:
-        if "gspread" in st.secrets and GSHEET_URL:
-            client = get_gsheet_client()
-    except Exception:
-        pass
+    """Load farmer data live from Supabase database."""
+    supabase = get_supabase_client()
+    req_cols = ["Name", "Phone", "Crop_Type", "Crop_Area", "Season", "Location", "Farm_Scale", "Region"]
 
-    if client:
+    if supabase:
         try:
-            sh = client.open_by_url(GSHEET_URL).sheet1
-            records = sh.get_all_records()
-            if records:
-                df = pd.DataFrame(records)
-                req_cols = ["Name", "Phone", "Crop_Type", "Crop_Area", "Season", "Location", "Farm_Scale", "Region"]
+            response = supabase.table(SUPABASE_TABLE).select(
+                "Name, Phone, Crop_Type, Crop_Area, Season, Location, Farm_Scale, Region"
+            ).execute()
+            if response.data:
+                df = pd.DataFrame(response.data)
                 for col in req_cols:
                     if col not in df.columns:
                         df[col] = ""
@@ -581,93 +569,35 @@ def load_data() -> pd.DataFrame:
                 df["Region"]     = df["Region"].astype(str).str.strip()
                 df["Location"]   = df["Location"].astype(str).str.strip()
                 df["Farm_Scale"] = df["Farm_Scale"].astype(str).str.strip()
+                df["Crop_Area"]  = pd.to_numeric(df["Crop_Area"], errors="coerce").fillna(0.0)
                 return df
         except Exception:
             pass
 
-    # Fallback to local customers.csv
-    if not os.path.exists(RAW_DATA_PATH):
-        os.makedirs(os.path.dirname(RAW_DATA_PATH), exist_ok=True)
-        default_data = pd.DataFrame([
-            {"Name": "Ahmad Rehman", "Phone": "0315-3218196", "Crop_Type": "Wheat", "Crop_Area": 15.0, "Season": "Rabi", "Location": "Rahim Yar Khan", "Farm_Scale": "Medium", "Region": "Rahim Yar Khan"},
-            {"Name": "Bilal Khan", "Phone": "0300-1122334", "Crop_Type": "Cotton", "Crop_Area": 25.0, "Season": "Kharif", "Location": "Multan", "Farm_Scale": "Large", "Region": "Multan"},
-            {"Name": "Usman Ali", "Phone": "0333-4455667", "Crop_Type": "Rice", "Crop_Area": 12.0, "Season": "Kharif", "Location": "Gujranwala", "Farm_Scale": "Small", "Region": "Gujranwala"},
-            {"Name": "Tariq Mahmood", "Phone": "0321-9988776", "Crop_Type": "Sugarcane", "Crop_Area": 30.0, "Season": "Kharif", "Location": "Faisalabad", "Farm_Scale": "Large", "Region": "Faisalabad"}
-        ])
-        default_data.to_csv(RAW_DATA_PATH, index=False)
-    df = pd.read_csv(RAW_DATA_PATH)
-    if "Crop_Type" in df.columns:
-        df["Crop_Type"]  = df["Crop_Type"].astype(str).str.title()
-    if "Season" in df.columns:
-        df["Season"]     = df["Season"].astype(str).str.strip()
-    if "Region" in df.columns:
-        df["Region"]     = df["Region"].astype(str).str.strip()
-    if "Location" in df.columns:
-        df["Location"]   = df["Location"].astype(str).str.strip()
-    if "Farm_Scale" in df.columns:
-        df["Farm_Scale"] = df["Farm_Scale"].astype(str).str.strip()
-    return df
+    # Fallback: empty DataFrame with correct schema so app never crashes
+    return pd.DataFrame(columns=req_cols)
 
 
 def save_new_row(row_dict: dict) -> bool:
-    """Save new farmer profile to Google Sheets if configured, otherwise fallback to customers.csv."""
-    client = None
-    try:
-        if "gspread" in st.secrets and GSHEET_URL:
-            client = get_gsheet_client()
-    except Exception:
-        pass
-
-    if client:
+    """Insert a new farmer record directly into Supabase."""
+    supabase = get_supabase_client()
+    if supabase:
         try:
-            sh = client.open_by_url(GSHEET_URL).sheet1
-            row_vals = [
-                row_dict["Name"],
-                row_dict["Phone"],
-                row_dict["Crop_Type"],
-                float(row_dict["Crop_Area"]),
-                row_dict["Season"],
-                row_dict["Location"],
-                row_dict["Farm_Scale"],
-                row_dict["Region"]
-            ]
-            sh.append_row(row_vals)
+            supabase.table(SUPABASE_TABLE).insert({
+                "Name":       row_dict["Name"],
+                "Phone":      row_dict["Phone"],
+                "Crop_Type":  row_dict["Crop_Type"],
+                "Crop_Area":  float(row_dict["Crop_Area"]),
+                "Season":     row_dict["Season"],
+                "Location":   row_dict["Location"],
+                "Farm_Scale": row_dict["Farm_Scale"],
+                "Region":     row_dict["Region"]
+            }).execute()
             return True
-        except Exception:
-            pass
-
-    # Fallback to local CSV
-    new_row_df = pd.DataFrame([row_dict])
-    csv_cols = ["Name", "Phone", "Crop_Type", "Crop_Area", "Season", "Location", "Farm_Scale", "Region"]
-    new_row_df = new_row_df[csv_cols]
-    new_row_df.to_csv(RAW_DATA_PATH, mode="a", header=False, index=False)
-    return True
-
-
-def save_batch_dataframe(df_batch: pd.DataFrame) -> bool:
-    """Overwrite datastore with batch uploaded DataFrame."""
-    client = None
-    try:
-        if "gspread" in st.secrets and GSHEET_URL:
-            client = get_gsheet_client()
-    except Exception:
-        pass
-
-    csv_cols = ["Name", "Phone", "Crop_Type", "Crop_Area", "Season", "Location", "Farm_Scale", "Region"]
-    clean_batch = df_batch[csv_cols].copy()
-
-    if client:
-        try:
-            sh = client.open_by_url(GSHEET_URL).sheet1
-            sh.clear()
-            sh.update([csv_cols] + clean_batch.values.tolist())
-            return True
-        except Exception:
-            pass
-
-    # Fallback to local CSV
-    clean_batch.to_csv(RAW_DATA_PATH, index=False)
-    return True
+        except Exception as e:
+            st.error(f"Database error: {e}")
+            return False
+    return False
 
 
 def generate_excel(df: pd.DataFrame) -> bytes:
@@ -721,11 +651,11 @@ unique_cities  = df["Location"].nunique()
 total_area     = df["Crop_Area"].sum()
 
 # Startup audit event (once per session)
-is_gsheet = "gspread" in st.secrets and bool(GSHEET_URL)
-status_source = "GSHEET CONNECTED" if is_gsheet else "LOCAL OFFLINE"
+is_supabase = bool(SUPABASE_URL and SUPABASE_KEY)
+status_source = "SUPABASE CONNECTED" if is_supabase else "LOCAL OFFLINE"
 
 if "portal_started" not in st.session_state:
-    ds_source = "Google Sheets" if is_gsheet else "data/raw/customers.csv"
+    ds_source = "Supabase PostgreSQL" if is_supabase else "offline fallback"
     log_event("SYSTEM", "Portal session initialised — farmer data loaded",
               {"total_records": total_farmers, "transport": "HTTPS (TLS 1.3)",
                "data_source": ds_source})
