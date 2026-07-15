@@ -79,4 +79,6 @@ data/processed/*.csv
 models/
 reports/
 *.pkl
+.streamlit/
+
 
