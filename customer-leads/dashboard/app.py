@@ -903,8 +903,12 @@ with tab_group:
     sort_col = "Farmer Count"
 
     grp = grp.sort_values(by=sort_col, ascending=False).reset_index(drop=True)
-    top_name = grp.iloc[0, 0]
-    top_val  = grp.iloc[0][sort_col]
+    if not grp.empty:
+        top_name = grp.iloc[0, 0]
+        top_val  = grp.iloc[0][sort_col]
+    else:
+        top_name = "N/A (No Data)"
+        top_val  = 0
 
     log_event("PAGE_VIEW", f"Data Grouping tab — grouped by {group_by} (count)",
               {"group_by": group_by, "operation": "count"})
