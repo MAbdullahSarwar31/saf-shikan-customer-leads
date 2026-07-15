@@ -954,10 +954,13 @@ with tab_group:
             <div class='panel-count-badge'>COLOR HEATMAP ENABLED</div>
         </div>""", unsafe_allow_html=True)
 
-    styled = grp.style.background_gradient(
-        subset=[sort_col], cmap="YlGn"
-    ).format({col: "{:,.0f}" for col in grp.select_dtypes("number").columns})
-    st.dataframe(styled, use_container_width=True, hide_index=True)
+    try:
+        styled = grp.style.background_gradient(
+            subset=[sort_col], cmap="YlGn"
+        ).format({col: "{:,.0f}" for col in grp.select_dtypes("number").columns})
+        st.dataframe(styled, use_container_width=True, hide_index=True)
+    except Exception:
+        st.dataframe(grp, use_container_width=True, hide_index=True)
 
     dl_col, _ = st.columns([2.5, 5.5])
     with dl_col:
