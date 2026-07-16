@@ -42,9 +42,22 @@ from audit_logger import (
 from auth import require_auth, get_current_user_email, logout
 
 # ─── Page Configuration ──────────────────────────────────────────────────────
+logo_icon = "⚫"
+try:
+    from PIL import Image
+    _logo_path = os.path.join(APP_DIR_IMPORT, "assets", "saf_shikan_logo.png")
+    if os.path.exists(_logo_path):
+        logo_icon = Image.open(_logo_path)
+    else:
+        _logo_path_root = os.path.join(os.path.dirname(APP_DIR_IMPORT), "Saf Shikan Logo - green without bg.png")
+        if os.path.exists(_logo_path_root):
+            logo_icon = Image.open(_logo_path_root)
+except Exception:
+    pass
+
 st.set_page_config(
     page_title="Saf Shikan — Customer Data & Management Portal",
-    page_icon="⚫",
+    page_icon=logo_icon,
     layout="wide",
     initial_sidebar_state="collapsed"
 )
