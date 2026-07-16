@@ -69,18 +69,18 @@ def logout() -> None:
             pass
     for key in [
         "auth_user", "auth_access_token", "portal_unlocked",
-        "audit_session_id", "audit_log", "portal_started"
+        "audit_session_id", "audit_log", "portal_started", "_transitioning"
     ]:
         st.session_state.pop(key, None)
-    # Flag that we are in a logout transition — require_auth will render the loader
-    st.session_state["_transitioning"] = "logout"
     st.rerun()
 
 
 # ─── Login Form ───────────────────────────────────────────────────────────────
 def _render_login_screen() -> None:
     """Render the full-page branded SAF SHIKAN split-screen login screen."""
-    st.markdown("""
+    login_placeholder = st.empty()
+    with login_placeholder.container():
+        st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap');
 
@@ -384,8 +384,8 @@ def _render_login_screen() -> None:
                     }
                     if response.session:
                         st.session_state["auth_access_token"] = response.session.access_token
-                    # Flag that we are in a login transition — require_auth will render the loader
-                    st.session_state["_transitioning"] = "login"
+                    st.session_state.pop("_transitioning", None)
+                    login_placeholder.empty()
                     st.rerun()
                 else:
                     st.error("❌ Invalid LOGIN ID or PASSWORD. Please try again.")
@@ -404,94 +404,11 @@ def _render_login_screen() -> None:
     """, unsafe_allow_html=True)
 
 
-# ─── Full-Screen Transition Loader ───────────────────────────────────────────
-def _render_transition_loader(mode: str = "login") -> None:
-    """Render a branded full-screen loading overlay using proper st.markdown render cycle.
-
-    This is called AFTER st.rerun() fires (next render cycle) so Streamlit will
-    only show this screen — no login form or dashboard elements bleed through.
-    """
-    logo_b64 = _get_logo_base64()
-    logo_html = (
-        f'<img src="data:image/png;base64,{logo_b64}" '
-        'style="width:72px;height:72px;object-fit:contain;margin-bottom:24px;" alt="SAF SHIKAN">'
-        if logo_b64 else ""
-    )
-    bg   = "#0C3823" if mode == "login" else "#061c0e"
-    spin = "#22C55E" if mode == "login" else "#EF4444"
-    msg  = (
-        "Decrypting portal ledger and establishing secure connection..."
-        if mode == "login"
-        else "Terminating audit session and signing out securely..."
-    )
-    st.markdown(f"""
-    <style>
-    header[data-testid="stHeader"], #MainMenu, footer,
-    div[data-testid="stToolbar"], .block-container {{ display:none !important; }}
-    html, body, .stApp {{
-        background: {bg} !important;
-        margin: 0 !important; padding: 0 !important;
-    }}
-    .ag-loader {{
-        position: fixed;
-        inset: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        background: {bg};
-        z-index: 99999;
-        font-family: 'Outfit', sans-serif;
-        color: #FFFFFF;
-        text-align: center;
-    }}
-    .ag-spinner {{
-        width: 52px; height: 52px;
-        border: 4px solid rgba(255,255,255,0.15);
-        border-left-color: {spin};
-        border-radius: 50%;
-        animation: ag-spin 0.9s linear infinite;
-        margin-bottom: 28px;
-    }}
-    @keyframes ag-spin {{
-        0%   {{ transform: rotate(0deg); }}
-        100% {{ transform: rotate(360deg); }}
-    }}
-    .ag-title {{ font-size:1.5rem; font-weight:800; letter-spacing:3px; margin-bottom:10px; }}
-    .ag-sub   {{ font-size:0.85rem; opacity:0.7; max-width:320px; line-height:1.5; }}
-    </style>
-    <div class="ag-loader">
-        {logo_html}
-        <div class="ag-spinner"></div>
-        <div class="ag-title">AGRON SECURE LINK</div>
-        <div class="ag-sub">{msg}</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-
 # ─── Gatekeeper ──────────────────────────────────────────────────────────────
 def require_auth() -> None:
-    """Call at the top of app.py. Shows login or transition loader; halts if unauthenticated.
-
-    Flow on login:
-      1. User submits form → auth_user set → _transitioning='login' → st.rerun()
-      2. Next render: require_auth sees _transitioning, renders full-screen loader, st.stop()
-      3. Streamlit auto-reruns after the stop → _transitioning is gone → dashboard renders
-
-    Flow on logout:
-      1. logout() clears auth_user → _transitioning='logout' → st.rerun()
-      2. Next render: require_auth sees _transitioning, renders full-screen loader, st.stop()
-      3. Streamlit auto-reruns → no auth_user → login form renders
-    """
-    transition = st.session_state.pop("_transitioning", None)
-
-    # Case 1: Mid-transition — show loader and stop this render cycle
-    if transition:
-        _render_transition_loader(mode=transition)
-        st.stop()
-
-    # Case 2: No authenticated user — show login form
+    """Call at the top of app.py — shows login screen and stops execution if not authenticated."""
     if not get_current_user():
         _render_login_screen()
         st.stop()
+
 
