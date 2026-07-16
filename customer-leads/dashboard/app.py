@@ -20,7 +20,17 @@ from supabase import create_client, Client
 
 # ─── Audit Logger Import ──────────────────────────────────────────────────────
 APP_DIR_IMPORT = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, APP_DIR_IMPORT)
+if APP_DIR_IMPORT not in sys.path:
+    sys.path.insert(0, APP_DIR_IMPORT)
+
+import importlib
+for _mod in ("audit_logger", "auth"):
+    if _mod in sys.modules:
+        try:
+            importlib.reload(sys.modules[_mod])
+        except Exception:
+            sys.modules.pop(_mod, None)
+
 from audit_logger import (
     log_event,
     get_log,
