@@ -26,8 +26,10 @@ from audit_logger import (
     get_log,
     get_log_as_csv,
     get_log_counts,
+    get_log_from_supabase,
     EVENT_CONFIG
 )
+from auth import require_auth, get_current_user_email, logout
 
 # ─── Page Configuration ──────────────────────────────────────────────────────
 st.set_page_config(
@@ -56,6 +58,11 @@ def get_supabase_client() -> Client | None:
     except Exception as e:
         st.warning(f"⚠️ Supabase connection failed: {e}. Check your supabase_url and supabase_key in Streamlit Secrets.")
         return None
+
+# ─── Authentication Gate ─────────────────────────────────────────────────────
+# Must be called BEFORE any CSS or content is rendered.
+# Shows login form and halts execution if no authenticated user.
+require_auth()
 
 # ─── Enterprise AGRON Portal Design System CSS ───────────────────────────────
 st.markdown("""
@@ -683,27 +690,35 @@ total_area     = df["Crop_Area"].sum()
 # Startup audit event (once per session)
 is_supabase = bool(SUPABASE_URL and SUPABASE_KEY)
 status_source = "SUPABASE CONNECTED" if is_supabase else "LOCAL OFFLINE"
+current_user_email = get_current_user_email()
 
 if "portal_started" not in st.session_state:
     ds_source = "Supabase PostgreSQL" if is_supabase else "offline fallback"
-    log_event("SYSTEM", "Portal session initialised — farmer data loaded",
-              {"total_records": total_farmers, "transport": "HTTPS (TLS 1.3)",
-               "data_source": ds_source})
+    log_event("LOGIN", f"User authenticated — portal session started",
+              {"user": current_user_email, "total_records": total_farmers,
+               "transport": "HTTPS (TLS 1.3)", "data_source": ds_source})
     st.session_state["portal_started"] = True
 
 # ─── Top Executive Header ─────────────────────────────────────────────────────
-st.markdown(f"""
-<div class='portal-header-row'>
-    <div>
-        <div class='portal-breadcrumb'>AGRON ADMIN DASHBOARD / SAF SHIKAN MODULE / DATA REPOSITORY</div>
-        <h1 class='page-title'>Saf Shikan — Customer Data &amp; Management Portal</h1>
+hdr_col, logout_col = st.columns([9, 1])
+with hdr_col:
+    st.markdown(f"""
+    <div class='portal-header-row'>
+        <div>
+            <div class='portal-breadcrumb'>AGRON ADMIN DASHBOARD / SAF SHIKAN MODULE / DATA REPOSITORY</div>
+            <h1 class='page-title'>Saf Shikan — Customer Data &amp; Management Portal</h1>
+        </div>
+        <div class='status-pill'>
+            <span class='status-dot'></span>
+            <span>SYSTEM LIVE &nbsp;·&nbsp; {status_source} &nbsp;·&nbsp; {total_farmers:,} RECORDS &nbsp;·&nbsp; 🔐 {current_user_email}</span>
+        </div>
     </div>
-    <div class='status-pill'>
-        <span class='status-dot'></span>
-        <span>SYSTEM LIVE &nbsp;·&nbsp; {status_source} &nbsp;·&nbsp; {total_farmers:,} RECORDS SYNCED</span>
-    </div>
-</div>
-""", unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
+with logout_col:
+    st.markdown("<div style='padding-top:1.4rem;'></div>", unsafe_allow_html=True)
+    if st.button("⎋ Logout", use_container_width=True, help="Sign out of the AGRON portal"):
+        log_event("LOGOUT", f"User signed out", {"user": current_user_email})
+        logout()
 
 # ─── Executive Stat Cards Ribbon ──────────────────────────────────────────────
 st.markdown(f"""
@@ -1085,6 +1100,7 @@ with tab_charts:
 
 
 # ══════════════════════════════════════════════════════════════════════════════
+# ══════════════════════════════════════════════════════════════════════════════
 # TAB 4 — SECURITY & AUDIT TRAIL CONSOLE
 # ══════════════════════════════════════════════════════════════════════════════
 with tab_security:
@@ -1092,20 +1108,19 @@ with tab_security:
 
     session_id  = _session_id()
     log_counts  = get_log_counts()
-    all_entries = get_log()
 
     log_event("PAGE_VIEW", "Security & Audit Trail tab opened", {})
 
-    # Re-fetch counts after the event above
-    log_counts  = get_log_counts()
-    all_entries = get_log()
-    total_events  = len(all_entries)
+    # Re-fetch counts after above event
+    log_counts    = get_log_counts()
+    total_events  = sum(log_counts.values())
     page_views    = log_counts.get("PAGE_VIEW",    0)
     filter_events = log_counts.get("FILTER_APPLY", 0)
     export_events = log_counts.get("DATA_EXPORT",  0)
-    system_events = log_counts.get("SYSTEM",       0)
+    entry_events  = log_counts.get("DATA_ENTRY",   0)
+    auth_events   = log_counts.get("LOGIN", 0) + log_counts.get("LOGOUT", 0)
 
-    # ── Security Status (single block) ───────────────────────────────────────
+    # ── Security Posture Badges ──────────────────────────────────────────────
     st.markdown(f"""
     <div class='enterprise-panel'>
         <div class='panel-header'>
@@ -1125,31 +1140,31 @@ with tab_security:
                 <div class='security-badge-icon badge-audit'>LOG</div>
                 <div>
                     <div class='security-badge-text-label'>Audit Trail</div>
-                    <div class='security-badge-text-value'>Full Session Event Logging</div>
-                    <div class='security-badge-text-sub'>Every page view, filter change, and export is recorded with timestamp and context.</div>
+                    <div class='security-badge-text-value'>Persistent Cross-Session Logging</div>
+                    <div class='security-badge-text-sub'>Every action is written to Supabase audit_log table — survives page refresh, accessible across all user sessions.</div>
                 </div>
             </div>
             <div class='security-badge'>
                 <div class='security-badge-icon badge-session'>SID</div>
                 <div>
-                    <div class='security-badge-text-label'>Current Session ID</div>
+                    <div class='security-badge-text-label'>Current Session</div>
                     <div class='security-badge-text-value'>{session_id}</div>
-                    <div class='security-badge-text-sub'>Unique per browser session. All events are tagged with this identifier.</div>
+                    <div class='security-badge-text-sub'>Signed in as: {current_user_email}. All events tagged with this session ID and user identity.</div>
                 </div>
             </div>
             <div class='security-badge'>
                 <div class='security-badge-icon badge-access'>ACC</div>
                 <div>
                     <div class='security-badge-text-label'>Data Access Scope</div>
-                    <div class='security-badge-text-value'>Read-Only</div>
-                    <div class='security-badge-text-sub'>No write operations. Farmer records served in read-only mode from raw CSV.</div>
+                    <div class='security-badge-text-value'>READ / WRITE — Authenticated</div>
+                    <div class='security-badge-text-sub'>Access controlled via Supabase Auth. All write operations are user-attributed and audited.</div>
                 </div>
             </div>
         </div>
     </div>
     """, unsafe_allow_html=True)
 
-    # ── Event Counter Cards (single block) ────────────────────────────────────
+    # ── Session Event Counter Cards ──────────────────────────────────────────
     st.markdown(f"""
     <div class='stats-row'>
         <div class='stat-card'>
@@ -1173,26 +1188,29 @@ with tab_security:
             <div class='stat-footer'><span class='dot dot-amber'></span>CSV / Excel downloads</div>
         </div>
         <div class='stat-card'>
-            <div class='stat-header'><span class='stat-label'>System Events</span><span class='stat-badge'>SYS</span></div>
-            <div class='stat-value'>{system_events}</div>
-            <div class='stat-footer'><span class='dot dot-teal'></span>Startup &amp; data load</div>
+            <div class='stat-header'><span class='stat-label'>Farmer Entries</span><span class='stat-badge'>WRITE</span></div>
+            <div class='stat-value'>{entry_events}</div>
+            <div class='stat-footer'><span class='dot dot-teal'></span>New records committed</div>
         </div>
     </div>
     """, unsafe_allow_html=True)
 
-    # ── Plain English Audit Activity Log ──────────────────────────────────────
+    # ── Persistent Cross-Session Audit Log (from Supabase) ───────────────────
     st.markdown("""
     <div class='enterprise-panel'>
         <div class='panel-header'>
-            <div class='panel-title'>PLAIN ENGLISH AUDIT ACTIVITY LOG</div>
-            <div class='panel-count-badge'>HUMAN READABLE RECORD</div>
+            <div class='panel-title'>PERSISTENT AUDIT ACTIVITY LOG</div>
+            <div class='panel-count-badge'>SUPABASE — CROSS-SESSION</div>
         </div>
     """, unsafe_allow_html=True)
 
+    with st.spinner("Loading audit records from Supabase..."):
+        supabase_entries = get_log_from_supabase(limit=200)
+
     def _to_plain_english(entry: dict) -> str:
         etype = entry.get("event_type", "")
-        desc = entry.get("description", "")
-        det = entry.get("details", {})
+        desc  = entry.get("description", "")
+        det   = entry.get("details", {})
 
         if etype == "FILTER_APPLY":
             parts = []
@@ -1206,70 +1224,71 @@ with tab_security:
                 parts.append(f"Search: '{det['keyword']}'")
             filter_str = ", ".join(parts) if parts else "All default filters (no restrictions)"
             res = det.get("results", "")
-            return f"Filtered Farmer Directory ({filter_str}). Found {res} matching farmer records."
-
+            return f"Filtered Farmer Directory ({filter_str}). Found {res} matching records."
         elif etype == "DATA_EXPORT":
-            fmt = det.get("format", "File")
+            fmt  = det.get("format", "File")
             rows = det.get("rows_exported", "")
-            if rows:
-                return f"Downloaded {rows} farmer records as a {fmt} spreadsheet file."
-            return f"Downloaded data summary table as a {fmt} spreadsheet file."
-
+            return f"Downloaded {rows} farmer records as {fmt}." if rows else f"Downloaded data summary as {fmt}."
         elif etype == "PAGE_VIEW":
             return f"Opened and viewed: {desc}."
-
-        elif etype == "SYSTEM":
-            records = det.get("total_records", "")
-            if records:
-                return f"System started securely over HTTPS (TLS 1.3) and loaded {records} farmer records."
-            return f"System notification: {desc}."
-
+        elif etype == "LOGIN":
+            user = det.get("user", desc)
+            recs = det.get("total_records", "")
+            return f"User signed in: {user}. Portal loaded with {recs} farmer records."
+        elif etype == "LOGOUT":
+            user = det.get("user", desc)
+            return f"User signed out: {user}."
         elif etype == "DATA_ENTRY":
             name = det.get("name", "")
-            location = det.get("location", det.get("region", ""))
+            loc  = det.get("location", det.get("region", ""))
             crop = det.get("crop", "")
             area = det.get("area", "")
-            if name:
-                return f"Added new farmer profile into directory: {name} ({location}, {crop}, {area} acres)."
-            return f"Added new farmer profile into directory: {desc}."
-
+            return f"New farmer registered: {name} ({loc}, {crop}, {area} ac)." if name else f"New farmer registered: {desc}."
+        elif etype == "SYSTEM":
+            recs = det.get("total_records", "")
+            return f"System started (TLS 1.3) — loaded {recs} records." if recs else f"System: {desc}."
         return desc
 
-    if not all_entries:
-        st.info("No activity recorded yet in this session. Navigate the portal to generate plain English log records.")
+    icon_map = {
+        "FILTER_APPLY": "🔍", "DATA_EXPORT": "📥", "PAGE_VIEW": "👁️",
+        "SYSTEM": "🛡️", "DATA_ENTRY": "➕", "LOGIN": "🔐", "LOGOUT": "🚪"
+    }
+
+    if not supabase_entries:
+        st.info(
+            "No persistent audit records found. This happens if: (a) the `audit_log` table "
+            "hasn't been created in Supabase yet, or (b) navigate the portal to generate events."
+        )
     else:
-        for entry in all_entries:
+        for entry in supabase_entries:
             plain_text = _to_plain_english(entry)
-            ts = entry.get("display_ts", "")
-            sid = entry.get("session", session_id)
-            icon = {
-                "FILTER_APPLY": "🔍",
-                "DATA_EXPORT": "📥",
-                "PAGE_VIEW": "👁️",
-                "SYSTEM": "🛡️",
-                "DATA_ENTRY": "➕"
-            }.get(entry.get("event_type", ""), "📋")
+            ts         = entry.get("display_ts", "")
+            sid        = entry.get("session", "")[:8]
+            user_email = entry.get("user_email", "anonymous")
+            icon       = icon_map.get(entry.get("event_type", ""), "📋")
 
             card_html = (
                 f"<div style='background:#FFFFFF;border:1px solid #E2E8F0;border-radius:10px;"
-                f"padding:14px 18px;margin-bottom:10px;box-shadow:0 1px 2px rgba(0,0,0,0.02);'>"
-                f"<div style='font-size:0.95rem;font-weight:600;color:#0F172A;margin-bottom:4px;'>"
+                f"padding:14px 18px;margin-bottom:8px;box-shadow:0 1px 2px rgba(0,0,0,0.02);'>"
+                f"<div style='font-size:0.93rem;font-weight:600;color:#0F172A;margin-bottom:5px;'>"
                 f"{icon} &nbsp; {plain_text}</div>"
-                f"<div style='font-size:0.78rem;color:#64748B;font-weight:500;'>"
-                f"Logged at {ts} &nbsp;·&nbsp; Session ID: {sid}</div>"
-                f"</div>"
+                f"<div style='font-size:0.76rem;color:#64748B;font-weight:500;display:flex;gap:16px;'>"
+                f"<span>🕐 {ts}</span>"
+                f"<span>👤 {user_email}</span>"
+                f"<span>🔑 Session: {sid}</span>"
+                f"</div></div>"
             )
             st.markdown(card_html, unsafe_allow_html=True)
 
     st.markdown("</div>", unsafe_allow_html=True)
 
-    # ── Export ────────────────────────────────────────────────────────────────
+    # ── Export ───────────────────────────────────────────────────────────────
     audit_col, _ = st.columns([2.5, 5.5])
     with audit_col:
         st.download_button(
-            "Export Audit Log (CSV)",
-            data=get_log_as_csv().encode("utf-8"),
-            file_name=f"saf_shikan_audit_{session_id}.csv",
+            "Export Full Audit Log (CSV)",
+            data=get_log_as_csv(use_supabase=True).encode("utf-8"),
+            file_name=f"saf_shikan_audit_full.csv",
             mime="text/csv",
             use_container_width=True
         )
