@@ -63,8 +63,11 @@ def _ensure_log_list() -> None:
         st.session_state["audit_log"] = []
 
 
+import threading
+
+@st.cache_resource(show_spinner=False)
 def _get_supabase_client():
-    """Create and return a Supabase client from Streamlit secrets. Returns None on failure."""
+    """Create and return a cached Supabase client from Streamlit secrets. Returns None on failure."""
     url = st.secrets.get("supabase_url", "")
     key = st.secrets.get("supabase_key", "")
     if not url or not key:
@@ -77,8 +80,8 @@ def _get_supabase_client():
 
 
 # ─── Supabase Write ───────────────────────────────────────────────────────────
-def _write_to_supabase(entry: dict) -> None:
-    """Write a single audit entry to the Supabase audit_log table (non-blocking)."""
+def _write_to_supabase_worker(entry: dict) -> None:
+    """Background thread worker to write audit entry to Supabase without blocking UI."""
     supabase = _get_supabase_client()
     if not supabase:
         return
@@ -91,7 +94,12 @@ def _write_to_supabase(entry: dict) -> None:
             "details":     entry["details"],
         }).execute()
     except Exception:
-        pass  # Never crash the app due to audit logging failure
+        pass
+
+
+def _write_to_supabase(entry: dict) -> None:
+    """Write a single audit entry to Supabase asynchronously in a background daemon thread."""
+    threading.Thread(target=_write_to_supabase_worker, args=(entry,), daemon=True).start()
 
 
 # ─── Public API ───────────────────────────────────────────────────────────────
@@ -123,7 +131,7 @@ def log_event(
     # 1. Local session state — instant UI display
     st.session_state["audit_log"].append(entry)
 
-    # 2. Supabase persistent write — non-blocking
+    # 2. Supabase persistent write — non-blocking background thread
     _write_to_supabase(entry)
 
 
@@ -133,6 +141,7 @@ def get_log() -> "list[dict]":
     return list(reversed(st.session_state["audit_log"]))
 
 
+@st.cache_data(ttl=60, show_spinner=False)
 def get_log_from_supabase(limit: int = 200) -> "list[dict]":
     """Fetch the last N audit entries from the Supabase audit_log table (all sessions/users).
 
@@ -140,6 +149,7 @@ def get_log_from_supabase(limit: int = 200) -> "list[dict]":
         List of audit entry dicts, newest first. Empty list on failure.
     """
     supabase = _get_supabase_client()
+
     if not supabase:
         return []
     try:

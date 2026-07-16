@@ -23,14 +23,6 @@ APP_DIR_IMPORT = os.path.dirname(os.path.abspath(__file__))
 if APP_DIR_IMPORT not in sys.path:
     sys.path.insert(0, APP_DIR_IMPORT)
 
-import importlib
-for _mod in ("audit_logger", "auth"):
-    if _mod in sys.modules:
-        try:
-            importlib.reload(sys.modules[_mod])
-        except Exception:
-            sys.modules.pop(_mod, None)
-
 from audit_logger import (
     log_event,
     get_log,
@@ -72,6 +64,7 @@ SUPABASE_URL = st.secrets.get("supabase_url", "")
 SUPABASE_KEY = st.secrets.get("supabase_key", "")
 SUPABASE_TABLE = st.secrets.get("supabase_table", "farmer")
 
+@st.cache_resource(show_spinner=False)
 def get_supabase_client() -> Client | None:
     """Return an authenticated Supabase client using Streamlit secrets."""
     if not SUPABASE_URL or not SUPABASE_KEY:
@@ -1174,7 +1167,9 @@ with tab_security:
     session_id  = _session_id()
     log_counts  = get_log_counts()
 
-    log_event("PAGE_VIEW", "Security & Audit Trail tab opened", {})
+    if "sec_tab_viewed" not in st.session_state:
+        st.session_state["sec_tab_viewed"] = True
+        log_event("PAGE_VIEW", "Security & Audit Trail tab opened", {})
 
     # Re-fetch counts after above event
     log_counts    = get_log_counts()

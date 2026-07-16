@@ -35,6 +35,7 @@ def _get_logo_base64() -> str:
 
 
 # ─── Supabase Client ─────────────────────────────────────────────────────────
+@st.cache_resource(show_spinner=False)
 def _get_supabase() -> "Client | None":
     """Create a Supabase client from Streamlit secrets (standalone, no app.py import)."""
     url = st.secrets.get("supabase_url", "")
