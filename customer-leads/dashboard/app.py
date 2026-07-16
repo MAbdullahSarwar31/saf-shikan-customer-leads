@@ -94,21 +94,24 @@ html, body, [class*="css"], .stApp {
 }
 
 /* ── Top Executive Header ──────────────────────────────────── */
+/* Align columns containing the header row and logout button vertically */
+div[data-testid="stHorizontalBlock"]:has(.portal-header-row) {
+    align-items: center !important;
+}
 .portal-breadcrumb {
     font-size: 0.75rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.8px;
     color: #10B981;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
 }
 .portal-header-row {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-    gap: 12px;
+    flex-direction: column;
+    margin-bottom: 15px;
+    gap: 4px;
+    width: 100%;
 }
 .page-title {
     font-family: 'Outfit', sans-serif;
@@ -116,6 +119,7 @@ html, body, [class*="css"], .stApp {
     font-weight: 800;
     color: #0F172A;
     margin: 0;
+    line-height: 1.2;
     letter-spacing: -0.5px;
 }
 .status-pill {
@@ -138,24 +142,33 @@ html, body, [class*="css"], .stApp {
     border-radius: 50%;
 }
 /* Professional Header Logout Button */
-div[data-testid="stColumn"]:nth-child(2) button[kind="secondary"] {
+div[data-testid="stColumn"]:nth-child(2) button {
     background-color: #FFFFFF !important;
-    border: 1px solid #CBD5E1 !important;
-    border-radius: 8px !important;
-    color: #0F172A !important;
+    border: 1.5px solid #0C3823 !important;
+    border-radius: 20px !important;
+    color: #0C3823 !important;
     font-family: 'Inter', sans-serif !important;
-    font-size: 0.88rem !important;
-    font-weight: 600 !important;
-    padding: 0.35rem 1rem !important;
+    font-size: 0.82rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.8px !important;
+    padding: 0.35rem 1.2rem !important;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
-    transition: all 0.15s ease !important;
-    height: 38px !important;
+    transition: all 0.2s ease-in-out !important;
+    height: 36px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
 }
-div[data-testid="stColumn"]:nth-child(2) button[kind="secondary"]:hover {
-    background-color: #F8FAFC !important;
-    border-color: #94A3B8 !important;
-    color: #EF4444 !important;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08) !important;
+div[data-testid="stColumn"]:nth-child(2) button:hover {
+    background-color: #0C3823 !important;
+    color: #FFFFFF !important;
+    border-color: #0C3823 !important;
+    box-shadow: 0 4px 12px rgba(12, 56, 35, 0.2) !important;
+    transform: translateY(-1px) !important;
+}
+div[data-testid="stColumn"]:nth-child(2) button:active {
+    transform: translateY(0px) !important;
 }
 
 /* ── Stat Cards ─────────────────────────────────────────────── */
@@ -730,29 +743,30 @@ if "portal_started" not in st.session_state:
     st.session_state["portal_started"] = True
 
 # ─── Top Executive Header ─────────────────────────────────────────────────────
-hdr_col, logout_col = st.columns([9, 1])
+hdr_col, logout_col = st.columns([8.8, 1.2])
 with hdr_col:
     from auth import _get_logo_base64
     logo_b64 = _get_logo_base64()
-    header_logo_tag = f"<img src='data:image/png;base64,{logo_b64}' style='width:36px; height:36px; object-fit:contain; margin-right:14px;' alt='SS Logo'>" if logo_b64 else "<div style='width:36px;height:36px;border-radius:8px;background:#0C3823;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.8rem;margin-right:14px;'>SS</div>"
+    header_logo_tag = f"<img src='data:image/png;base64,{logo_b64}' style='width:38px; height:38px; object-fit:contain; margin-right:12px;' alt='SS Logo'>" if logo_b64 else "<div style='width:38px;height:38px;border-radius:50%;background:#0C3823;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.8rem;margin-right:12px;'>SS</div>"
     st.markdown(f"""
     <div class='portal-header-row'>
-        <div style='display:flex; align-items:center;'>
-            {header_logo_tag}
-            <div>
-                <div class='portal-breadcrumb'>AGRON ADMIN DASHBOARD / SAF SHIKAN MODULE / DATA REPOSITORY</div>
+        <div style='margin-left: 50px;'>
+            <div class='portal-breadcrumb'>AGRON ADMIN DASHBOARD / SAF SHIKAN MODULE / DATA REPOSITORY</div>
+        </div>
+        <div style='display:flex; align-items:center; justify-content:space-between; width:100%; flex-wrap:wrap; gap:12px;'>
+            <div style='display:flex; align-items:center;'>
+                {header_logo_tag}
                 <h1 class='page-title'>Saf Shikan — Customer Data &amp; Management Portal</h1>
             </div>
-        </div>
-        <div class='status-pill'>
-            <span class='status-dot'></span>
-            <span>SYSTEM LIVE &nbsp;·&nbsp; {status_source} &nbsp;·&nbsp; {total_farmers:,} RECORDS</span>
+            <div class='status-pill'>
+                <span class='status-dot'></span>
+                <span>SYSTEM LIVE &nbsp;·&nbsp; {status_source} &nbsp;·&nbsp; {total_farmers:,} RECORDS</span>
+            </div>
         </div>
     </div>
     """, unsafe_allow_html=True)
 with logout_col:
-    st.markdown("<div style='padding-top:1.4rem;'></div>", unsafe_allow_html=True)
-    if st.button("⎋ Logout", use_container_width=True, help="Sign out of the AGRON portal"):
+    if st.button("Logout", use_container_width=True, help="Sign out of the AGRON portal"):
         log_event("LOGOUT", f"User signed out", {"user": current_user_email})
         logout()
 
