@@ -83,46 +83,71 @@ def _render_login_screen() -> None:
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap');
 
     /* Hide standard streamlit header/sidebar/footer during login */
-    header[data-testid="stHeader"] { display: none !important; }
-    #MainMenu { visibility: hidden !important; }
-    footer { visibility: hidden !important; }
+    header[data-testid="stHeader"], #MainMenu, footer, div[data-testid="stToolbar"] {
+        display: none !important;
+    }
 
     /* Remove standard block container margins and padding */
     .block-container {
         padding: 0 !important;
         margin: 0 !important;
-        max-width: 100% !important;
+        max-width: 100vw !important;
+        overflow-x: hidden !important;
     }
     .stApp {
         background: #FFFFFF !important;
+        overflow-x: hidden !important;
+    }
+
+    /* Horizontal block wrapper containing the 2 columns */
+    div[data-testid="stHorizontalBlock"], div[data-testid="columns"] {
+        gap: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100vw !important;
+        min-height: 100vh !important;
+        display: flex !important;
+        align-items: stretch !important;
     }
 
     /* Column 1 (Left Column - White Form Area) */
+    div[data-testid="stHorizontalBlock"] > div:nth-child(1),
+    div[data-testid="stColumn"]:nth-of-type(1),
     div[data-testid="column"]:nth-of-type(1) {
-        padding: 4rem 6rem 3rem 6rem !important;
+        padding: 2.5rem 5vw !important;
         background: #FFFFFF !important;
         min-height: 100vh !important;
         display: flex !important;
         flex-direction: column !important;
-        justify-content: space-between !important;
+        justify-content: center !important;
+        border: none !important;
     }
+
     /* Column 2 (Right Column - Dark Green Hero Area) */
+    div[data-testid="stHorizontalBlock"] > div:nth-child(2),
+    div[data-testid="stColumn"]:nth-of-type(2),
     div[data-testid="column"]:nth-of-type(2) {
         padding: 0 !important;
-        background: linear-gradient(135deg, #061c0e 0%, #0C3823 45%, #0e4c2e 100%) !important;
+        margin: 0 !important;
+        background: linear-gradient(140deg, #05180c 0%, #0C3823 45%, #0e4e2f 100%) !important;
         min-height: 100vh !important;
         position: relative !important;
         overflow: hidden !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
+        border: none !important;
     }
 
-    /* Responsive adjustment for screens narrower than 1000px */
-    @media (max-width: 1000px) {
+    /* Responsive adjustment for screens narrower than 950px */
+    @media (max-width: 950px) {
+        div[data-testid="stHorizontalBlock"] > div:nth-child(1),
+        div[data-testid="stColumn"]:nth-of-type(1),
         div[data-testid="column"]:nth-of-type(1) {
             padding: 3rem 2rem !important;
         }
+        div[data-testid="stHorizontalBlock"] > div:nth-child(2),
+        div[data-testid="stColumn"]:nth-of-type(2),
         div[data-testid="column"]:nth-of-type(2) {
             display: none !important;
         }
@@ -150,7 +175,7 @@ def _render_login_screen() -> None:
         background-color: #EEF2F6 !important;
         border: 1px solid #E2E8F0 !important;
         border-radius: 8px !important;
-        height: 48px !important;
+        height: 46px !important;
         font-family: 'Inter', sans-serif !important;
         font-size: 0.95rem !important;
         color: #0F172A !important;
@@ -181,7 +206,7 @@ def _render_login_screen() -> None:
         font-weight: 700 !important;
         color: #FFFFFF !important;
         height: 48px !important;
-        margin-top: 12px !important;
+        margin-top: 10px !important;
         box-shadow: 0 6px 16px rgba(10,54,34,0.3) !important;
         letter-spacing: 0.4px !important;
         transition: all 0.2s ease !important;
@@ -224,7 +249,7 @@ def _render_login_screen() -> None:
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-bottom: 40px;
+        margin-bottom: 36px;
         position: relative;
     }
     .hero-title {
@@ -251,7 +276,7 @@ def _render_login_screen() -> None:
     }
     .hero-footer {
         position: absolute;
-        bottom: 2rem;
+        bottom: 1.8rem;
         left: 0; width: 100%;
         text-align: center;
         font-family: 'Inter', sans-serif;
@@ -274,13 +299,13 @@ def _render_login_screen() -> None:
 
     with col_left:
         html_left_top = (
-            '<div style="display:flex; align-items:center; gap:10px; margin-bottom:4.5rem;">'
+            '<div style="display:flex; align-items:center; gap:10px; margin-bottom:2.2rem;">'
             f'<div style="width:34px; height:34px; border-radius:50%; border:1.5px solid #0C3823; display:flex; align-items:center; justify-content:center; color:#0C3823; overflow:hidden;">{logo_top_html}</div>'
             '<span style="font-family:\'Outfit\',sans-serif; font-weight:800; font-size:1.25rem; color:#0C3823; letter-spacing:2px;">AGRON</span>'
             '</div>'
-            '<div style="margin-bottom:2.2rem;">'
-            '<h1 style="font-family:\'Outfit\',sans-serif; font-size:2.3rem; font-weight:800; color:#0F172A; margin:0 0 6px 0;">Welcome back</h1>'
-            '<div style="font-size:0.95rem; color:#64748B; font-weight:500;">Log in to your account</div>'
+            '<div style="margin-bottom:1.5rem;">'
+            '<h1 style="font-family:\'Outfit\',sans-serif; font-size:2.2rem; font-weight:800; color:#0F172A; margin:0 0 4px 0;">Welcome back</h1>'
+            '<div style="font-size:0.92rem; color:#64748B; font-weight:500;">Log in to your account</div>'
             '</div>'
         )
         st.markdown(html_left_top, unsafe_allow_html=True)
@@ -304,16 +329,17 @@ def _render_login_screen() -> None:
             )
 
         html_left_footer = (
-            '<div style="margin-top:4.5rem; font-size:0.78rem; color:#94A3B8; font-weight:500;">'
-            '© 2026 Saf Shikan Systems. Authorized personnel only.'
+            '<div style="margin-top:2.2rem; font-size:0.78rem; color:#94A3B8; font-weight:500; line-height:1.4;">'
+            '© 2026 Saf Shikan Systems. Authorized personnel only.<br>'
+            '<span style="font-size:0.74rem; color:#CBD5E1;">Forgot your password? Contact your AGRON system administrator.</span>'
             '</div>'
         )
         st.markdown(html_left_footer, unsafe_allow_html=True)
 
     with col_right:
-        # Construct exact single-line unindented HTML string so Streamlit NEVER renders it as code block
+        # Construct exact single-line unindented HTML string with full-bleed inline background to guarantee dark emerald hero panel
         html_right = (
-            '<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">'
+            '<div style="width:100%; min-height:100vh; display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; background:linear-gradient(140deg, #05180c 0%, #0C3823 45%, #0e4e2f 100%); padding:2rem;">'
             '<div class="radar-circle circle-1"></div>'
             '<div class="radar-circle circle-2"></div>'
             '<div class="radar-circle circle-3"></div>'
