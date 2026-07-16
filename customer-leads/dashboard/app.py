@@ -810,7 +810,8 @@ with tab_dir:
                         "Region": new_location.strip()
                     }
                     save_new_row(new_farmer)
-                    load_data.clear()
+                    if hasattr(load_data, "clear"):
+                        load_data.clear()
                     log_event("DATA_ENTRY", f"Registered new farmer profile: {new_name.strip()} ({new_location.strip()}, {final_crop}, {new_area} ac)", {"name": new_name.strip(), "location": new_location.strip(), "crop": final_crop, "area": new_area})
                     st.toast(f"Farmer profile committed: {new_name.strip()} has been added to the master directory.", icon=None)
                     st.rerun()
