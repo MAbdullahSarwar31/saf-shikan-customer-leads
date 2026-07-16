@@ -599,8 +599,9 @@ input:focus, textarea:focus, select:focus {
 
 
 # ─── Data Loading ─────────────────────────────────────────────────────────────
+@st.cache_data(ttl=600, show_spinner=False)
 def load_data() -> pd.DataFrame:
-    """Load farmer data live from Supabase database."""
+    """Load farmer data live from Supabase database (cached for 10 min)."""
     supabase = get_supabase_client()
     req_cols = ["Name", "Phone", "Crop_Type", "Crop_Area", "Season", "Location", "Farm_Scale", "Region"]
 
@@ -667,6 +668,7 @@ def save_new_row(row_dict: dict) -> bool:
                     "Farm_Scale": row_dict["Farm_Scale"],
                     "Region":     row_dict["Region"]
                 }).execute()
+                st.cache_data.clear()  # Clear cache to show new data immediately
                 return True
             except Exception as e:
                 insert_error = str(e)

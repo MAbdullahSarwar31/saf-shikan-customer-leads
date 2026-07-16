@@ -72,6 +72,44 @@ def logout() -> None:
         "audit_session_id", "audit_log", "portal_started"
     ]:
         st.session_state.pop(key, None)
+    
+    # Render premium full-screen brand loader before rerun to hide transition latency
+    st.markdown("""
+    <style>
+    .stApp > div { display: none !important; }
+    .stApp {
+        background: #061c0e !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        min-height: 100vh !important;
+        width: 100vw !important;
+    }
+    .loader-container {
+        text-align: center;
+        color: #FFFFFF;
+        font-family: 'Outfit', sans-serif;
+    }
+    .spinner {
+        border: 4px solid rgba(255, 255, 255, 0.1);
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        border-left-color: #EF4444;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 20px auto;
+    }
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    </style>
+    <div class="loader-container">
+        <div class="spinner"></div>
+        <h2 style="font-weight:700; letter-spacing:1px; margin-bottom:8px;">AGRON SECURE LINK</h2>
+        <p style="font-size:0.9rem; opacity:0.8;">Terminating secure audit session and logging out...</p>
+    </div>
+    """, unsafe_allow_html=True)
     st.rerun()
 
 
@@ -382,6 +420,44 @@ def _render_login_screen() -> None:
                     }
                     if response.session:
                         st.session_state["auth_access_token"] = response.session.access_token
+                    
+                    # Render premium full-screen brand loader before rerun to hide transition latency
+                    st.markdown("""
+                    <style>
+                    .stApp > div { display: none !important; }
+                    .stApp {
+                        background: #0C3823 !important;
+                        display: flex !important;
+                        align-items: center !important;
+                        justify-content: center !important;
+                        min-height: 100vh !important;
+                        width: 100vw !important;
+                    }
+                    .loader-container {
+                        text-align: center;
+                        color: #FFFFFF;
+                        font-family: 'Outfit', sans-serif;
+                    }
+                    .spinner {
+                        border: 4px solid rgba(255, 255, 255, 0.1);
+                        width: 48px;
+                        height: 48px;
+                        border-radius: 50%;
+                        border-left-color: #22C55E;
+                        animation: spin 1s linear infinite;
+                        margin: 0 auto 20px auto;
+                    }
+                    @keyframes spin {
+                        0% { transform: rotate(0deg); }
+                        100% { transform: rotate(360deg); }
+                    }
+                    </style>
+                    <div class="loader-container">
+                        <div class="spinner"></div>
+                        <h2 style="font-weight:700; letter-spacing:1px; margin-bottom:8px;">AGRON SECURE LINK</h2>
+                        <p style="font-size:0.9rem; opacity:0.8;">Decrypting portal ledger and establishing connection...</p>
+                    </div>
+                    """, unsafe_allow_html=True)
                     st.rerun()
                 else:
                     st.error("❌ Invalid LOGIN ID or PASSWORD. Please try again.")
