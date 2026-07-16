@@ -137,6 +137,26 @@ html, body, [class*="css"], .stApp {
     background-color: #10B981;
     border-radius: 50%;
 }
+/* Professional Header Logout Button */
+div[data-testid="stColumn"]:nth-child(2) button[kind="secondary"] {
+    background-color: #FFFFFF !important;
+    border: 1px solid #CBD5E1 !important;
+    border-radius: 8px !important;
+    color: #0F172A !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 0.88rem !important;
+    font-weight: 600 !important;
+    padding: 0.35rem 1rem !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+    transition: all 0.15s ease !important;
+    height: 38px !important;
+}
+div[data-testid="stColumn"]:nth-child(2) button[kind="secondary"]:hover {
+    background-color: #F8FAFC !important;
+    border-color: #94A3B8 !important;
+    color: #EF4444 !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08) !important;
+}
 
 /* ── Stat Cards ─────────────────────────────────────────────── */
 .stats-row {
@@ -720,7 +740,7 @@ with hdr_col:
         </div>
         <div class='status-pill'>
             <span class='status-dot'></span>
-            <span>SYSTEM LIVE &nbsp;·&nbsp; {status_source} &nbsp;·&nbsp; {total_farmers:,} RECORDS &nbsp;·&nbsp; 🔐 {current_user_email}</span>
+            <span>SYSTEM LIVE &nbsp;·&nbsp; {status_source} &nbsp;·&nbsp; {total_farmers:,} RECORDS</span>
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -1129,50 +1149,6 @@ with tab_security:
     export_events = log_counts.get("DATA_EXPORT",  0)
     entry_events  = log_counts.get("DATA_ENTRY",   0)
     auth_events   = log_counts.get("LOGIN", 0) + log_counts.get("LOGOUT", 0)
-
-    # ── Security Posture Badges ──────────────────────────────────────────────
-    st.markdown(f"""
-    <div class='enterprise-panel'>
-        <div class='panel-header'>
-            <div class='panel-title'>SECURITY POSTURE &amp; COMPLIANCE STATUS</div>
-            <div class='panel-count-badge'>VERIFIED</div>
-        </div>
-        <div class='security-badge-row'>
-            <div class='security-badge'>
-                <div class='security-badge-icon badge-https'>TLS</div>
-                <div>
-                    <div class='security-badge-text-label'>Data in Transit</div>
-                    <div class='security-badge-text-value'>HTTPS / TLS 1.3 Enforced</div>
-                    <div class='security-badge-text-sub'>All client-server traffic is encrypted end-to-end via Streamlit Cloud SSL certificate.</div>
-                </div>
-            </div>
-            <div class='security-badge'>
-                <div class='security-badge-icon badge-audit'>LOG</div>
-                <div>
-                    <div class='security-badge-text-label'>Audit Trail</div>
-                    <div class='security-badge-text-value'>Persistent Cross-Session Logging</div>
-                    <div class='security-badge-text-sub'>Every action is written to Supabase audit_log table — survives page refresh, accessible across all user sessions.</div>
-                </div>
-            </div>
-            <div class='security-badge'>
-                <div class='security-badge-icon badge-session'>SID</div>
-                <div>
-                    <div class='security-badge-text-label'>Current Session</div>
-                    <div class='security-badge-text-value'>{session_id}</div>
-                    <div class='security-badge-text-sub'>Signed in as: {current_user_email}. All events tagged with this session ID and user identity.</div>
-                </div>
-            </div>
-            <div class='security-badge'>
-                <div class='security-badge-icon badge-access'>ACC</div>
-                <div>
-                    <div class='security-badge-text-label'>Data Access Scope</div>
-                    <div class='security-badge-text-value'>READ / WRITE — Authenticated</div>
-                    <div class='security-badge-text-sub'>Access controlled via Supabase Auth. All write operations are user-attributed and audited.</div>
-                </div>
-            </div>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
 
     # ── Session Event Counter Cards ──────────────────────────────────────────
     st.markdown(f"""

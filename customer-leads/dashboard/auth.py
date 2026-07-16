@@ -55,130 +55,271 @@ def logout() -> None:
 
 # ─── Login Form ───────────────────────────────────────────────────────────────
 def _render_login_screen() -> None:
-    """Render the full-page branded SAF SHIKAN login screen."""
+    """Render the full-page branded SAF SHIKAN split-screen login screen."""
     st.markdown("""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap');
 
-    html, body, [class*="css"], .stApp {
-        font-family: 'Inter', sans-serif !important;
-        background: linear-gradient(145deg, #071f10 0%, #0C3823 55%, #0e4a2c 100%) !important;
-        min-height: 100vh;
-    }
+    /* Hide standard streamlit header/sidebar/footer during login */
+    header[data-testid="stHeader"] { display: none !important; }
+    #MainMenu { visibility: hidden !important; }
+    footer { visibility: hidden !important; }
+
+    /* Remove standard block container margins and padding */
     .block-container {
-        max-width: 460px !important;
-        margin: 0 auto !important;
-        padding-top: 5rem !important;
-        padding-bottom: 2rem !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: 100% !important;
     }
-    /* Card wrapper */
-    .login-card {
-        background: #FFFFFF;
-        border-radius: 18px;
-        padding: 40px 38px 32px 38px;
-        box-shadow: 0 32px 64px rgba(0,0,0,0.30), 0 8px 24px rgba(0,0,0,0.12);
-        margin-bottom: 18px;
+    .stApp {
+        background: #FFFFFF !important;
     }
-    .login-brand-row {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 6px;
+
+    /* Column 1 (Left Column - White Form Area) */
+    div[data-testid="column"]:nth-of-type(1) {
+        padding: 4rem 6rem 3rem 6rem !important;
+        background: #FFFFFF !important;
+        min-height: 100vh !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
     }
-    .login-brand-dot {
-        width: 28px; height: 28px;
-        background: #0C3823;
-        border-radius: 6px;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 0.7rem; color: white; font-weight: 800;
+    /* Column 2 (Right Column - Dark Green Hero Area) */
+    div[data-testid="column"]:nth-of-type(2) {
+        padding: 0 !important;
+        background: linear-gradient(135deg, #061c0e 0%, #0C3823 45%, #0e4c2e 100%) !important;
+        min-height: 100vh !important;
+        position: relative !important;
+        overflow: hidden !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
     }
-    .login-brand-name {
-        font-family: 'Outfit', sans-serif;
-        font-size: 1.05rem; font-weight: 800;
-        color: #0C3823; letter-spacing: 1px; text-transform: uppercase;
+
+    /* Responsive adjustment for screens narrower than 1000px */
+    @media (max-width: 1000px) {
+        div[data-testid="column"]:nth-of-type(1) {
+            padding: 3rem 2rem !important;
+        }
+        div[data-testid="column"]:nth-of-type(2) {
+            display: none !important;
+        }
     }
-    .login-tagline {
-        font-size: 0.78rem; color: #64748B;
-        letter-spacing: 0.2px; margin-bottom: 22px;
+
+    /* Form styling inside Left Column */
+    div[data-testid="stForm"] {
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
     }
-    .login-divider {
-        border: none; border-top: 1px solid #E2E8F0; margin-bottom: 22px;
-    }
-    .login-title {
-        font-family: 'Outfit', sans-serif;
-        font-size: 1.55rem; font-weight: 700;
-        color: #0F172A; margin-bottom: 4px;
-    }
-    .login-sub {
-        font-size: 0.83rem; color: #64748B; margin-bottom: 20px;
-    }
-    .login-footer-text {
-        text-align: center; margin-top: 20px;
-        font-size: 0.76rem; color: rgba(255,255,255,0.5);
-    }
-    /* Style Streamlit inputs within form */
-    div[data-testid="stForm"] input {
-        border-radius: 8px !important;
-        border: 1.5px solid #E2E8F0 !important;
+    /* Style form labels */
+    div[data-testid="stForm"] label, div[data-testid="stForm"] p {
         font-family: 'Inter', sans-serif !important;
-        font-size: 0.92rem !important;
+        font-size: 0.76rem !important;
+        font-weight: 700 !important;
+        color: #64748B !important;
+        letter-spacing: 0.8px !important;
+        text-transform: uppercase !important;
+        margin-bottom: 2px !important;
     }
-    div[data-testid="stForm"] input:focus {
+    /* Style input boxes */
+    div[data-testid="stForm"] input[type="text"],
+    div[data-testid="stForm"] input[type="password"] {
+        background-color: #EEF2F6 !important;
+        border: 1px solid #E2E8F0 !important;
+        border-radius: 8px !important;
+        height: 48px !important;
+        font-family: 'Inter', sans-serif !important;
+        font-size: 0.95rem !important;
+        color: #0F172A !important;
+        padding: 0 16px !important;
+    }
+    div[data-testid="stForm"] input[type="text"]:focus,
+    div[data-testid="stForm"] input[type="password"]:focus {
+        background-color: #FFFFFF !important;
         border-color: #0C3823 !important;
         box-shadow: 0 0 0 3px rgba(12,56,35,0.12) !important;
     }
+    /* Style remember me checkbox container */
+    div[data-testid="stForm"] div[data-testid="stCheckbox"] p {
+        font-size: 0.78rem !important;
+        font-weight: 600 !important;
+        color: #64748B !important;
+        letter-spacing: 0.5px !important;
+        text-transform: uppercase !important;
+    }
+    /* Style Sign in button */
     div[data-testid="stForm"] button[kind="primaryFormSubmit"],
     div[data-testid="stForm"] button[type="submit"] {
-        background: #0C3823 !important;
+        background: #0A3622 !important;
+        border: none !important;
         border-radius: 8px !important;
         font-family: 'Outfit', sans-serif !important;
+        font-size: 1.02rem !important;
         font-weight: 700 !important;
-        font-size: 0.95rem !important;
-        letter-spacing: 0.3px !important;
-        height: 44px !important;
+        color: #FFFFFF !important;
+        height: 48px !important;
+        margin-top: 12px !important;
+        box-shadow: 0 6px 16px rgba(10,54,34,0.3) !important;
+        letter-spacing: 0.4px !important;
+        transition: all 0.2s ease !important;
     }
-    div[data-testid="stForm"] button:hover {
-        background: #1a5c38 !important;
+    div[data-testid="stForm"] button[kind="primaryFormSubmit"]:hover,
+    div[data-testid="stForm"] button[type="submit"]:hover {
+        background: #0E4B30 !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 8px 20px rgba(10,54,34,0.4) !important;
+    }
+
+    /* Right Hero Panel Concentric Circles & Elements */
+    .radar-circle {
+        position: absolute;
+        top: 50%; left: 50%;
+        transform: translate(-50%, -50%);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+    .circle-1 { width: 340px; height: 340px; }
+    .circle-2 { width: 560px; height: 560px; }
+    .circle-3 { width: 800px; height: 800px; border-color: rgba(255, 255, 255, 0.08); }
+    .circle-4 { width: 1060px; height: 1060px; }
+
+    .hero-content {
+        position: relative;
+        z-index: 5;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+    .hero-logo-card {
+        width: 240px; height: 240px;
+        background: #FFFFFF;
+        border-radius: 34px;
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 40px;
+        position: relative;
+    }
+    .hero-title {
+        font-family: 'Outfit', sans-serif;
+        font-size: 2.8rem;
+        font-weight: 800;
+        color: #FFFFFF;
+        letter-spacing: 5px;
+        margin-bottom: 6px;
+        line-height: 1.1;
+    }
+    .hero-sub {
+        font-family: 'Inter', sans-serif;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #4ADE80;
+        letter-spacing: 4px;
+        margin-bottom: 16px;
+    }
+    .hero-bar {
+        width: 48px; height: 2.5px;
+        background: #22C55E;
+        border-radius: 2px;
+    }
+    .hero-footer {
+        position: absolute;
+        bottom: 2rem;
+        left: 0; width: 100%;
+        text-align: center;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.78rem;
+        color: rgba(255, 255, 255, 0.35);
+        z-index: 5;
     }
     </style>
     """, unsafe_allow_html=True)
 
-    # Branded header card
-    st.markdown("""
-    <div class='login-card'>
-        <div class='login-brand-row'>
-            <div class='login-brand-dot'>SS</div>
-            <div class='login-brand-name'>SAF SHIKAN</div>
-        </div>
-        <div class='login-tagline'>AGRON Admin Console &nbsp;·&nbsp; Customer Data &amp; Management Portal</div>
-        <hr class='login-divider'>
-        <div class='login-title'>Sign In to Continue</div>
-        <div class='login-sub'>Enter your company credentials to access the portal.</div>
-    </div>
-    """, unsafe_allow_html=True)
+    col_left, col_right = st.columns([1.0, 1.35], gap="small")
 
-    with st.form("saf_shikan_login", clear_on_submit=False):
-        email = st.text_input(
-            "Company Email Address",
-            placeholder="you@company.com",
-            help="Use the email address registered by your AGRON system administrator."
-        )
-        password = st.text_input(
-            "Password",
-            type="password",
-            placeholder="••••••••"
-        )
-        col_btn, col_space = st.columns([3, 1])
-        with col_btn:
+    with col_left:
+        # Top-left branding
+        st.markdown("""
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:4.5rem;">
+            <div style="width:34px; height:34px; border-radius:50%; border:1.5px solid #0C3823; display:flex; align-items:center; justify-content:center; color:#0C3823;">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                </svg>
+            </div>
+            <span style="font-family:'Outfit',sans-serif; font-weight:800; font-size:1.25rem; color:#0C3823; letter-spacing:2px;">AGRON</span>
+        </div>
+        <div style="margin-bottom:2.2rem;">
+            <h1 style="font-family:'Outfit',sans-serif; font-size:2.3rem; font-weight:800; color:#0F172A; margin:0 0 6px 0;">Welcome back</h1>
+            <div style="font-size:0.95rem; color:#64748B; font-weight:500;">Log in to your account</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        with st.form("saf_shikan_split_login", clear_on_submit=False):
+            email = st.text_input(
+                "LOGIN ID",
+                placeholder="admin@safshikan.com",
+                help="Use the email address registered by your AGRON system administrator."
+            )
+            password = st.text_input(
+                "PASSWORD",
+                type="password",
+                placeholder="••••••••••••"
+            )
+            remember_me = st.checkbox("REMEMBER ME", value=False)
             submitted = st.form_submit_button(
-                "Sign In →",
+                "Sign in",
                 use_container_width=True,
                 type="primary"
             )
 
+        st.markdown("""
+        <div style="margin-top:4.5rem; font-size:0.78rem; color:#94A3B8; font-weight:500;">
+            © 2026 Saf Shikan Systems. Authorized personnel only.
+        </div>
+        """, unsafe_allow_html=True)
+
+    with col_right:
+        # Right hero visual
+        st.markdown("""
+        <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+            <div class="radar-circle circle-1"></div>
+            <div class="radar-circle circle-2"></div>
+            <div class="radar-circle circle-3"></div>
+            <div class="radar-circle circle-4"></div>
+            
+            <div class="hero-content">
+                <div class="hero-logo-card">
+                    <svg viewBox="0 0 200 200" width="170" height="170">
+                        <circle cx="100" cy="100" r="90" fill="none" stroke="#0C3823" stroke-width="1.2" stroke-dasharray="4 3" opacity="0.4"/>
+                        <circle cx="100" cy="100" r="80" fill="none" stroke="#0C3823" stroke-width="2"/>
+                        <path d="M70,88 L130,88 L116,108 L84,108 Z" fill="#0C3823"/>
+                        <path d="M54,78 C70,66 130,66 146,78" fill="none" stroke="#22c55e" stroke-width="3.2"/>
+                        <ellipse cx="48" cy="78" rx="14" ry="4" fill="#0C3823"/>
+                        <ellipse cx="152" cy="78" rx="14" ry="4" fill="#0C3823"/>
+                        <ellipse cx="64" cy="118" rx="12" ry="3.5" fill="#0C3823"/>
+                        <ellipse cx="136" cy="118" rx="12" ry="3.5" fill="#0C3823"/>
+                        <line x1="61" y1="80" x2="80" y2="92" stroke="#0C3823" stroke-width="3.5"/>
+                        <line x1="139" y1="80" x2="120" y2="92" stroke="#0C3823" stroke-width="3.5"/>
+                        <text x="100" y="136" text-anchor="middle" font-family="'Outfit', sans-serif" font-weight="900" font-size="18" fill="#0C3823" letter-spacing="1">SAF SHIKAN</text>
+                        <text x="100" y="152" text-anchor="middle" font-family="'Inter', sans-serif" font-weight="700" font-size="7.5" fill="#0C3823" letter-spacing="1.5">SUNDERING BARRIERS</text>
+                    </svg>
+                </div>
+                <div class="hero-title">AGRON</div>
+                <div class="hero-sub">MANAGEMENT PORTAL</div>
+                <div class="hero-bar"></div>
+            </div>
+            <div class="hero-footer">© 2026 Saf Shikan Systems. Authorized personnel only.</div>
+        </div>
+        """, unsafe_allow_html=True)
+
     if submitted:
         if not email.strip() or not password:
-            st.error("⚠️ Both email and password are required.")
+            st.error("⚠️ Both LOGIN ID and PASSWORD are required.")
             return
 
         supabase = _get_supabase()
@@ -205,11 +346,11 @@ def _render_login_screen() -> None:
                         st.session_state["auth_access_token"] = response.session.access_token
                     st.rerun()
                 else:
-                    st.error("❌ Invalid email or password. Please try again.")
+                    st.error("❌ Invalid LOGIN ID or PASSWORD. Please try again.")
             except Exception as exc:
                 msg = str(exc).lower()
                 if any(kw in msg for kw in ("invalid", "credentials", "wrong", "not found", "email")):
-                    st.error("❌ Invalid email or password.")
+                    st.error("❌ Invalid LOGIN ID or PASSWORD.")
                 else:
                     st.error(f"❌ Authentication error: {exc}")
 
