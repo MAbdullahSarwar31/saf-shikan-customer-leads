@@ -49,12 +49,13 @@ SUPABASE_TABLE = st.secrets.get("supabase_table", "farmer")
 
 def get_supabase_client() -> Client | None:
     """Return an authenticated Supabase client using Streamlit secrets."""
-    if SUPABASE_URL and SUPABASE_KEY:
-        try:
-            return create_client(SUPABASE_URL, SUPABASE_KEY)
-        except Exception:
-            pass
-    return None
+    if not SUPABASE_URL or not SUPABASE_KEY:
+        return None
+    try:
+        return create_client(SUPABASE_URL, SUPABASE_KEY)
+    except Exception as e:
+        st.warning(f"⚠️ Supabase connection failed: {e}. Check your supabase_url and supabase_key in Streamlit Secrets.")
+        return None
 
 # ─── Enterprise AGRON Portal Design System CSS ───────────────────────────────
 st.markdown("""
@@ -554,12 +555,13 @@ def load_data() -> pd.DataFrame:
     req_cols = ["Name", "Phone", "Crop_Type", "Crop_Area", "Season", "Location", "Farm_Scale", "Region"]
 
     if supabase:
-        # Try SUPABASE_TABLE, singular 'farmer', and plural 'farmers' automatically
+        # Try SUPABASE_TABLE, then 'farmer', then 'farmers' automatically
         candidate_tables = [SUPABASE_TABLE]
         for t in ["farmer", "farmers"]:
             if t not in candidate_tables:
                 candidate_tables.append(t)
 
+        last_error = None
         for tbl in candidate_tables:
             try:
                 response = supabase.table(tbl).select(
@@ -578,8 +580,16 @@ def load_data() -> pd.DataFrame:
                     df["Farm_Scale"] = df["Farm_Scale"].astype(str).str.strip()
                     df["Crop_Area"]  = pd.to_numeric(df["Crop_Area"], errors="coerce").fillna(0.0)
                     return df
-            except Exception:
+                else:
+                    # Connected but empty — likely RLS is blocking reads
+                    last_error = f"Table '{tbl}' returned 0 rows. If you have data in Supabase, enable a SELECT policy for the 'anon' role under Authentication → Policies in your Supabase Dashboard."
+            except Exception as e:
+                last_error = str(e)
                 continue
+
+        # Surface the actual problem to the user instead of silent 0-records
+        if last_error:
+            st.warning(f"⚠️ Supabase database issue: {last_error}")
 
     # Fallback: empty DataFrame with correct schema so app never crashes
     return pd.DataFrame(columns=req_cols)
@@ -594,6 +604,7 @@ def save_new_row(row_dict: dict) -> bool:
             if t not in candidate_tables:
                 candidate_tables.append(t)
 
+        insert_error = None
         for tbl in candidate_tables:
             try:
                 supabase.table(tbl).insert({
@@ -607,9 +618,14 @@ def save_new_row(row_dict: dict) -> bool:
                     "Region":     row_dict["Region"]
                 }).execute()
                 return True
-            except Exception:
+            except Exception as e:
+                insert_error = str(e)
                 continue
-        st.error("Database error: Could not insert into table 'farmer' or 'farmers'. Check Row Level Security (RLS) policies or table schema.")
+        st.error(
+            f"❌ Insert blocked by Supabase: {insert_error}\n\n"
+            "**Fix:** Go to Supabase Dashboard → Authentication → Policies → `farmer` table "
+            "→ Add an INSERT policy allowing the `anon` role."
+        )
         return False
     return False
 
@@ -970,7 +986,7 @@ with tab_group:
                               mime="text/csv",
                               use_container_width=True):
             log_event("DATA_EXPORT", f"CSV export — Grouped by {group_by}",
-                      {"format": "CSV", "group_by": group_by, "operation": agg_func})
+                      {"format": "CSV", "group_by": group_by, "operation": "count"})
 
     st.markdown("</div>", unsafe_allow_html=True)
 
