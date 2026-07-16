@@ -8,8 +8,30 @@ Usage in app.py:
     require_auth()   # Call early — halts execution and shows login if not authenticated.
 """
 
+import base64
+import os
 import streamlit as st
 from supabase import create_client, Client
+
+
+# ─── Logo Base64 Helper ──────────────────────────────────────────────────────
+@st.cache_data(show_spinner=False)
+def _get_logo_base64() -> str:
+    """Return base64 encoded SAF SHIKAN green logo (`SS.png`) if available."""
+    try:
+        curr_dir = os.path.dirname(os.path.abspath(__file__))
+        paths_to_check = [
+            os.path.join(curr_dir, "assets", "saf_shikan_logo.png"),
+            os.path.join(os.path.dirname(os.path.dirname(curr_dir)), "Saf Shikan Logo - green without bg.png"),
+            os.path.join(curr_dir, "saf_shikan_logo.png"),
+        ]
+        for p in paths_to_check:
+            if os.path.exists(p):
+                with open(p, "rb") as f:
+                    return base64.b64encode(f.read()).decode("utf-8")
+    except Exception:
+        pass
+    return ""
 
 
 # ─── Supabase Client ─────────────────────────────────────────────────────────
@@ -28,17 +50,17 @@ def _get_supabase() -> "Client | None":
 # ─── Session Helpers ─────────────────────────────────────────────────────────
 def get_current_user() -> "dict | None":
     """Return the current authenticated user dict, or None if not logged in."""
-    return st.session_state.get("auth_user", None)
+    return st.session_state.get("auth_user")
 
 
 def get_current_user_email() -> str:
-    """Return the logged-in user's email, or 'anonymous' if unauthenticated."""
+    """Return current user email string or 'anonymous' if unauthenticated."""
     user = get_current_user()
-    return user.get("email", "anonymous") if user else "anonymous"
+    return user["email"] if user else "anonymous"
 
 
 def logout() -> None:
-    """Sign out current user via Supabase Auth and wipe all session state."""
+    """Sign out from Supabase (if client exists) and clear all session auth states."""
     supabase = _get_supabase()
     if supabase:
         try:
@@ -46,7 +68,7 @@ def logout() -> None:
         except Exception:
             pass
     for key in [
-        "auth_user", "auth_session",
+        "auth_user", "auth_access_token", "portal_unlocked",
         "audit_session_id", "audit_log", "portal_started"
     ]:
         st.session_state.pop(key, None)
@@ -242,22 +264,26 @@ def _render_login_screen() -> None:
 
     col_left, col_right = st.columns([1.0, 1.35], gap="small")
 
+    logo_b64 = _get_logo_base64()
+    if logo_b64:
+        logo_top_html = f'<img src="data:image/png;base64,{logo_b64}" style="width:26px; height:26px; object-fit:contain;" alt="SAF SHIKAN">'
+        logo_card_html = f'<img src="data:image/png;base64,{logo_b64}" style="width:190px; height:190px; object-fit:contain;" alt="SAF SHIKAN Logo">'
+    else:
+        logo_top_html = '<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>'
+        logo_card_html = '<svg viewBox="0 0 200 200" width="170" height="170"><circle cx="100" cy="100" r="90" fill="none" stroke="#0C3823" stroke-width="1.2" stroke-dasharray="4 3" opacity="0.4"/><circle cx="100" cy="100" r="80" fill="none" stroke="#0C3823" stroke-width="2"/><path d="M70,88 L130,88 L116,108 L84,108 Z" fill="#0C3823"/><path d="M54,78 C70,66 130,66 146,78" fill="none" stroke="#22c55e" stroke-width="3.2"/><ellipse cx="48" cy="78" rx="14" ry="4" fill="#0C3823"/><ellipse cx="152" cy="78" rx="14" ry="4" fill="#0C3823"/><ellipse cx="64" cy="118" rx="12" ry="3.5" fill="#0C3823"/><ellipse cx="136" cy="118" rx="12" ry="3.5" fill="#0C3823"/><line x1="61" y1="80" x2="80" y2="92" stroke="#0C3823" stroke-width="3.5"/><line x1="139" y1="80" x2="120" y2="92" stroke="#0C3823" stroke-width="3.5"/><text x="100" y="136" text-anchor="middle" font-family="\'Outfit\', sans-serif" font-weight="900" font-size="18" fill="#0C3823" letter-spacing="1">SAF SHIKAN</text><text x="100" y="152" text-anchor="middle" font-family="\'Inter\', sans-serif" font-weight="700" font-size="7.5" fill="#0C3823" letter-spacing="1.5">SUNDERING BARRIERS</text></svg>'
+
     with col_left:
-        # Top-left branding
-        st.markdown("""
-        <div style="display:flex; align-items:center; gap:10px; margin-bottom:4.5rem;">
-            <div style="width:34px; height:34px; border-radius:50%; border:1.5px solid #0C3823; display:flex; align-items:center; justify-content:center; color:#0C3823;">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
-                </svg>
-            </div>
-            <span style="font-family:'Outfit',sans-serif; font-weight:800; font-size:1.25rem; color:#0C3823; letter-spacing:2px;">AGRON</span>
-        </div>
-        <div style="margin-bottom:2.2rem;">
-            <h1 style="font-family:'Outfit',sans-serif; font-size:2.3rem; font-weight:800; color:#0F172A; margin:0 0 6px 0;">Welcome back</h1>
-            <div style="font-size:0.95rem; color:#64748B; font-weight:500;">Log in to your account</div>
-        </div>
-        """, unsafe_allow_html=True)
+        html_left_top = (
+            '<div style="display:flex; align-items:center; gap:10px; margin-bottom:4.5rem;">'
+            f'<div style="width:34px; height:34px; border-radius:50%; border:1.5px solid #0C3823; display:flex; align-items:center; justify-content:center; color:#0C3823; overflow:hidden;">{logo_top_html}</div>'
+            '<span style="font-family:\'Outfit\',sans-serif; font-weight:800; font-size:1.25rem; color:#0C3823; letter-spacing:2px;">AGRON</span>'
+            '</div>'
+            '<div style="margin-bottom:2.2rem;">'
+            '<h1 style="font-family:\'Outfit\',sans-serif; font-size:2.3rem; font-weight:800; color:#0F172A; margin:0 0 6px 0;">Welcome back</h1>'
+            '<div style="font-size:0.95rem; color:#64748B; font-weight:500;">Log in to your account</div>'
+            '</div>'
+        )
+        st.markdown(html_left_top, unsafe_allow_html=True)
 
         with st.form("saf_shikan_split_login", clear_on_submit=False):
             email = st.text_input(
@@ -277,45 +303,31 @@ def _render_login_screen() -> None:
                 type="primary"
             )
 
-        st.markdown("""
-        <div style="margin-top:4.5rem; font-size:0.78rem; color:#94A3B8; font-weight:500;">
-            © 2026 Saf Shikan Systems. Authorized personnel only.
-        </div>
-        """, unsafe_allow_html=True)
+        html_left_footer = (
+            '<div style="margin-top:4.5rem; font-size:0.78rem; color:#94A3B8; font-weight:500;">'
+            '© 2026 Saf Shikan Systems. Authorized personnel only.'
+            '</div>'
+        )
+        st.markdown(html_left_footer, unsafe_allow_html=True)
 
     with col_right:
-        # Right hero visual
-        st.markdown("""
-        <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
-            <div class="radar-circle circle-1"></div>
-            <div class="radar-circle circle-2"></div>
-            <div class="radar-circle circle-3"></div>
-            <div class="radar-circle circle-4"></div>
-            
-            <div class="hero-content">
-                <div class="hero-logo-card">
-                    <svg viewBox="0 0 200 200" width="170" height="170">
-                        <circle cx="100" cy="100" r="90" fill="none" stroke="#0C3823" stroke-width="1.2" stroke-dasharray="4 3" opacity="0.4"/>
-                        <circle cx="100" cy="100" r="80" fill="none" stroke="#0C3823" stroke-width="2"/>
-                        <path d="M70,88 L130,88 L116,108 L84,108 Z" fill="#0C3823"/>
-                        <path d="M54,78 C70,66 130,66 146,78" fill="none" stroke="#22c55e" stroke-width="3.2"/>
-                        <ellipse cx="48" cy="78" rx="14" ry="4" fill="#0C3823"/>
-                        <ellipse cx="152" cy="78" rx="14" ry="4" fill="#0C3823"/>
-                        <ellipse cx="64" cy="118" rx="12" ry="3.5" fill="#0C3823"/>
-                        <ellipse cx="136" cy="118" rx="12" ry="3.5" fill="#0C3823"/>
-                        <line x1="61" y1="80" x2="80" y2="92" stroke="#0C3823" stroke-width="3.5"/>
-                        <line x1="139" y1="80" x2="120" y2="92" stroke="#0C3823" stroke-width="3.5"/>
-                        <text x="100" y="136" text-anchor="middle" font-family="'Outfit', sans-serif" font-weight="900" font-size="18" fill="#0C3823" letter-spacing="1">SAF SHIKAN</text>
-                        <text x="100" y="152" text-anchor="middle" font-family="'Inter', sans-serif" font-weight="700" font-size="7.5" fill="#0C3823" letter-spacing="1.5">SUNDERING BARRIERS</text>
-                    </svg>
-                </div>
-                <div class="hero-title">AGRON</div>
-                <div class="hero-sub">MANAGEMENT PORTAL</div>
-                <div class="hero-bar"></div>
-            </div>
-            <div class="hero-footer">© 2026 Saf Shikan Systems. Authorized personnel only.</div>
-        </div>
-        """, unsafe_allow_html=True)
+        # Construct exact single-line unindented HTML string so Streamlit NEVER renders it as code block
+        html_right = (
+            '<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">'
+            '<div class="radar-circle circle-1"></div>'
+            '<div class="radar-circle circle-2"></div>'
+            '<div class="radar-circle circle-3"></div>'
+            '<div class="radar-circle circle-4"></div>'
+            '<div class="hero-content">'
+            f'<div class="hero-logo-card">{logo_card_html}</div>'
+            '<div class="hero-title">AGRON</div>'
+            '<div class="hero-sub">MANAGEMENT PORTAL</div>'
+            '<div class="hero-bar"></div>'
+            '</div>'
+            '<div class="hero-footer">© 2026 Saf Shikan Systems. Authorized personnel only.</div>'
+            '</div>'
+        )
+        st.markdown(html_right, unsafe_allow_html=True)
 
     if submitted:
         if not email.strip() or not password:

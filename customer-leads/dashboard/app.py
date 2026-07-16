@@ -732,11 +732,17 @@ if "portal_started" not in st.session_state:
 # ─── Top Executive Header ─────────────────────────────────────────────────────
 hdr_col, logout_col = st.columns([9, 1])
 with hdr_col:
+    from auth import _get_logo_base64
+    logo_b64 = _get_logo_base64()
+    header_logo_tag = f"<img src='data:image/png;base64,{logo_b64}' style='width:36px; height:36px; object-fit:contain; margin-right:14px;' alt='SS Logo'>" if logo_b64 else "<div style='width:36px;height:36px;border-radius:8px;background:#0C3823;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.8rem;margin-right:14px;'>SS</div>"
     st.markdown(f"""
     <div class='portal-header-row'>
-        <div>
-            <div class='portal-breadcrumb'>AGRON ADMIN DASHBOARD / SAF SHIKAN MODULE / DATA REPOSITORY</div>
-            <h1 class='page-title'>Saf Shikan — Customer Data &amp; Management Portal</h1>
+        <div style='display:flex; align-items:center;'>
+            {header_logo_tag}
+            <div>
+                <div class='portal-breadcrumb'>AGRON ADMIN DASHBOARD / SAF SHIKAN MODULE / DATA REPOSITORY</div>
+                <h1 class='page-title'>Saf Shikan — Customer Data &amp; Management Portal</h1>
+            </div>
         </div>
         <div class='status-pill'>
             <span class='status-dot'></span>
