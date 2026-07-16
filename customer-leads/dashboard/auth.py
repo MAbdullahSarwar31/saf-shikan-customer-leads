@@ -70,10 +70,106 @@ def logout() -> None:
             pass
     for key in [
         "auth_user", "auth_access_token", "portal_unlocked",
-        "audit_session_id", "audit_log", "portal_started", "_transitioning"
+        "audit_session_id", "audit_log", "portal_started", "_transitioning",
+        "group_tab_viewed", "charts_tab_viewed", "sec_tab_viewed"
     ]:
         st.session_state.pop(key, None)
     st.rerun()
+
+
+def _show_loader(status_text: str) -> None:
+    """Show a beautiful full-screen overlay loading screen with custom status text matching SAF SHIKAN colors."""
+    loader_html = f"""
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@700;800;900&display=swap');
+    
+    .premium-loader-overlay {{
+        position: fixed;
+        top: 0; left: 0; width: 100vw; height: 100vh;
+        background: radial-gradient(circle at center, #0C3823 0%, #05180c 100%) !important;
+        z-index: 9999999 !important;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: #FFFFFF !important;
+    }}
+    .loader-ring {{
+        display: inline-block;
+        position: relative;
+        width: 80px;
+        height: 80px;
+        margin-bottom: 28px;
+    }}
+    .loader-ring div {{
+        box-sizing: border-box;
+        display: block;
+        position: absolute;
+        width: 64px;
+        height: 64px;
+        margin: 8px;
+        border: 4px solid #10B981;
+        border-radius: 50%;
+        animation: loader-ring-anim 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+        border-color: #10B981 transparent transparent transparent;
+    }}
+    .loader-ring div:nth-child(1) {{
+        animation-delay: -0.45s;
+    }}
+    .loader-ring div:nth-child(2) {{
+        animation-delay: -0.3s;
+    }}
+    .loader-ring div:nth-child(3) {{
+        animation-delay: -0.15s;
+    }}
+    @keyframes loader-ring-anim {{
+        0% {{ transform: rotate(0deg); }}
+        100% {{ transform: rotate(360deg); }}
+    }}
+    .loader-title {{
+        font-family: 'Outfit', sans-serif !important;
+        font-size: 1.65rem !important;
+        font-weight: 800 !important;
+        letter-spacing: 4px !important;
+        color: #FFFFFF !important;
+        margin-bottom: 6px !important;
+        text-transform: uppercase !important;
+    }}
+    .loader-subtitle {{
+        font-family: 'Inter', sans-serif !important;
+        font-size: 0.82rem !important;
+        font-weight: 600 !important;
+        color: #4ADE80 !important;
+        letter-spacing: 2px !important;
+        margin-bottom: 24px !important;
+        text-transform: uppercase !important;
+    }}
+    .loader-status {{
+        font-family: 'Inter', sans-serif !important;
+        font-size: 0.88rem !important;
+        color: #E2E8F0 !important;
+        background: rgba(255, 255, 255, 0.05) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        padding: 8px 18px !important;
+        border-radius: 20px !important;
+        letter-spacing: 0.5px !important;
+        backdrop-filter: blur(4px) !important;
+        animation: pulse 2s infinite ease-in-out !important;
+    }}
+    @keyframes pulse {{
+        0% {{ opacity: 0.6; }}
+        50% {{ opacity: 1; }}
+        100% {{ opacity: 0.6; }}
+    }}
+    </style>
+    <div class="premium-loader-overlay">
+        <div class="loader-ring"><div></div><div></div><div></div><div></div></div>
+        <div class="loader-title">AGRON</div>
+        <div class="loader-subtitle">MANAGEMENT PORTAL</div>
+        <div class="loader-status">{status_text}</div>
+    </div>
+    """
+    st.markdown(loader_html, unsafe_allow_html=True)
 
 
 # ─── Login Form ───────────────────────────────────────────────────────────────
@@ -371,31 +467,55 @@ def _render_login_screen() -> None:
             )
             return
 
-        with st.spinner("Authenticating..."):
-            try:
-                response = supabase.auth.sign_in_with_password({
-                    "email": email.strip(),
-                    "password": password
-                })
-                if response and response.user:
-                    st.session_state["auth_user"] = {
-                        "id":    response.user.id,
-                        "email": response.user.email,
-                        "role":  response.user.role or "authenticated",
-                    }
-                    if response.session:
-                        st.session_state["auth_access_token"] = response.session.access_token
-                    st.session_state.pop("_transitioning", None)
-                    login_placeholder.empty()
-                    st.rerun()
-                else:
-                    st.error("❌ Invalid LOGIN ID or PASSWORD. Please try again.")
-            except Exception as exc:
-                msg = str(exc).lower()
-                if any(kw in msg for kw in ("invalid", "credentials", "wrong", "not found", "email")):
-                    st.error("❌ Invalid LOGIN ID or PASSWORD.")
-                else:
-                    st.error(f"❌ Authentication error: {exc}")
+        status_placeholder = st.empty()
+        with status_placeholder:
+            _show_loader("Authenticating secure session...")
+
+        try:
+            response = supabase.auth.sign_in_with_password({
+                "email": email.strip(),
+                "password": password
+            })
+            if response and response.user:
+                with status_placeholder:
+                    _show_loader("Preparing database connections...")
+
+                st.session_state["auth_user"] = {
+                    "id":    response.user.id,
+                    "email": response.user.email,
+                    "role":  response.user.role or "authenticated",
+                }
+                if response.session:
+                    st.session_state["auth_access_token"] = response.session.access_token
+                st.session_state.pop("_transitioning", None)
+
+                # Pre-warm cached data and audit logs inside the authentication spinner step
+                try:
+                    with status_placeholder:
+                        _show_loader("Caching analytics & farmer registry...")
+                    from data_loader import load_data
+                    load_data()
+
+                    with status_placeholder:
+                        _show_loader("Synchronizing audit trail logs...")
+                    from audit_logger import get_log_from_supabase
+                    get_log_from_supabase(limit=200)
+                except Exception:
+                    pass
+
+                with status_placeholder:
+                    _show_loader("Opening AGRON dashboard...")
+                st.rerun()
+            else:
+                status_placeholder.empty()
+                st.error("❌ Invalid LOGIN ID or PASSWORD. Please try again.")
+        except Exception as exc:
+            status_placeholder.empty()
+            msg = str(exc).lower()
+            if any(kw in msg for kw in ("invalid", "credentials", "wrong", "not found", "email")):
+                st.error("❌ Invalid LOGIN ID or PASSWORD.")
+            else:
+                st.error(f"❌ Authentication error: {exc}")
 
     st.markdown("""
     <div class='login-footer-text'>

@@ -60,28 +60,24 @@ PROJECT_ROOT = os.path.dirname(APP_DIR)
 RAW_DATA_PATH = os.path.join(PROJECT_ROOT, "data", "raw", "customers.csv")
 
 # ─── Supabase Configuration ──────────────────────────────────────────────────────────
-SUPABASE_URL = st.secrets.get("supabase_url", "")
-SUPABASE_KEY = st.secrets.get("supabase_key", "")
-SUPABASE_TABLE = st.secrets.get("supabase_table", "farmer")
+from data_loader import load_data, get_supabase_client, SUPABASE_URL, SUPABASE_KEY, SUPABASE_TABLE
 
-@st.cache_resource(show_spinner=False)
-def get_supabase_client() -> Client | None:
-    """Return an authenticated Supabase client using Streamlit secrets."""
-    if not SUPABASE_URL or not SUPABASE_KEY:
-        return None
-    try:
-        return create_client(SUPABASE_URL, SUPABASE_KEY)
-    except Exception as e:
-        st.warning(f"⚠️ Supabase connection failed: {e}. Check your supabase_url and supabase_key in Streamlit Secrets.")
-        return None
+# ─── Anti-Flash: Inject background color IMMEDIATELY before anything else renders ─────────
+# This prevents the white flash because the browser paints #F8FAF9 on the very first frame.
+st.markdown("""
+<style>
+html, body, .stApp, [class*="css"] { background-color: #F8FAF9 !important; }
+[data-testid="stAppViewContainer"] { background-color: #F8FAF9 !important; }
+</style>
+""", unsafe_allow_html=True)
 
-# ─── Authentication Gate ─────────────────────────────────────────────────────
-# Must be called BEFORE any CSS or content is rendered.
-# Shows login form and halts execution if no authenticated user.
+# ─── Authentication Gate ──────────────────────────────────────────────────────────────
 require_auth()
 
-# ─── Enterprise AGRON Portal Design System CSS ───────────────────────────────
-st.markdown("""
+# ─── Enterprise AGRON Portal Design System CSS ────────────────────────────────────────
+# Only inject the full CSS block once per session to avoid re-parsing 500+ lines on every rerun
+if "_css_injected" not in st.session_state:
+    st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap');
 
@@ -602,54 +598,10 @@ input:focus, textarea:focus, select:focus {
 }
 </style>
 """, unsafe_allow_html=True)
+    st.session_state["_css_injected"] = True
 
 
-# ─── Data Loading ─────────────────────────────────────────────────────────────
-@st.cache_data(ttl=600, show_spinner=False)
-def load_data() -> pd.DataFrame:
-    """Load farmer data live from Supabase database (cached for 10 min)."""
-    supabase = get_supabase_client()
-    req_cols = ["Name", "Phone", "Crop_Type", "Crop_Area", "Season", "Location", "Farm_Scale", "Region"]
-
-    if supabase:
-        # Try SUPABASE_TABLE, then 'farmer', then 'farmers' automatically
-        candidate_tables = [SUPABASE_TABLE]
-        for t in ["farmer", "farmers"]:
-            if t not in candidate_tables:
-                candidate_tables.append(t)
-
-        last_error = None
-        for tbl in candidate_tables:
-            try:
-                response = supabase.table(tbl).select(
-                    "Name, Phone, Crop_Type, Crop_Area, Season, Location, Farm_Scale, Region"
-                ).execute()
-                if response.data:
-                    df = pd.DataFrame(response.data)
-                    for col in req_cols:
-                        if col not in df.columns:
-                            df[col] = ""
-                    df = df[req_cols]
-                    df["Crop_Type"]  = df["Crop_Type"].astype(str).str.title()
-                    df["Season"]     = df["Season"].astype(str).str.strip()
-                    df["Region"]     = df["Region"].astype(str).str.strip()
-                    df["Location"]   = df["Location"].astype(str).str.strip()
-                    df["Farm_Scale"] = df["Farm_Scale"].astype(str).str.strip()
-                    df["Crop_Area"]  = pd.to_numeric(df["Crop_Area"], errors="coerce").fillna(0.0)
-                    return df
-                else:
-                    # Connected but empty — likely RLS is blocking reads
-                    last_error = f"Table '{tbl}' returned 0 rows. If you have data in Supabase, enable a SELECT policy for the 'anon' role under Authentication → Policies in your Supabase Dashboard."
-            except Exception as e:
-                last_error = str(e)
-                continue
-
-        # Surface the actual problem to the user instead of silent 0-records
-        if last_error:
-            st.warning(f"⚠️ Supabase database issue: {last_error}")
-
-    # Fallback: empty DataFrame with correct schema so app never crashes
-    return pd.DataFrame(columns=req_cols)
+# load_data is imported from data_loader
 
 
 def save_new_row(row_dict: dict) -> bool:
@@ -929,13 +881,17 @@ with tab_dir:
     if sel_season != "All Seasons":
         filtered = filtered[filtered["Season"] == sel_season]
 
-    log_event("FILTER_APPLY", "Farmer directory filtered", {
-        "keyword": search.strip() or "(none)",
-        "city": sel_city,
-        "crop": sel_crop,
-        "season": sel_season,
-        "results": len(filtered)
-    })
+    # Gate FILTER_APPLY log — only fire when the filter state actually changes, not on every rerun
+    _filter_state = (search.strip(), sel_city, sel_crop, sel_season)
+    if st.session_state.get("_last_filter_state") != _filter_state:
+        st.session_state["_last_filter_state"] = _filter_state
+        log_event("FILTER_APPLY", "Farmer directory filtered", {
+            "keyword": search.strip() or "(none)",
+            "city": sel_city,
+            "crop": sel_crop,
+            "season": sel_season,
+            "results": len(filtered)
+        })
 
     st.markdown(f"""
     <div class='enterprise-panel'>
@@ -1014,8 +970,10 @@ with tab_group:
         top_name = "N/A (No Data)"
         top_val  = 0
 
-    log_event("PAGE_VIEW", f"Data Grouping tab — grouped by {group_by} (count)",
-              {"group_by": group_by, "operation": "count"})
+    if "group_tab_viewed" not in st.session_state:
+        st.session_state["group_tab_viewed"] = True
+        log_event("PAGE_VIEW", f"Data Grouping tab — grouped by {group_by} (count)",
+                  {"group_by": group_by, "operation": "count"})
 
     st.markdown(f"""
     <div class='stats-row'>
@@ -1075,8 +1033,10 @@ with tab_charts:
                   plot_bgcolor="rgba(0,0,0,0)", margin=dict(t=45, b=25, l=10, r=10),
                   title_font=dict(size=16, family=FONT, color="#0F172A"))
 
-    log_event("PAGE_VIEW", "Visual Analytics tab viewed — 4 charts rendered",
-              {"charts": ["City Bar", "Crop Donut", "Season Bar", "City-Crop Stack"]})
+    if "charts_tab_viewed" not in st.session_state:
+        st.session_state["charts_tab_viewed"] = True
+        log_event("PAGE_VIEW", "Visual Analytics tab viewed — 4 charts rendered",
+                  {"charts": ["City Bar", "Crop Donut", "Season Bar", "City-Crop Stack"]})
 
     r1c1, r1c2 = st.columns(2)
     with r1c1:
@@ -1220,8 +1180,7 @@ with tab_security:
         </div>
     """, unsafe_allow_html=True)
 
-    with st.spinner("Loading audit records from Supabase..."):
-        supabase_entries = get_log_from_supabase(limit=200)
+    supabase_entries = get_log_from_supabase(limit=200)
 
     def _to_plain_english(entry: dict) -> str:
         etype = entry.get("event_type", "")
