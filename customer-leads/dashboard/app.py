@@ -33,7 +33,7 @@ from audit_logger import (
 from auth import require_auth, get_current_user_email, logout
 
 # ─── Page Configuration ──────────────────────────────────────────────────────
-@st.cache_data(show_spinner=False)
+@st.cache_resource(show_spinner=False)
 def _get_cached_page_logo():
     try:
         from PIL import Image
@@ -1071,7 +1071,7 @@ if active_section == "Data Grouping & Aggregation":
 # ══════════════════════════════════════════════════════════════════════════════
 # TAB 3 — VISUAL ANALYTICS (ENTERPRISE CHART CARDS)
 # ══════════════════════════════════════════════════════════════════════════════
-@st.cache_data(show_spinner=False)
+@st.cache_resource(show_spinner=False)
 def _build_visual_charts(data: pd.DataFrame):
     FONT = "Inter, -apple-system, sans-serif"
     COLOR_GREEN = ["#0C3823","#1B5E20","#2E7D32","#388E3C","#43A047","#66BB6A","#A5D6A7","#C8E6C9"]
