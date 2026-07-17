@@ -758,41 +758,92 @@ st.markdown(f"""
 # ─── Navigation Bar (Lazy Rendering for Instant Performance) ──────────────────
 st.markdown("""
 <style>
+/* Container bar styling */
 div[role="radiogroup"] {
     display: flex !important;
     flex-direction: row !important;
-    gap: 8px !important;
-    background: #FFFFFF !important;
-    padding: 6px 8px !important;
-    border-radius: 12px !important;
-    border: 1px solid #E2E8F0 !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
-    margin-bottom: 20px !important;
+    gap: 10px !important;
+    background: #F8FAFC !important;
+    padding: 8px 10px !important;
+    border-radius: 14px !important;
+    border: 1px solid #CBD5E1 !important;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.03), 0 1px 2px rgba(0,0,0,0.02) !important;
+    margin-top: 4px !important;
+    margin-bottom: 24px !important;
     flex-wrap: wrap !important;
 }
+
+/* Base button styling for ALL labels */
 div[role="radiogroup"] > label {
-    background: transparent !important;
-    border: none !important;
-    border-radius: 8px !important;
-    padding: 10px 22px !important;
-    font-family: 'Outfit', sans-serif !important;
-    font-size: 0.95rem !important;
-    font-weight: 700 !important;
-    color: #475569 !important;
+    background: #FFFFFF !important;
+    border: 1px solid #E2E8F0 !important;
+    border-radius: 10px !important;
+    padding: 12px 24px !important;
     cursor: pointer !important;
-    transition: all 0.2s ease !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex: 1 1 auto !important;
 }
-div[role="radiogroup"] > label:hover {
-    background: #F1F5F9 !important;
-    color: #0C3823 !important;
+
+/* Hide the circular radio dot elements completely (Streamlit uses divs/spans before the text) */
+div[role="radiogroup"] > label > div:first-child:not([data-testid="stMarkdownContainer"]) {
+    display: none !important;
 }
-div[role="radiogroup"] > label:has(input:checked) {
-    background: #0C3823 !important;
-    color: #FFFFFF !important;
-    box-shadow: 0 4px 10px rgba(12,56,35,0.2) !important;
+div[role="radiogroup"] div[data-testid="stRadioCircle"] {
+    display: none !important;
 }
 div[role="radiogroup"] input[type="radio"] {
     display: none !important;
+}
+
+/* Inactive label text typography */
+div[role="radiogroup"] > label p,
+div[role="radiogroup"] > label span,
+div[role="radiogroup"] > label div {
+    font-family: 'Outfit', -apple-system, sans-serif !important;
+    font-size: 0.96rem !important;
+    font-weight: 600 !important;
+    color: #475569 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transition: all 0.2s ease !important;
+}
+
+/* Hover state on inactive tabs */
+div[role="radiogroup"] > label:hover {
+    background: #F1F5F9 !important;
+    border-color: #CBD5E1 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05) !important;
+}
+div[role="radiogroup"] > label:hover p,
+div[role="radiogroup"] > label:hover span,
+div[role="radiogroup"] > label:hover div {
+    color: #0C3823 !important;
+}
+
+/* Active / Selected Tab button styling */
+div[role="radiogroup"] > label:has(input:checked),
+div[role="radiogroup"] > label[data-baseweb="radio"]:has(input:checked) {
+    background: linear-gradient(135deg, #0C3823 0%, #1B5E20 100%) !important;
+    border: 1px solid #0C3823 !important;
+    box-shadow: 0 6px 16px rgba(12,56,35,0.25), inset 0 1px 0 rgba(255,255,255,0.2) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Force all text elements inside the active tab to be pure, glowing white! */
+div[role="radiogroup"] > label:has(input:checked) p,
+div[role="radiogroup"] > label:has(input:checked) span,
+div[role="radiogroup"] > label:has(input:checked) div,
+div[role="radiogroup"] > label[data-baseweb="radio"]:has(input:checked) p,
+div[role="radiogroup"] > label[data-baseweb="radio"]:has(input:checked) span,
+div[role="radiogroup"] > label[data-baseweb="radio"]:has(input:checked) div {
+    color: #FFFFFF !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.3px !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -800,10 +851,10 @@ div[role="radiogroup"] input[type="radio"] {
 active_section = st.radio(
     "Navigation Tabs",
     [
-        "Farmer Directory",
-        "Data Grouping & Aggregation",
-        "Visual Analytics",
-        "Security & Audit Trail"
+        "🌾 Farmer Directory",
+        "📊 Data Grouping & Aggregation",
+        "📈 Visual Analytics",
+        "🔐 Security & Audit Trail"
     ],
     horizontal=True,
     label_visibility="collapsed"
@@ -813,7 +864,7 @@ active_section = st.radio(
 # ══════════════════════════════════════════════════════════════════════════════
 # TAB 1 — FARMER DIRECTORY
 # ══════════════════════════════════════════════════════════════════════════════
-if active_section == "Farmer Directory":
+if active_section == "🌾 Farmer Directory":
     # ── Enterprise Registration Console ───────────────────────────────────────
     with st.expander("Register Farmer Profile — Entry Console", expanded=False):
         st.markdown("""
@@ -985,7 +1036,7 @@ if active_section == "Farmer Directory":
 # ══════════════════════════════════════════════════════════════════════════════
 # TAB 2 — DATA GROUPING & PIVOT ANALYTICS ENGINE
 # ══════════════════════════════════════════════════════════════════════════════
-if active_section == "Data Grouping & Aggregation":
+if active_section == "📊 Data Grouping & Aggregation":
     st.markdown("""
     <div class='enterprise-panel'>
         <div class='panel-header'>
@@ -1139,7 +1190,7 @@ def _build_visual_charts(data: pd.DataFrame):
     return f1, f2, f3, f4, f5
 
 
-if active_section == "Visual Analytics":
+if active_section == "📈 Visual Analytics":
     if "charts_tab_viewed" not in st.session_state:
         st.session_state["charts_tab_viewed"] = True
         log_event("PAGE_VIEW", "Visual Analytics tab viewed — 4 charts rendered",
@@ -1179,7 +1230,7 @@ if active_section == "Visual Analytics":
 # ══════════════════════════════════════════════════════════════════════════════
 # TAB 4 — SECURITY & AUDIT TRAIL CONSOLE
 # ══════════════════════════════════════════════════════════════════════════════
-if active_section == "Security & Audit Trail":
+if active_section == "🔐 Security & Audit Trail":
     from audit_logger import _session_id
 
     session_id  = _session_id()
