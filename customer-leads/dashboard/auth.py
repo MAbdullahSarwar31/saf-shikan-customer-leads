@@ -13,7 +13,7 @@ import os
 import streamlit as st
 try:
     from supabase import create_client, Client
-except ImportError:
+except Exception:
     create_client, Client = None, None
 
 
