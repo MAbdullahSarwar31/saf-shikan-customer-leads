@@ -33,18 +33,21 @@ from audit_logger import (
 from auth import require_auth, get_current_user_email, logout
 
 # ─── Page Configuration ──────────────────────────────────────────────────────
-logo_icon = "⚫"
-try:
-    from PIL import Image
-    _logo_path = os.path.join(APP_DIR_IMPORT, "assets", "saf_shikan_logo.png")
-    if os.path.exists(_logo_path):
-        logo_icon = Image.open(_logo_path)
-    else:
+@st.cache_data(show_spinner=False)
+def _get_cached_page_logo():
+    try:
+        from PIL import Image
+        _logo_path = os.path.join(APP_DIR_IMPORT, "assets", "saf_shikan_logo.png")
+        if os.path.exists(_logo_path):
+            return Image.open(_logo_path)
         _logo_path_root = os.path.join(os.path.dirname(APP_DIR_IMPORT), "Saf Shikan Logo - green without bg.png")
         if os.path.exists(_logo_path_root):
-            logo_icon = Image.open(_logo_path_root)
-except Exception:
-    pass
+            return Image.open(_logo_path_root)
+    except Exception:
+        pass
+    return "⚫"
+
+logo_icon = _get_cached_page_logo()
 
 st.set_page_config(
     page_title="Saf Shikan — Customer Data & Management Portal",
@@ -1022,83 +1025,60 @@ with tab_group:
 # ══════════════════════════════════════════════════════════════════════════════
 # TAB 3 — VISUAL ANALYTICS (ENTERPRISE CHART CARDS)
 # ══════════════════════════════════════════════════════════════════════════════
-with tab_charts:
+@st.cache_data(show_spinner=False)
+def _build_visual_charts(data: pd.DataFrame):
     FONT = "Inter, -apple-system, sans-serif"
     COLOR_GREEN = ["#0C3823","#1B5E20","#2E7D32","#388E3C","#43A047","#66BB6A","#A5D6A7","#C8E6C9"]
     LAYOUT = dict(font=dict(family=FONT), paper_bgcolor="rgba(0,0,0,0)",
                   plot_bgcolor="rgba(0,0,0,0)", margin=dict(t=45, b=25, l=10, r=10),
                   title_font=dict(size=16, family=FONT, color="#0F172A"))
 
-    if "charts_tab_viewed" not in st.session_state:
-        st.session_state["charts_tab_viewed"] = True
-        log_event("PAGE_VIEW", "Visual Analytics tab viewed — 4 charts rendered",
-                  {"charts": ["City Bar", "Crop Donut", "Season Bar", "City-Crop Stack"]})
+    rc = data["Location"].value_counts().reset_index()
+    rc.columns = ["City", "Farmers"]
+    f1 = px.bar(rc, x="City", y="Farmers", color="City", text="Farmers",
+                color_discrete_sequence=COLOR_GREEN,
+                title="City-wise Farmer Concentration")
+    f1.update_traces(textposition="outside", marker_cornerradius=6,
+                     hovertemplate="<b>%{x}</b><br>Farmers: %{y}<extra></extra>")
+    f1.update_layout(**LAYOUT, showlegend=False, height=310)
+    f1.update_yaxes(showgrid=True, gridcolor="#E2E8F0", zeroline=False)
+    f1.update_xaxes(showgrid=False, tickangle=45)
 
-    r1c1, r1c2 = st.columns(2)
-    with r1c1:
-        st.markdown("<div class='agron-chart-card'>", unsafe_allow_html=True)
-        rc = df["Location"].value_counts().reset_index()
-        rc.columns = ["City", "Farmers"]
-        f1 = px.bar(rc, x="City", y="Farmers", color="City", text="Farmers",
-                    color_discrete_sequence=COLOR_GREEN,
-                    title="City-wise Farmer Concentration")
-        f1.update_traces(textposition="outside", marker_cornerradius=6,
-                         hovertemplate="<b>%{x}</b><br>Farmers: %{y}<extra></extra>")
-        f1.update_layout(**LAYOUT, showlegend=False, height=310)
-        f1.update_yaxes(showgrid=True, gridcolor="#E2E8F0", zeroline=False)
-        f1.update_xaxes(showgrid=False, tickangle=45)
-        st.plotly_chart(f1, use_container_width=True)
-        st.markdown("</div>", unsafe_allow_html=True)
+    cc = data["Crop_Type"].value_counts().reset_index()
+    cc.columns = ["Crop", "Farmers"]
+    f2 = px.pie(cc, names="Crop", values="Farmers", hole=0.58,
+                title="Crop Portfolio Distribution",
+                color_discrete_sequence=COLOR_GREEN)
+    f2.update_traces(textposition="inside", textinfo="percent+label",
+                     hovertemplate="<b>%{label}</b><br>Farmers: %{value}<br>Share: %{percent}<extra></extra>",
+                     marker=dict(line=dict(color="#FFFFFF", width=2)))
+    f2.update_layout(**LAYOUT, showlegend=False, height=310)
 
-    with r1c2:
-        st.markdown("<div class='agron-chart-card'>", unsafe_allow_html=True)
-        cc = df["Crop_Type"].value_counts().reset_index()
-        cc.columns = ["Crop", "Farmers"]
-        f2 = px.pie(cc, names="Crop", values="Farmers", hole=0.58,
-                    title="Crop Portfolio Distribution",
-                    color_discrete_sequence=COLOR_GREEN)
-        f2.update_traces(textposition="inside", textinfo="percent+label",
-                         hovertemplate="<b>%{label}</b><br>Farmers: %{value}<br>Share: %{percent}<extra></extra>",
-                         marker=dict(line=dict(color="#FFFFFF", width=2)))
-        f2.update_layout(**LAYOUT, showlegend=False, height=310)
-        st.plotly_chart(f2, use_container_width=True)
-        st.markdown("</div>", unsafe_allow_html=True)
+    sc = data["Season"].value_counts().reset_index()
+    sc.columns = ["Season", "Farmers"]
+    f3 = px.bar(sc, x="Season", y="Farmers", color="Season", text="Farmers",
+                color_discrete_sequence=["#0C3823","#388E3C","#81C784"],
+                title="Seasonal Cultivation Breakdown")
+    f3.update_traces(textposition="outside", marker_cornerradius=6,
+                     hovertemplate="<b>%{x}</b><br>Farmers: %{y}<extra></extra>")
+    f3.update_layout(**LAYOUT, showlegend=False, height=290)
+    f3.update_yaxes(showgrid=True, gridcolor="#E2E8F0", zeroline=False)
+    f3.update_xaxes(showgrid=False)
 
-    r2c1, r2c2 = st.columns(2)
-    with r2c1:
-        st.markdown("<div class='agron-chart-card'>", unsafe_allow_html=True)
-        sc = df["Season"].value_counts().reset_index()
-        sc.columns = ["Season", "Farmers"]
-        f3 = px.bar(sc, x="Season", y="Farmers", color="Season", text="Farmers",
-                    color_discrete_sequence=["#0C3823","#388E3C","#81C784"],
-                    title="Seasonal Cultivation Breakdown")
-        f3.update_traces(textposition="outside", marker_cornerradius=6,
-                         hovertemplate="<b>%{x}</b><br>Farmers: %{y}<extra></extra>")
-        f3.update_layout(**LAYOUT, showlegend=False, height=290)
-        f3.update_yaxes(showgrid=True, gridcolor="#E2E8F0", zeroline=False)
-        f3.update_xaxes(showgrid=False)
-        st.plotly_chart(f3, use_container_width=True)
-        st.markdown("</div>", unsafe_allow_html=True)
+    ta = data.groupby("Crop_Type")["Crop_Area"].sum().sort_values().reset_index()
+    ta.columns = ["Crop", "Total Area (Acres)"]
+    f4 = px.bar(ta, x="Total Area (Acres)", y="Crop", orientation="h",
+                color="Total Area (Acres)", color_continuous_scale=["#C8E6C9","#0C3823"],
+                text="Total Area (Acres)", title="Total Cultivated Area per Crop")
+    f4.update_traces(texttemplate="%{x:,.0f} ac", textposition="outside",
+                     marker_cornerradius=4,
+                     hovertemplate="<b>%{y}</b><br>Total Area: %{x:,.0f} acres<extra></extra>")
+    f4.update_layout(**LAYOUT, coloraxis_showscale=False, height=290)
+    f4.update_xaxes(showgrid=True, gridcolor="#E2E8F0", zeroline=False)
+    f4.update_yaxes(showgrid=False)
 
-    with r2c2:
-        st.markdown("<div class='agron-chart-card'>", unsafe_allow_html=True)
-        ta = df.groupby("Crop_Type")["Crop_Area"].sum().sort_values().reset_index()
-        ta.columns = ["Crop", "Total Area (Acres)"]
-        f4 = px.bar(ta, x="Total Area (Acres)", y="Crop", orientation="h",
-                    color="Total Area (Acres)", color_continuous_scale=["#C8E6C9","#0C3823"],
-                    text="Total Area (Acres)", title="Total Cultivated Area per Crop")
-        f4.update_traces(texttemplate="%{x:,.0f} ac", textposition="outside",
-                         marker_cornerradius=4,
-                         hovertemplate="<b>%{y}</b><br>Total Area: %{x:,.0f} acres<extra></extra>")
-        f4.update_layout(**LAYOUT, coloraxis_showscale=False, height=290)
-        f4.update_xaxes(showgrid=True, gridcolor="#E2E8F0", zeroline=False)
-        f4.update_yaxes(showgrid=False)
-        st.plotly_chart(f4, use_container_width=True)
-        st.markdown("</div>", unsafe_allow_html=True)
-
-    st.markdown("<div class='agron-chart-card'>", unsafe_allow_html=True)
-    cr = df.groupby(["Location","Crop_Type"]).size().reset_index(name="Farmers")
-    top_cities = df["Location"].value_counts().nlargest(10).index.tolist()
+    cr = data.groupby(["Location","Crop_Type"]).size().reset_index(name="Farmers")
+    top_cities = data["Location"].value_counts().nlargest(10).index.tolist()
     cr = cr[cr["Location"].isin(top_cities)]
     f5 = px.bar(cr, x="Location", y="Farmers", color="Crop_Type", barmode="stack",
                 color_discrete_sequence=COLOR_GREEN,
@@ -1109,8 +1089,44 @@ with tab_charts:
     f5.update_layout(**LAYOUT, height=360, legend_title_text="Crop Category")
     f5.update_yaxes(showgrid=True, gridcolor="#E2E8F0", zeroline=False)
     f5.update_xaxes(showgrid=False, tickangle=30)
+
+    return f1, f2, f3, f4, f5
+
+
+with tab_charts:
+    if "charts_tab_viewed" not in st.session_state:
+        st.session_state["charts_tab_viewed"] = True
+        log_event("PAGE_VIEW", "Visual Analytics tab viewed — 4 charts rendered",
+                  {"charts": ["City Bar", "Crop Donut", "Season Bar", "City-Crop Stack"]})
+
+    f1, f2, f3, f4, f5 = _build_visual_charts(df)
+
+    r1c1, r1c2 = st.columns(2)
+    with r1c1:
+        st.markdown("<div class='agron-chart-card'>", unsafe_allow_html=True)
+        st.plotly_chart(f1, use_container_width=True)
+        st.markdown("</div>", unsafe_allow_html=True)
+
+    with r1c2:
+        st.markdown("<div class='agron-chart-card'>", unsafe_allow_html=True)
+        st.plotly_chart(f2, use_container_width=True)
+        st.markdown("</div>", unsafe_allow_html=True)
+
+    r2c1, r2c2 = st.columns(2)
+    with r2c1:
+        st.markdown("<div class='agron-chart-card'>", unsafe_allow_html=True)
+        st.plotly_chart(f3, use_container_width=True)
+        st.markdown("</div>", unsafe_allow_html=True)
+
+    with r2c2:
+        st.markdown("<div class='agron-chart-card'>", unsafe_allow_html=True)
+        st.plotly_chart(f4, use_container_width=True)
+        st.markdown("</div>", unsafe_allow_html=True)
+
+    st.markdown("<div class='agron-chart-card'>", unsafe_allow_html=True)
     st.plotly_chart(f5, use_container_width=True)
     st.markdown("</div>", unsafe_allow_html=True)
+
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -1231,6 +1247,7 @@ with tab_security:
             "hasn't been created in Supabase yet, or (b) navigate the portal to generate events."
         )
     else:
+        cards = []
         for entry in supabase_entries:
             plain_text = _to_plain_english(entry)
             ts         = entry.get("display_ts", "")
@@ -1249,7 +1266,8 @@ with tab_security:
                 f"<span>🔑 Session: {sid}</span>"
                 f"</div></div>"
             )
-            st.markdown(card_html, unsafe_allow_html=True)
+            cards.append(card_html)
+        st.markdown("".join(cards), unsafe_allow_html=True)
 
     st.markdown("</div>", unsafe_allow_html=True)
 
