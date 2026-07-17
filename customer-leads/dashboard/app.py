@@ -789,14 +789,17 @@ div[role="radiogroup"] > label {
 }
 
 /* Hide the circular radio dot elements completely (Streamlit uses divs/spans before the text) */
-div[role="radiogroup"] > label > div:first-child:not([data-testid="stMarkdownContainer"]) {
+div[role="radiogroup"] > label > div:first-child:not([data-testid="stMarkdownContainer"]),
+div[role="radiogroup"] div[data-testid="stRadioCircle"],
+div[role="radiogroup"] input[type="radio"],
+div[role="radiogroup"] label > div:first-of-type:not(:last-child),
+div[role="radiogroup"] label > span:first-of-type:not(:last-child) {
     display: none !important;
-}
-div[role="radiogroup"] div[data-testid="stRadioCircle"] {
-    display: none !important;
-}
-div[role="radiogroup"] input[type="radio"] {
-    display: none !important;
+    width: 0px !important;
+    height: 0px !important;
+    margin: 0px !important;
+    padding: 0px !important;
+    opacity: 0 !important;
 }
 
 /* Inactive label text typography */
@@ -851,10 +854,10 @@ div[role="radiogroup"] > label[data-baseweb="radio"]:has(input:checked) div {
 active_section = st.radio(
     "Navigation Tabs",
     [
-        "🌾 Farmer Directory",
-        "📊 Data Grouping & Aggregation",
-        "📈 Visual Analytics",
-        "🔐 Security & Audit Trail"
+        "Farmer Directory",
+        "Data Grouping & Aggregation",
+        "Visual Analytics",
+        "Security & Audit Trail"
     ],
     horizontal=True,
     label_visibility="collapsed"
@@ -864,7 +867,7 @@ active_section = st.radio(
 # ══════════════════════════════════════════════════════════════════════════════
 # TAB 1 — FARMER DIRECTORY
 # ══════════════════════════════════════════════════════════════════════════════
-if active_section == "🌾 Farmer Directory":
+if active_section == "Farmer Directory":
     # ── Enterprise Registration Console ───────────────────────────────────────
     with st.expander("Register Farmer Profile — Entry Console", expanded=False):
         st.markdown("""
@@ -1036,7 +1039,7 @@ if active_section == "🌾 Farmer Directory":
 # ══════════════════════════════════════════════════════════════════════════════
 # TAB 2 — DATA GROUPING & PIVOT ANALYTICS ENGINE
 # ══════════════════════════════════════════════════════════════════════════════
-if active_section == "📊 Data Grouping & Aggregation":
+if active_section == "Data Grouping & Aggregation":
     st.markdown("""
     <div class='enterprise-panel'>
         <div class='panel-header'>
@@ -1190,7 +1193,7 @@ def _build_visual_charts(data: pd.DataFrame):
     return f1, f2, f3, f4, f5
 
 
-if active_section == "📈 Visual Analytics":
+if active_section == "Visual Analytics":
     if "charts_tab_viewed" not in st.session_state:
         st.session_state["charts_tab_viewed"] = True
         log_event("PAGE_VIEW", "Visual Analytics tab viewed — 4 charts rendered",
@@ -1230,7 +1233,7 @@ if active_section == "📈 Visual Analytics":
 # ══════════════════════════════════════════════════════════════════════════════
 # TAB 4 — SECURITY & AUDIT TRAIL CONSOLE
 # ══════════════════════════════════════════════════════════════════════════════
-if active_section == "🔐 Security & Audit Trail":
+if active_section == "Security & Audit Trail":
     from audit_logger import _session_id
 
     session_id  = _session_id()
