@@ -62,10 +62,7 @@ PROJECT_ROOT = os.path.dirname(APP_DIR)
 RAW_DATA_PATH = os.path.join(PROJECT_ROOT, "data", "raw", "customers.csv")
 
 # ─── Supabase Configuration ──────────────────────────────────────────────────────────
-from data_loader import (
-    load_data, start_live_cache, invalidate_live_cache,
-    get_supabase_client, SUPABASE_URL, SUPABASE_KEY, SUPABASE_TABLE
-)
+from data_loader import load_data, get_supabase_client, SUPABASE_URL, SUPABASE_KEY, SUPABASE_TABLE
 
 # ─── Anti-Flash: Inject background color IMMEDIATELY before anything else renders ─────────
 # This prevents the white flash because the browser paints #F8FAF9 on the very first frame.
@@ -627,7 +624,7 @@ def save_new_row(row_dict: dict) -> bool:
                     "Farm_Scale": row_dict["Farm_Scale"],
                     "Region":     row_dict["Region"]
                 }).execute()
-                invalidate_live_cache()  # trigger immediate background refresh
+                st.cache_data.clear()  # Clear cache to show new data immediately
                 return True
             except Exception as e:
                 insert_error = str(e)
@@ -683,9 +680,8 @@ def generate_excel(df: pd.DataFrame) -> bytes:
     return buf.getvalue()
 
 
-# ─── Start Live Cache & Load Data ────────────────────────────────────────────
-start_live_cache()   # launch background refresh thread (runs once via @st.cache_resource)
-df = load_data()     # instant in-memory read (< 1ms)
+# ─── Load & Pre-compute ───────────────────────────────────────────────────────
+df = load_data()
 CORE_COLS = ["Name", "Phone", "Crop_Type", "Crop_Area", "Season", "Location"]
 
 total_farmers  = len(df)
@@ -935,7 +931,8 @@ if active_section == "🌾 Farmer Directory":
                         "Region": new_location.strip()
                     }
                     save_new_row(new_farmer)
-                    invalidate_live_cache()  # push fresh data to in-memory store
+                    if hasattr(load_data, "clear"):
+                        load_data.clear()
                     log_event("DATA_ENTRY", f"Registered new farmer profile: {new_name.strip()} ({new_location.strip()}, {final_crop}, {new_area} ac)", {"name": new_name.strip(), "location": new_location.strip(), "crop": final_crop, "area": new_area})
                     st.toast(f"Farmer profile committed: {new_name.strip()} has been added to the master directory.", icon=None)
                     st.rerun()
