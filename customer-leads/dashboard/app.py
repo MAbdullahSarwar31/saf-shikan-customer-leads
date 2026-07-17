@@ -709,9 +709,6 @@ with hdr_col:
     header_logo_tag = f"<img src='data:image/png;base64,{logo_b64}' style='width:38px; height:38px; object-fit:contain; margin-right:12px;' alt='SS Logo'>" if logo_b64 else "<div style='width:38px;height:38px;border-radius:50%;background:#0C3823;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.8rem;margin-right:12px;'>SS</div>"
     st.markdown(f"""
     <div class='portal-header-row'>
-        <div style='margin-left: 50px;'>
-            <div class='portal-breadcrumb'>AGRON ADMIN DASHBOARD / SAF SHIKAN MODULE / DATA REPOSITORY</div>
-        </div>
         <div style='display:flex; align-items:center; justify-content:space-between; width:100%; flex-wrap:wrap; gap:12px;'>
             <div style='display:flex; align-items:center;'>
                 {header_logo_tag}
