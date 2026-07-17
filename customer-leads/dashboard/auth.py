@@ -11,7 +11,10 @@ Usage in app.py:
 import base64
 import os
 import streamlit as st
-from supabase import create_client, Client
+try:
+    from supabase import create_client, Client
+except ImportError:
+    create_client, Client = None, None
 
 
 # ─── Logo Base64 Helper ──────────────────────────────────────────────────────

@@ -141,7 +141,7 @@ def get_log() -> "list[dict]":
     return list(reversed(st.session_state["audit_log"]))
 
 
-@st.cache_data(ttl=60, show_spinner=False)
+@st.cache_data(ttl=600, show_spinner=False)
 def get_log_from_supabase(limit: int = 200) -> "list[dict]":
     """Fetch the last N audit entries from the Supabase audit_log table (all sessions/users).
 

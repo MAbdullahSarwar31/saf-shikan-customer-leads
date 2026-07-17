@@ -5,7 +5,10 @@ Provides isolated, cached data fetching functions to avoid layout-rendering side
 
 import pandas as pd
 import streamlit as st
-from supabase import create_client, Client
+try:
+    from supabase import create_client, Client
+except ImportError:
+    create_client, Client = None, None
 
 SUPABASE_URL = st.secrets.get("supabase_url", "")
 SUPABASE_KEY = st.secrets.get("supabase_key", "")
