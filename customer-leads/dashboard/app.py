@@ -15,6 +15,7 @@ import streamlit as st
 from io import BytesIO
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
+from openpyxl.utils import get_column_letter
 
 # ─── Audit Logger Import ──────────────────────────────────────────────────────
 APP_DIR_IMPORT = os.path.dirname(os.path.abspath(__file__))
@@ -634,6 +635,7 @@ def save_new_row(row_dict: dict) -> bool:
     return False
 
 
+@st.cache_data(show_spinner=False)
 def generate_excel(df: pd.DataFrame) -> bytes:
     """Export filtered DataFrame to a styled Excel file."""
     cols = ["Name", "Phone", "Crop_Type", "Crop_Area", "Season", "Location"]
