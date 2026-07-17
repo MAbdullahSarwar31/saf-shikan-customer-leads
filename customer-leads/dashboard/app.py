@@ -75,9 +75,7 @@ html, body, .stApp, [class*="css"] { background-color: #F8FAF9 !important; }
 require_auth()
 
 # ─── Enterprise AGRON Portal Design System CSS ────────────────────────────────────────
-# Only inject the full CSS block once per session to avoid re-parsing 500+ lines on every rerun
-if "_css_injected" not in st.session_state:
-    st.markdown("""
+st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap');
 
@@ -596,9 +594,7 @@ input:focus, textarea:focus, select:focus {
     .security-badge-row { flex-direction: column; }
     .security-badge { min-width: 100%; }
 }
-</style>
 """, unsafe_allow_html=True)
-    st.session_state["_css_injected"] = True
 
 
 # load_data is imported from data_loader
