@@ -755,19 +755,65 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# ─── Navigation Tabs ──────────────────────────────────────────────────────────
-tab_dir, tab_group, tab_charts, tab_security = st.tabs([
-    "Farmer Directory",
-    "Data Grouping & Aggregation",
-    "Visual Analytics",
-    "Security & Audit Trail"
-])
+# ─── Navigation Bar (Lazy Rendering for Instant Performance) ──────────────────
+st.markdown("""
+<style>
+div[role="radiogroup"] {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 8px !important;
+    background: #FFFFFF !important;
+    padding: 6px 8px !important;
+    border-radius: 12px !important;
+    border: 1px solid #E2E8F0 !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
+    margin-bottom: 20px !important;
+    flex-wrap: wrap !important;
+}
+div[role="radiogroup"] > label {
+    background: transparent !important;
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 10px 22px !important;
+    font-family: 'Outfit', sans-serif !important;
+    font-size: 0.95rem !important;
+    font-weight: 700 !important;
+    color: #475569 !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+}
+div[role="radiogroup"] > label:hover {
+    background: #F1F5F9 !important;
+    color: #0C3823 !important;
+}
+div[role="radiogroup"] > label:has(input:checked) {
+    background: #0C3823 !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 4px 10px rgba(12,56,35,0.2) !important;
+}
+div[role="radiogroup"] input[type="radio"] {
+    display: none !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
+active_section = st.radio(
+    "Navigation Tabs",
+    [
+        "Farmer Directory",
+        "Data Grouping & Aggregation",
+        "Visual Analytics",
+        "Security & Audit Trail"
+    ],
+    horizontal=True,
+    label_visibility="collapsed"
+)
 
 
 # ══════════════════════════════════════════════════════════════════════════════
 # TAB 1 — FARMER DIRECTORY
 # ══════════════════════════════════════════════════════════════════════════════
-with tab_dir:
+if active_section == "Farmer Directory":
     # ── Enterprise Registration Console ───────────────────────────────────────
     with st.expander("Register Farmer Profile — Entry Console", expanded=False):
         st.markdown("""
@@ -939,7 +985,7 @@ with tab_dir:
 # ══════════════════════════════════════════════════════════════════════════════
 # TAB 2 — DATA GROUPING & PIVOT ANALYTICS ENGINE
 # ══════════════════════════════════════════════════════════════════════════════
-with tab_group:
+if active_section == "Data Grouping & Aggregation":
     st.markdown("""
     <div class='enterprise-panel'>
         <div class='panel-header'>
@@ -1093,7 +1139,7 @@ def _build_visual_charts(data: pd.DataFrame):
     return f1, f2, f3, f4, f5
 
 
-with tab_charts:
+if active_section == "Visual Analytics":
     if "charts_tab_viewed" not in st.session_state:
         st.session_state["charts_tab_viewed"] = True
         log_event("PAGE_VIEW", "Visual Analytics tab viewed — 4 charts rendered",
@@ -1133,7 +1179,7 @@ with tab_charts:
 # ══════════════════════════════════════════════════════════════════════════════
 # TAB 4 — SECURITY & AUDIT TRAIL CONSOLE
 # ══════════════════════════════════════════════════════════════════════════════
-with tab_security:
+if active_section == "Security & Audit Trail":
     from audit_logger import _session_id
 
     session_id  = _session_id()
